@@ -10,6 +10,7 @@
 
   <groupId>com.cedarsoft</groupId>
   <artifactId>couchdb</artifactId>
+  <name>CouchDB</name>
 
   <dependencies>
     <dependency>
