@@ -1,0 +1,26 @@
+{
+  "total_rows" : 777,
+  "offset" : 12,
+  "rows" : [
+    {
+      "id" : "daId0",
+      "key" : {
+        "@type" : "foo",
+        "@version" : "1.0.0",
+        "aValue" : 8,
+        "description" : "daKeyFoo"
+      },
+      "value" : "daValue0"
+    },
+    {
+      "id" : "daId1",
+      "key" : {
+        "@type" : "foo",
+        "@version" : "1.0.0",
+        "aValue" : 10,
+        "description" : "daKeyFoo"
+      },
+      "value" : "daValue1"
+    }
+  ]
+}

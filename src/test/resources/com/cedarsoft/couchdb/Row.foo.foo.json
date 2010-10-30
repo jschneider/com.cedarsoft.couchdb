@@ -1,0 +1,15 @@
+{
+  "id" : "daId",
+  "key" : {
+    "@type" : "foo",
+    "@version" : "1.0.0",
+    "aValue" : 4,
+    "description" : "inKey"
+  },
+  "value" : {
+    "@type" : "foo",
+    "@version" : "1.0.0",
+    "aValue" : 7,
+    "description" : "asdf"
+  }
+}

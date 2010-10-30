@@ -1,0 +1,10 @@
+{
+  "id" : "daId",
+  "key" : "daKey",
+  "value" : {
+    "@type" : "foo",
+    "@version" : "1.0.0",
+    "aValue" : 7,
+    "description" : "asdf"
+  }
+}

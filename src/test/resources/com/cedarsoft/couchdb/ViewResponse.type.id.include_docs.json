@@ -1,0 +1,43 @@
+{
+  "total_rows" : 2,
+  "offset" : 0,
+  "rows" :
+    [
+      {
+        "id" : "lens_canon_ef_35mm_f-1.4l",
+        "key" :
+          [
+            "http://cedarsoft.com/collustra/device/lens/1.0.0",
+            "canon_ef_35mm_f-1.4l"
+          ],
+        "value" : null,
+        "doc" :
+        {
+          "_id" : "lens_canon_ef_35mm_f-1.4l",
+          "_rev" : "1-09cefbeb6eb5d214eb11f43a08d1cd7f",
+          "@type" : "foo",
+          "@version" : "1.0.0",
+          "aValue" : 7,
+          "description" : "daDescription"
+        }
+      },
+      {
+        "id" : "lens_canon_ef_70-200mm_f-2.8l_is",
+        "key" :
+          [
+            "http://cedarsoft.com/collustra/device/lens/1.0.0",
+            "canon_ef_70-200mm_f-2.8l_is"
+          ],
+        "value" : null,
+        "doc" :
+        {
+          "_id" : "lens_canon_ef_70-200mm_f-2.8l_is",
+          "_rev" : "1-7e8103443071c4fff210747a4f61077f",
+          "@type" : "foo",
+          "@version" : "1.0.0",
+          "aValue" : 7,
+          "description" : "daDescription"
+        }
+      }
+    ]
+}

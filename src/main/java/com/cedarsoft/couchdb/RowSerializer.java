@@ -1,0 +1,177 @@
+/**
+ * Copyright (C) cedarsoft GmbH.
+ *
+ * Licensed under the GNU General Public License version 3 (the "License")
+ * with Classpath Exception; you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *         http://www.cedarsoft.org/gpl3ce
+ *         (GPL 3 with Classpath Exception)
+ *
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 3 only, as
+ * published by the Free Software Foundation. cedarsoft GmbH designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by cedarsoft GmbH in the LICENSE file that accompanied this code.
+ *
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 3 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 3 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact cedarsoft GmbH, 72810 Gomaringen, Germany,
+ * or visit www.cedarsoft.com if you need additional information or
+ * have any questions.
+ */
+
+package com.cedarsoft.couchdb;
+
+import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
+import com.cedarsoft.serialization.jackson.InvalidTypeException;
+import com.cedarsoft.serialization.jackson.JacksonSerializer;
+import com.cedarsoft.serialization.jackson.JacksonSupport;
+import org.codehaus.jackson.JsonEncoding;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonToken;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.TestOnly;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+/**
+ *
+ */
+public class RowSerializer {
+  @NonNls
+  public static final String PROPERTY_ID = "id";
+  @NonNls
+  public static final String PROPERTY_KEY = "key";
+  @NonNls
+  public static final String PROPERTY_VALUE = "value";
+
+  @NotNull
+  private final CouchDocSerializer couchDocSerializer;
+
+  @Deprecated
+  @TestOnly
+  public RowSerializer() {
+    this( new CouchDocSerializer() );
+  }
+
+  public RowSerializer( @NotNull CouchDocSerializer couchDocSerializer ) {
+    this.couchDocSerializer = couchDocSerializer;
+  }
+
+  public <K, V> void serialize( @NotNull Row<K, V, ?> row, @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @NotNull OutputStream out ) throws IOException {
+    serialize( row, keySerializer, valueSerializer, null, out );
+  }
+
+  public <K, V> void serialize( @NotNull Row<K, V, ?> row, @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @NotNull JsonGenerator generator ) throws IOException {
+    serialize( row, keySerializer, valueSerializer, null, generator );
+  }
+
+  public <K, V, D> void serialize( @NotNull Row<K, V, D> row, @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @Nullable JacksonSerializer<? super D> documentSerializer, @NotNull OutputStream out ) throws IOException {
+    JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
+    JsonGenerator generator = jsonFactory.createJsonGenerator( out, JsonEncoding.UTF8 );
+
+    serialize( row, keySerializer, valueSerializer, documentSerializer, generator );
+    generator.close();
+  }
+
+  public <K, V, D> void serialize( @NotNull Row<K, V, D> row, @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @Nullable JacksonSerializer<? super D> documentSerializer, @NotNull JsonGenerator generator ) throws IOException {
+    generator.writeStartObject();
+    generator.writeStringField( PROPERTY_ID, row.getId() );
+
+    //The key
+    generator.writeFieldName( PROPERTY_KEY );
+    keySerializer.serialize( row.getKey(), generator );
+
+    //The Value
+    generator.writeFieldName( PROPERTY_VALUE );
+    V value = row.getValue();
+    if ( value == null ) {
+      generator.writeNull();
+    } else {
+      valueSerializer.serialize( value, generator );
+    }
+
+    //The doc
+    CouchDoc<? extends D> doc = row.getDoc();
+    if ( doc != null ) {
+      if ( documentSerializer == null ) {
+        throw new NullPointerException( "documentSerializer must not be null when serializing a doc" );
+      }
+
+      generator.writeFieldName( "doc" );
+      couchDocSerializer.serialize( doc, documentSerializer, generator );
+    }
+
+    generator.writeEndObject();
+  }
+
+  @NotNull
+  public <K, V> Row<K, V, Void> deserialize( @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @NotNull InputStream in ) throws IOException, InvalidTypeException {
+    return deserialize( keySerializer, valueSerializer, null, in );
+  }
+
+  @NotNull
+  public <K, V, D> Row<K, V, D> deserialize( @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @Nullable JacksonSerializer<? extends D> documentSerializer, @NotNull InputStream in ) throws IOException, InvalidTypeException {
+    JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
+
+    JsonParser parser = jsonFactory.createJsonParser( in );
+    AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
+
+    return deserialize( keySerializer, valueSerializer, documentSerializer, parser );
+  }
+
+  @NotNull
+  public <K, V> Row<K, V, Void> deserialize( @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @NotNull JsonParser parser ) throws IOException, InvalidTypeException {
+    return deserialize( keySerializer, valueSerializer, null, parser );
+  }
+
+  @NotNull
+  public <K, V, D> Row<K, V, D> deserialize( @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @Nullable JacksonSerializer<? extends D> documentSerializer, @NotNull JsonParser parser ) throws IOException, InvalidTypeException {
+    //The id
+    AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_ID );
+    String id = parser.getText();
+
+    //The key
+    AbstractJacksonSerializer.nextField( parser, PROPERTY_KEY );
+    K key = ( K ) keySerializer.deserialize( parser );
+
+    //The value
+    AbstractJacksonSerializer.nextField( parser, PROPERTY_VALUE );
+    @Nullable
+    V value = ( V ) valueSerializer.deserialize( parser );
+
+    //The doc - if available
+    @Nullable
+    CouchDoc<? extends D> doc;
+
+    JsonToken nextToken = parser.nextToken();
+    if ( nextToken == JsonToken.FIELD_NAME ) {
+      if ( documentSerializer == null ) {
+        throw new NullPointerException( "No documentSerializer found" );
+      }
+      doc = couchDocSerializer.deserialize( documentSerializer, parser );
+
+      AbstractJacksonSerializer.closeObject( parser );
+    } else {
+      doc = null;
+    }
+
+    AbstractJacksonSerializer.verifyCurrentToken( parser, JsonToken.END_OBJECT );
+    return new Row<K, V, D>( id, key, value, doc );
+  }
+}

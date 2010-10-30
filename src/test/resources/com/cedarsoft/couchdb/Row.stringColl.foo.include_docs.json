@@ -1,0 +1,18 @@
+{
+  "id" : "daId",
+  "key" : [ "key1", "key2", "key3" ],
+  "value" : {
+    "@type" : "foo",
+    "@version" : "1.0.0",
+    "aValue" : 7,
+    "description" : "asdf"
+  },
+  "doc" : {
+    "_id" : "daFooId",
+    "_rev" : "daRev",
+    "@type" : "foo",
+    "@version" : "1.0.0",
+    "aValue" : 7,
+    "description" : "daDescription"
+  }
+}

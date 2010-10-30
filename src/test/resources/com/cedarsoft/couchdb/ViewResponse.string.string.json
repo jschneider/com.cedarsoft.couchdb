@@ -1,0 +1,16 @@
+{
+  "total_rows" : 777,
+  "offset" : 12,
+  "rows" : [
+    {
+      "id" : "daId0",
+      "key" : "daKey",
+      "value" : "daValue"
+    },
+    {
+      "id" : "daId1",
+      "key" : "daOtherKey",
+      "value" : "daOtherValue"
+    }
+  ]
+}
