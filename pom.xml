@@ -5,69 +5,72 @@
   <parent>
     <groupId>com.cedarsoft</groupId>
     <artifactId>open</artifactId>
-    <version>4.0.2</version>
+    <version>4.0.3</version>
   </parent>
 
-  <groupId>com.cedarsoft</groupId>
-  <artifactId>couchdb</artifactId>
+  <groupId>com.cedarsoft.couchdb</groupId>
+  <artifactId>parent</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
   <scm>
     <connection>scm:git:git://git.cedarsoft.com/com.cedarsoft.couchdb</connection>
     <developerConnection>scm:git:ssh://git.cedarsoft.com/home/git/com.cedarsoft.couchdb</developerConnection>
   </scm>
 
+  <modules>
+    <module>couchdb</module>
+    <module>test-utils</module>
+  </modules>
+
   <dependencies>
-    <dependency>
-      <groupId>com.google.code.jcouchdb</groupId>
-      <artifactId>jcouchdb</artifactId>
-      <version>0.10.0-1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.cedarsoft.serialization</groupId>
-      <artifactId>jackson</artifactId>
-      <version>2.1.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-client</artifactId>
-      <version>1.4</version>
-    </dependency>
-
-
-    <!--Guava-->
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
-
-    <!--NotNull Annotations-->
     <dependency>
       <groupId>com.intellij</groupId>
       <artifactId>annotations</artifactId>
       <scope>provided</scope>
     </dependency>
-
-    <!--Test Dependencies-->
-    <dependency>
-      <groupId>com.cedarsoft.commons</groupId>
-      <artifactId>test-utils</artifactId>
-      <version>3.0.2-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.cedarsoft.serialization</groupId>
-      <artifactId>test-utils</artifactId>
-      <version>2.1.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
   </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.cedarsoft</groupId>
+        <artifactId>couchdb</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.jcouchdb</groupId>
+        <artifactId>jcouchdb</artifactId>
+        <version>0.10.0-1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.cedarsoft.serialization</groupId>
+        <artifactId>jackson</artifactId>
+        <version>2.1.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-client</artifactId>
+        <version>1.4</version>
+      </dependency>
+
+      <!--Test Dependencies-->
+      <dependency>
+        <groupId>com.cedarsoft.commons</groupId>
+        <artifactId>test-utils</artifactId>
+        <version>3.0.2-SNAPSHOT</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.cedarsoft.serialization</groupId>
+        <artifactId>test-utils</artifactId>
+        <version>2.1.0-SNAPSHOT</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <mailingLists>
     <mailingList>
