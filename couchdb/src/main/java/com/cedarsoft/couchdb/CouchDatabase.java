@@ -42,14 +42,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  *
  */
 public class CouchDatabase {
-  @NotNull
-  @NonNls
-  private final String dbName;
   @NotNull
   private final Client client;
   @NotNull
@@ -57,10 +56,13 @@ public class CouchDatabase {
   @NotNull
   private final ViewResponseSerializer viewResponseSerializer;
 
-  public CouchDatabase( @NotNull String host, int port, @NotNull @NonNls String dbName ) {
-    this.dbName = dbName;
+  public CouchDatabase( @NotNull @NonNls String host, int port, @NotNull @NonNls String dbName ) throws URISyntaxException {
+    this( new URI( "http://" + host + ":" + port + "/" + dbName ) );
+  }
+
+  public CouchDatabase( @NotNull URI uri ) {
     client = new Client();
-    db = client.resource( "http://" + host + ":" + port ).path( dbName );
+    db = client.resource( uri );
     viewResponseSerializer = new ViewResponseSerializer( new RowSerializer( new CouchDocSerializer() ) );
   }
 
@@ -124,12 +126,6 @@ public class CouchDatabase {
     }
 
     return viewPath.get( InputStream.class );
-  }
-
-  @NotNull
-  @NonNls
-  public String getDbName() {
-    return dbName;
   }
 
   @NotNull
