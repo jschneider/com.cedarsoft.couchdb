@@ -84,10 +84,7 @@ public class CouchDatabase {
 
   @NotNull
   public <T> CreationResponse create( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws IOException, CreationFailedException {
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    couchDocSerializer.serialize( doc, serializer, out );
-
-    ClientResponse response = db.path( doc.getId() ).put( ClientResponse.class, out.toByteArray() );
+    ClientResponse response = db.path( doc.getId() ).put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
     return CreationResponse.create( response );
   }
 

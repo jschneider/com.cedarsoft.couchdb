@@ -45,6 +45,7 @@ import org.codehaus.jackson.JsonToken;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -54,6 +55,13 @@ public class CouchDocSerializer {
   public static final String PROPERTY_ID = "_id";
   @NonNls
   public static final String PROPERTY_REV = "_rev";
+
+  @NotNull
+  public <T> byte[] serialize( @NotNull CouchDoc<T> info, @NotNull JacksonSerializer<? super T> wrappedSerializer ) throws IOException {
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    serialize( info, wrappedSerializer, out );
+    return out.toByteArray();
+  }
 
   public <T> void serialize( @NotNull CouchDoc<T> info, @NotNull JacksonSerializer<? super T> wrappedSerializer, @NotNull OutputStream out ) throws IOException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
