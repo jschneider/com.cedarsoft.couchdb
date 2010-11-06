@@ -29,10 +29,17 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.test;
 
 import com.cedarsoft.CanceledException;
 import com.cedarsoft.JsonUtils;
+import com.cedarsoft.couchdb.Bar;
+import com.cedarsoft.couchdb.CouchDbTest;
+import com.cedarsoft.couchdb.CouchDoc;
+import com.cedarsoft.couchdb.CreationFailedException;
+import com.cedarsoft.couchdb.CreationResponse;
+import com.cedarsoft.couchdb.DocId;
+import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.couchdb.io.CouchDocSerializer;
 import com.google.common.io.ByteStreams;
 import com.sun.jersey.api.client.UniformInterfaceException;
