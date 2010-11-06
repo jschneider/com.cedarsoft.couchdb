@@ -41,7 +41,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -86,6 +85,15 @@ public class CouchDatabase {
   public <T> CreationResponse create( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws IOException, CreationFailedException {
     ClientResponse response = db.path( doc.getId() ).put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
     return CreationResponse.create( response );
+  }
+
+  @NotNull
+  public <T> CreationResponse update( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws CreationFailedException, IOException {
+    if ( doc.getRev() == null ) {
+      throw new IllegalArgumentException( "Cannot update a doc without REV" );
+    }
+
+    return create( doc, serializer );
   }
 
   @NotNull
