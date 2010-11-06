@@ -33,6 +33,7 @@ package com.cedarsoft.couchdb;
 
 import com.cedarsoft.CanceledException;
 import com.cedarsoft.JsonUtils;
+import com.cedarsoft.couchdb.io.CouchDocSerializer;
 import com.google.common.io.ByteStreams;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import org.jetbrains.annotations.NonNls;

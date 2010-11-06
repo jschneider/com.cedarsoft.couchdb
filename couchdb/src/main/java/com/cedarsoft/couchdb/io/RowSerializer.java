@@ -29,8 +29,11 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.io;
 
+import com.cedarsoft.couchdb.CouchDoc;
+import com.cedarsoft.couchdb.DocId;
+import com.cedarsoft.couchdb.Row;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.InvalidTypeException;
 import com.cedarsoft.serialization.jackson.JacksonSerializer;

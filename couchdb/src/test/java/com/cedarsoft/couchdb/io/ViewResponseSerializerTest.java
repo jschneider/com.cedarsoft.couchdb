@@ -29,9 +29,14 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.io;
 
 import com.cedarsoft.JsonUtils;
+import com.cedarsoft.couchdb.DocId;
+import com.cedarsoft.couchdb.Row;
+import com.cedarsoft.couchdb.ViewResponse;
+import com.cedarsoft.couchdb.io.RowSerializer;
+import com.cedarsoft.couchdb.io.ViewResponseSerializer;
 import com.cedarsoft.couchdb.test.Foo;
 import com.cedarsoft.serialization.jackson.ListSerializer;
 import com.cedarsoft.serialization.jackson.NullSerializer;

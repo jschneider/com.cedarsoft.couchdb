@@ -33,11 +33,11 @@ package com.cedarsoft.couchdb.test;
 
 import com.cedarsoft.JsonUtils;
 import com.cedarsoft.couchdb.CouchDoc;
-import com.cedarsoft.couchdb.CouchDocSerializer;
+import com.cedarsoft.couchdb.io.CouchDocSerializer;
 import com.cedarsoft.couchdb.CreationFailedException;
-import com.cedarsoft.couchdb.CreationFailedExceptionSerializer;
+import com.cedarsoft.couchdb.io.CreationFailedExceptionSerializer;
 import com.cedarsoft.couchdb.CreationResponse;
-import com.cedarsoft.couchdb.CreationResponseSerializer;
+import com.cedarsoft.couchdb.io.CreationResponseSerializer;
 import com.cedarsoft.couchdb.DocId;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;

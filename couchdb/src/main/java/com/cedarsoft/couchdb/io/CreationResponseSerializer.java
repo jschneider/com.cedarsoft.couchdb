@@ -29,9 +29,12 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.io;
 
 import com.cedarsoft.VersionException;
+import com.cedarsoft.couchdb.CreationResponse;
+import com.cedarsoft.couchdb.DocId;
+import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
 import org.codehaus.jackson.JsonEncoding;
@@ -47,17 +50,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-/**
- *
- */
-public class CreationFailedExceptionSerializer {
+public class CreationResponseSerializer {
+  @NonNls
+  public static final String PROPERTY_ID = "id";
+  @NonNls
+  public static final String PROPERTY_REV = "rev";
   @NonNls
   public static final String PROPERTY_ERROR = "error";
   @NonNls
   public static final String PROPERTY_REASON = "reason";
+  @NonNls
+  public static final String PROPERTY_OK = "ok";
 
 
-  public void serialize( @NotNull CreationFailedException object, @NotNull OutputStream out ) throws IOException {
+  public void serialize( @NotNull CreationResponse object, @NotNull OutputStream out ) throws IOException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
     JsonGenerator generator = jsonFactory.createJsonGenerator( out, JsonEncoding.UTF8 );
@@ -71,31 +77,50 @@ public class CreationFailedExceptionSerializer {
   }
 
   @NotNull
-  public CreationFailedException deserialize( @NotNull InputStream in ) throws IOException, VersionException {
+  public CreationResponse deserialize( @NotNull InputStream in ) throws IOException, VersionException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
     JsonParser parser = jsonFactory.createJsonParser( in );
     AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
 
-    CreationFailedException deserialized = deserialize( parser );
+    CreationResponse deserialized = deserialize( parser );
 
     AbstractJacksonSerializer.ensureParserClosedObject( parser );
 
     return deserialized;
   }
 
-  public void serialize( @NotNull JsonGenerator serializeTo, @NotNull CreationFailedException object ) throws IOException, JsonProcessingException {
-    serializeTo.writeStringField( PROPERTY_ERROR, object.getError() );
-    serializeTo.writeStringField( PROPERTY_REASON, object.getReason() );
+  public void serialize( @NotNull JsonGenerator serializeTo, @NotNull CreationResponse object ) throws IOException, JsonProcessingException {
+    serializeTo.writeBooleanField( PROPERTY_OK, true );
+    serializeTo.writeStringField( PROPERTY_ID, object.getId().asString() );
+    serializeTo.writeStringField( PROPERTY_REV, object.getRev().asString() );
+
+    //    if ( object.isSuccess() ) {
+    //    } else {
+    //      serializeTo.writeStringField( PROPERTY_ERROR, object.asError().getError() );
+    //      serializeTo.writeStringField( PROPERTY_REASON, object.asError().getReason() );
+    //    }
   }
 
   @NotNull
-  public CreationFailedException deserialize( @NotNull JsonParser deserializeFrom ) throws VersionException, IOException, JsonProcessingException {
-    AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_ERROR );
-    String error = deserializeFrom.getText();
-    AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_REASON );
-    String reason = deserializeFrom.getText();
+  public CreationResponse deserialize( @NotNull JsonParser deserializeFrom ) throws VersionException, IOException, JsonProcessingException {
+    AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_OK );
+    AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_ID );
+    String id = deserializeFrom.getText();
+    AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_REV );
+    String rev = deserializeFrom.getText();
     AbstractJacksonSerializer.closeObject( deserializeFrom );
-    return new CreationFailedException( error, reason );
+    return new CreationResponse( new DocId( id ), new Revision( rev ) );
+
+    //    AbstractJacksonSerializer.nextToken( deserializeFrom, JsonToken.FIELD_NAME );
+    //    if ( deserializeFrom.getCurrentName().equals( PROPERTY_OK ) ) {
+    //    } else {
+    //      AbstractJacksonSerializer.nextToken( deserializeFrom, JsonToken.VALUE_STRING );
+    //      String error = deserializeFrom.getText();
+    //      AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_REASON );
+    //      String reason = deserializeFrom.getText();
+    //      AbstractJacksonSerializer.closeObject( deserializeFrom );
+    //      return new CreationResponse( new CreationResponse.Error( error, reason ) );
+    //    }
   }
 }

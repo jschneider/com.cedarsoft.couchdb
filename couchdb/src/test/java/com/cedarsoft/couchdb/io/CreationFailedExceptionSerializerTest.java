@@ -29,9 +29,10 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.io;
 
 import com.cedarsoft.JsonUtils;
+import com.cedarsoft.couchdb.CreationFailedException;
 import com.cedarsoft.serialization.AbstractSerializerTest2;
 import com.cedarsoft.serialization.Entry;
 import org.junit.experimental.theories.*;
@@ -41,17 +42,17 @@ import java.io.ByteArrayOutputStream;
 
 
 @RunWith( Theories.class )
-public class CreationResponseSerializerTest {
+public class CreationFailedExceptionSerializerTest {
   @DataPoint
-  public static final Entry<? extends CreationResponse> SUCCESS = AbstractSerializerTest2.create(
-    new CreationResponse( new DocId( "daid" ), new Revision( "darev" ) ),
-    CreationResponseSerializerTest.class.getResource( "CreationResponse.json" )
+  public static final Entry<? extends CreationFailedException> SUCCESS = AbstractSerializerTest2.create(
+    new CreationFailedException( "conflict", "Document update conflict." ),
+    CreationFailedExceptionSerializerTest.class.getResource( "CreationFailedException.json" )
   );
 
   @Theory
-  public void testName( Entry<? extends CreationResponse> entry ) throws Exception {
+  public void testName( Entry<? extends CreationFailedException> entry ) throws Exception {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    new CreationResponseSerializer().serialize( entry.getObject(), out );
+    new CreationFailedExceptionSerializer().serialize( entry.getObject(), out );
 
     JsonUtils.assertJsonEquals( new String( entry.getExpected() ), new String( out.toByteArray() ) );
   }

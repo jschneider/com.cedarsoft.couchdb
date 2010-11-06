@@ -31,6 +31,9 @@
 
 package com.cedarsoft.couchdb;
 
+import com.cedarsoft.couchdb.io.CouchDocSerializer;
+import com.cedarsoft.couchdb.io.RowSerializer;
+import com.cedarsoft.couchdb.io.ViewResponseSerializer;
 import com.cedarsoft.serialization.jackson.InvalidTypeException;
 import com.cedarsoft.serialization.jackson.JacksonSerializer;
 import com.sun.jersey.api.client.Client;

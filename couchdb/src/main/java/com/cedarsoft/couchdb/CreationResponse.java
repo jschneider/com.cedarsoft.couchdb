@@ -31,6 +31,8 @@
 
 package com.cedarsoft.couchdb;
 
+import com.cedarsoft.couchdb.io.CreationFailedExceptionSerializer;
+import com.cedarsoft.couchdb.io.CreationResponseSerializer;
 import com.sun.jersey.api.client.ClientResponse;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
