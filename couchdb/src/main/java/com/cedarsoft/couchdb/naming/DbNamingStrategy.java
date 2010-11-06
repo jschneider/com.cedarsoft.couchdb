@@ -44,6 +44,12 @@ public class DbNamingStrategy {
     return ( userId + "/" + bucket.getId() + "/" + type.getDbExtension() ).replaceAll( "@", "(at)" ).replaceAll( "\\.", "_" );
   }
 
+  @NotNull
+  @NonNls
+  public static String encode( @NotNull @NonNls String databaseName ) {
+    return databaseName.replaceAll( "\\/", "%2F" );
+  }
+
   public enum Type {
     DATA( "data" ),
     ATTACHMENTS( "attachments" );

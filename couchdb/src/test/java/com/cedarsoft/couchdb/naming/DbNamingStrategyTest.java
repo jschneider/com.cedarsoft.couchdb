@@ -31,7 +31,11 @@
 
 package com.cedarsoft.couchdb.naming;
 
+import com.sun.jersey.api.uri.UriBuilderImpl;
 import org.junit.*;
+
+import java.net.URI;
+import java.net.URLEncoder;
 
 import static org.junit.Assert.*;
 
@@ -54,5 +58,31 @@ public class DbNamingStrategyTest {
     assertEquals( "johannes(at)familieschneider_info/public/data", strategy.getDatabaseName( userId, bucket, DbNamingStrategy.Type.DATA ) );
     assertEquals( "johannes(at)familieschneider_info/public/attachments", strategy.getDatabaseName( userId, bucket, DbNamingStrategy.Type.ATTACHMENTS ) );
     assertEquals( "johannes(at)familieschneider_info/other/attachments", strategy.getDatabaseName( userId, new Bucket( "other" ), DbNamingStrategy.Type.ATTACHMENTS ) );
+  }
+
+  @Test
+  public void testEscaping() throws Exception {
+    String userId = "johannes@familieschneider.info";
+    Bucket bucket = new Bucket( "public" );
+
+    URI server = new URI( "http://localhost:8080" );
+    String dbName = strategy.getDatabaseName( userId, bucket, DbNamingStrategy.Type.ATTACHMENTS );
+    assertEquals( "johannes(at)familieschneider_info/public/attachments", dbName );
+
+    URI uri = server.resolve( "/" + DbNamingStrategy.encode( dbName ) );
+
+    assertEquals( "http://localhost:8080/johannes(at)familieschneider_info%2Fpublic%2Fattachments", uri.toString() );
+    assertEquals( "/johannes(at)familieschneider_info/public/attachments", uri.getPath() );
+    assertEquals( "/johannes(at)familieschneider_info%2Fpublic%2Fattachments", uri.getRawPath() );
+  }
+
+  @Test
+  public void testUriBuilder() throws Exception {
+    assertEquals( "http://localhost:8080/daDbName%2Fdada", new UriBuilderImpl().scheme( "http" ).host( "localhost" ).port( 8080 ).path( URLEncoder.encode( "daDbName/dada", "UTF-8" ) ).build().toString() );
+  }
+
+  @Test
+  public void testUrlEncode() throws Exception {
+    assertEquals( "dbname%2Fdata", URLEncoder.encode( "dbname/data", "UTF-8" ) );
   }
 }
