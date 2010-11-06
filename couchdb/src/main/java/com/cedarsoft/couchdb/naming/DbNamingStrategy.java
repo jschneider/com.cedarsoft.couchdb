@@ -34,20 +34,30 @@ package com.cedarsoft.couchdb.naming;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.regex.Pattern;
+
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class DbNamingStrategy {
-  @NotNull
   @NonNls
-  public String getDatabaseName( @NotNull String userId, @NotNull Bucket bucket, @NotNull Type type ) {
-    return ( userId + "/" + bucket.getId() + "/" + type.getDbExtension() ).replaceAll( "@", "(at)" ).replaceAll( "\\.", "_" );
-  }
+  public static final String SEPARATOR = "$";
+  @NonNls
+  public static final String AT_REPLACEMENT = "(at)";
+  @NonNls
+  public static final String DOT_REPLACEMENT = "_";
+
+  @NotNull
+  private static final Pattern AT_PATTERN = Pattern.compile( "@" );
+  @NotNull
+  private static final Pattern DOT_PATTERN = Pattern.compile( "\\." );
 
   @NotNull
   @NonNls
-  public static String encode( @NotNull @NonNls String databaseName ) {
-    return databaseName.replaceAll( "\\/", "%2F" );
+  public String getDatabaseName( @NotNull String userId, @NotNull Bucket bucket, @NotNull Type type ) {
+    return DOT_PATTERN.matcher(
+      AT_PATTERN.matcher( userId + SEPARATOR + bucket.getId() + SEPARATOR + type.getDbExtension() ).replaceAll( AT_REPLACEMENT )
+    ).replaceAll( DOT_REPLACEMENT );
   }
 
   public enum Type {

@@ -55,9 +55,9 @@ public class DbNamingStrategyTest {
     String userId = "johannes@familieschneider.info";
     Bucket bucket = new Bucket( "public" );
 
-    assertEquals( "johannes(at)familieschneider_info/public/data", strategy.getDatabaseName( userId, bucket, DbNamingStrategy.Type.DATA ) );
-    assertEquals( "johannes(at)familieschneider_info/public/attachments", strategy.getDatabaseName( userId, bucket, DbNamingStrategy.Type.ATTACHMENTS ) );
-    assertEquals( "johannes(at)familieschneider_info/other/attachments", strategy.getDatabaseName( userId, new Bucket( "other" ), DbNamingStrategy.Type.ATTACHMENTS ) );
+    assertEquals( "johannes(at)familieschneider_info$public$data", strategy.getDatabaseName( userId, bucket, DbNamingStrategy.Type.DATA ) );
+    assertEquals( "johannes(at)familieschneider_info$public$attachments", strategy.getDatabaseName( userId, bucket, DbNamingStrategy.Type.ATTACHMENTS ) );
+    assertEquals( "johannes(at)familieschneider_info$other$attachments", strategy.getDatabaseName( userId, new Bucket( "other" ), DbNamingStrategy.Type.ATTACHMENTS ) );
   }
 
   @Test
@@ -67,13 +67,13 @@ public class DbNamingStrategyTest {
 
     URI server = new URI( "http://localhost:8080" );
     String dbName = strategy.getDatabaseName( userId, bucket, DbNamingStrategy.Type.ATTACHMENTS );
-    assertEquals( "johannes(at)familieschneider_info/public/attachments", dbName );
+    assertEquals( "johannes(at)familieschneider_info$public$attachments", dbName );
 
-    URI uri = server.resolve( "/" + DbNamingStrategy.encode( dbName ) );
+    URI uri = server.resolve( "/" + dbName );
 
-    assertEquals( "http://localhost:8080/johannes(at)familieschneider_info%2Fpublic%2Fattachments", uri.toString() );
-    assertEquals( "/johannes(at)familieschneider_info/public/attachments", uri.getPath() );
-    assertEquals( "/johannes(at)familieschneider_info%2Fpublic%2Fattachments", uri.getRawPath() );
+    assertEquals( "http://localhost:8080/johannes(at)familieschneider_info$public$attachments", uri.toString() );
+    assertEquals( "/johannes(at)familieschneider_info$public$attachments", uri.getPath() );
+    assertEquals( "/johannes(at)familieschneider_info$public$attachments", uri.getRawPath() );
   }
 
   @Test
