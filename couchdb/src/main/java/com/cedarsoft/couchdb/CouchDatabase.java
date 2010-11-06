@@ -41,6 +41,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -76,8 +77,17 @@ public class CouchDatabase {
   }
 
   @NotNull
-  public <T> CreationResponse create( @NotNull CouchDoc<T> info, @NotNull InputStream doc ) throws IOException, CreationFailedException {
-    ClientResponse response = db.path( info.getId() ).put( ClientResponse.class, doc );
+  public <T> CreationResponse create( @NotNull @NonNls String id, @NotNull InputStream doc ) throws IOException, CreationFailedException {
+    ClientResponse response = db.path( id ).put( ClientResponse.class, doc );
+    return CreationResponse.create( response );
+  }
+
+  @NotNull
+  public <T> CreationResponse create( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws IOException, CreationFailedException {
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    couchDocSerializer.serialize( doc, serializer, out );
+
+    ClientResponse response = db.path( doc.getId() ).put( ClientResponse.class, out.toByteArray() );
     return CreationResponse.create( response );
   }
 
