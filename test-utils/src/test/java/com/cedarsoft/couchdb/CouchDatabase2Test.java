@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
  */
 public class CouchDatabase2Test extends CouchDbTest {
   @NonNls
-  private static final String REV = "1-8908180fecd9b17657889f91973f89eb";
+  private static final Revision REV = new Revision( "1-8908180fecd9b17657889f91973f89eb" );
 
   private CouchDocSerializer couchDocSerializer;
   private final Bar.Serializer serializer = new Bar.Serializer();
@@ -46,6 +46,15 @@ public class CouchDatabase2Test extends CouchDbTest {
       assertEquals( 7, doc.getObject().getValue() );
       assertEquals( "hey", doc.getObject().getDescription() );
     }
+  }
+
+  @Test
+  public void testDocRevUpdated() throws Exception {
+    CouchDoc<Bar> doc = new CouchDoc<Bar>( "daId", new Bar( 7, "hey" ) );
+    assertNull( doc.getRev() );
+    CreationResponse response = db.put( doc, serializer );
+    assertNotNull( doc.getRev() );
+    assertEquals( REV, doc.getRev() );
   }
 
   @Test

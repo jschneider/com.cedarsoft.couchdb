@@ -83,8 +83,13 @@ public class CouchDatabase {
 
   @NotNull
   public <T> CreationResponse put( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws IOException, CreationFailedException {
-    ClientResponse response = db.path( doc.getId() ).put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
-    return CreationResponse.create( response );
+    ClientResponse clientResponse = db.path( doc.getId() ).put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
+    CreationResponse creationResponse = CreationResponse.create( clientResponse );
+
+    //Update the rev
+    doc.setRev( creationResponse.getRev() );
+
+    return creationResponse;
   }
 
   @Deprecated
@@ -206,7 +211,7 @@ public class CouchDatabase {
     return getURI().getPath().substring( 1 );
   }
 
-  public void delete( @NotNull @NonNls String id, @NotNull @NonNls String rev ) {
-    db.path( id ).queryParam( "rev", rev ).delete();
+  public void delete( @NotNull @NonNls String id, @NotNull @NonNls Revision revision ) {
+    db.path( id ).queryParam( "rev", revision.asString() ).delete();
   }
 }

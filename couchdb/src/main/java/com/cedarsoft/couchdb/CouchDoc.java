@@ -46,7 +46,7 @@ public class CouchDoc<T> {
   private final String id;
   @Nullable
   @NonNls
-  private String rev;
+  private Revision rev;
 
   @NotNull
   private final T object;
@@ -58,7 +58,7 @@ public class CouchDoc<T> {
    * @param object the object
    */
   public CouchDoc( @NotNull @NonNls String id, @NotNull T object ) {
-    this( id, null, object );
+    this( id, ( Revision ) null, object );
   }
 
   /**
@@ -68,7 +68,7 @@ public class CouchDoc<T> {
    * @param rev    the revision
    * @param object the object
    */
-  public CouchDoc( @NotNull @NonNls String id, @Nullable @NonNls String rev, @NotNull T object ) {
+  public CouchDoc( @NotNull @NonNls String id, @Nullable @NonNls Revision rev, @NotNull T object ) {
     this.id = id;
     this.rev = rev;
     this.object = object;
@@ -95,11 +95,11 @@ public class CouchDoc<T> {
   }
 
   /**
-   * Sets the revision
+   * Sets the revision. Should only be called when the doc has been updated
    *
    * @param rev the revision
    */
-  public void setRev( @Nullable String rev ) {
+  void setRev( @Nullable Revision rev ) {
     this.rev = rev;
   }
 
@@ -110,7 +110,7 @@ public class CouchDoc<T> {
    */
   @Nullable
   @NonNls
-  public String getRev() {
+  public Revision getRev() {
     return rev;
   }
 }

@@ -90,7 +90,7 @@ public class CreationResponseSerializer {
   public void serialize( @NotNull JsonGenerator serializeTo, @NotNull CreationResponse object ) throws IOException, JsonProcessingException {
     serializeTo.writeBooleanField( PROPERTY_OK, true );
     serializeTo.writeStringField( PROPERTY_ID, object.getId() );
-    serializeTo.writeStringField( PROPERTY_REV, object.getRev() );
+    serializeTo.writeStringField( PROPERTY_REV, object.getRev().asString() );
 
     //    if ( object.isSuccess() ) {
     //    } else {
@@ -107,7 +107,7 @@ public class CreationResponseSerializer {
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_REV );
     String rev = deserializeFrom.getText();
     AbstractJacksonSerializer.closeObject( deserializeFrom );
-    return new CreationResponse( id, rev );
+    return new CreationResponse( id, new Revision( rev ) );
 
     //    AbstractJacksonSerializer.nextToken( deserializeFrom, JsonToken.FIELD_NAME );
     //    if ( deserializeFrom.getCurrentName().equals( PROPERTY_OK ) ) {

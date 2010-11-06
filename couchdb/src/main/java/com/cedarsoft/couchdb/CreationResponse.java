@@ -46,9 +46,9 @@ public class CreationResponse {
   private final String id;
   @NotNull
   @NonNls
-  private final String rev;
+  private final Revision rev;
 
-  public CreationResponse( @NotNull String id, @NotNull String rev ) {
+  public CreationResponse( @NotNull String id, @NotNull Revision rev ) {
     this.id = id;
     this.rev = rev;
   }
@@ -61,7 +61,7 @@ public class CreationResponse {
 
   @NotNull
   @NonNls
-  public String getRev() {
+  public Revision getRev() {
     return rev;
   }
 

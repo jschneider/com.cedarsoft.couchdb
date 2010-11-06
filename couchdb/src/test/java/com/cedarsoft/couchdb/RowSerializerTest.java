@@ -167,7 +167,7 @@ public class RowSerializerTest {
 
   @Test
   public void testInclDoc() throws Exception {
-    CouchDoc<Foo> info = new CouchDoc<Foo>( "daFooId", "daRev", new Foo( 7, "daDescription" ) );
+    CouchDoc<Foo> info = new CouchDoc<Foo>( "daFooId", "daRev" == null ? null : new Revision( "daRev" ), new Foo( 7, "daDescription" ) );
     Row<List<? extends String>, Foo, Foo> row = new Row<List<? extends String>, Foo, Foo>( "daId", Arrays.asList( "key1", "key2", "key3" ), new Foo( 7, "asdf" ), info );
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
