@@ -33,12 +33,12 @@ package com.cedarsoft.couchdb.test;
 
 import com.cedarsoft.JsonUtils;
 import com.cedarsoft.couchdb.CouchDoc;
-import com.cedarsoft.couchdb.io.CouchDocSerializer;
 import com.cedarsoft.couchdb.CreationFailedException;
-import com.cedarsoft.couchdb.io.CreationFailedExceptionSerializer;
 import com.cedarsoft.couchdb.CreationResponse;
-import com.cedarsoft.couchdb.io.CreationResponseSerializer;
 import com.cedarsoft.couchdb.DocId;
+import com.cedarsoft.couchdb.io.CouchDocSerializer;
+import com.cedarsoft.couchdb.io.CreationFailedExceptionSerializer;
+import com.cedarsoft.couchdb.io.CreationResponseSerializer;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -123,14 +123,14 @@ public class FooCouchDb {
       assertEquals( 200, response1.getCode() );
 
       CouchDoc<Foo> deserialized = serializer.deserialize( fooSerializer, new ByteArrayInputStream( responseContent1.getBytes() ) );
-      assertEquals( "daId", deserialized.getId() );
-      assertEquals( "1-a61702329aa7cc6b870f7cfcc24aacac", deserialized.getRev() );
+      assertEquals( "daId", deserialized.getId().asString() );
+      assertEquals( "1-a61702329aa7cc6b870f7cfcc24aacac", deserialized.getRev().asString() );
       assertEquals( 42, deserialized.getObject().getaValue() );
       assertEquals( "asdf", deserialized.getObject().getDescription() );
 
       Response response2 = server.put( uri, responseContent1.getBytes(), MediaType.APPLICATION_JSON );
       CreationResponse creationResponse = new CreationResponseSerializer().deserialize( response2.getInputStream() );
-      assertEquals( "2-4ffec4730eec590d07f82789cbe991c6", creationResponse.getRev() );
+      assertEquals( "2-4ffec4730eec590d07f82789cbe991c6", creationResponse.getRev().asString() );
       assertEquals( 201, response2.getCode() );
       assertEquals( deserialized.getId(), creationResponse.getId() );
 
@@ -170,8 +170,8 @@ public class FooCouchDb {
 
       CreationResponse creationResponse = new CreationResponseSerializer().deserialize( new ByteArrayInputStream( responseAsString.getBytes() ) );
       assertNotNull( creationResponse );
-      assertEquals( "daDoc", creationResponse.getId() );
-      assertEquals( "1-a61702329aa7cc6b870f7cfcc24aacac", creationResponse.getRev() );
+      assertEquals( "daDoc", creationResponse.getId().asString() );
+      assertEquals( "1-a61702329aa7cc6b870f7cfcc24aacac", creationResponse.getRev().asString() );
     }
 
 
@@ -210,8 +210,8 @@ public class FooCouchDb {
       ClientResponse response = db.path( "daDoc" ).put( ClientResponse.class, serialized );
       CreationResponse creationResponse = new CreationResponseSerializer().deserialize( response.getEntityInputStream() );
 
-      assertEquals( "daDoc", creationResponse.getId() );
-      assertEquals( "1-a61702329aa7cc6b870f7cfcc24aacac", creationResponse.getRev() );
+      assertEquals( "daDoc", creationResponse.getId().asString() );
+      assertEquals( "1-a61702329aa7cc6b870f7cfcc24aacac", creationResponse.getRev().asString() );
     }
   }
 }

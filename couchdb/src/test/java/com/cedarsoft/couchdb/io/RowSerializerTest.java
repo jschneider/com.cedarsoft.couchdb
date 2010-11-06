@@ -36,7 +36,6 @@ import com.cedarsoft.couchdb.CouchDoc;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.couchdb.Row;
-import com.cedarsoft.couchdb.io.RowSerializer;
 import com.cedarsoft.couchdb.test.Foo;
 import com.cedarsoft.serialization.jackson.ListSerializer;
 import com.cedarsoft.serialization.jackson.NullSerializer;
@@ -78,7 +77,7 @@ public class RowSerializerTest {
     Row<String, Void, ?> deserialized = new RowSerializer().deserialize( new StringSerializer(), NullSerializer.INSTANCE, new ByteArrayInputStream( out.toByteArray() ) );
     assertNotNull( deserialized );
 
-    assertEquals( "daId", deserialized.getId() );
+    assertEquals( "daId", deserialized.getId().asString() );
     assertNotNull( deserialized.getKey() );
     Void value = deserialized.getValue();
     assertNull( value );
@@ -101,7 +100,7 @@ public class RowSerializerTest {
     Row<String, String, ?> deserialized = new RowSerializer().deserialize( new StringSerializer(), new StringSerializer(), new ByteArrayInputStream( out.toByteArray() ) );
     assertNotNull( deserialized );
 
-    assertEquals( "daId", deserialized.getId() );
+    assertEquals( "daId", deserialized.getId().asString() );
     assertNotNull( deserialized.getKey() );
     assertNotNull( deserialized.getValue() );
     assertEquals( "daKey", deserialized.getKey() );
@@ -120,7 +119,7 @@ public class RowSerializerTest {
     Row<String, Foo, ?> deserialized = new RowSerializer().deserialize( new StringSerializer(), new Foo.Serializer(), new ByteArrayInputStream( out.toByteArray() ) );
     assertNotNull( deserialized );
 
-    assertEquals( "daId", deserialized.getId() );
+    assertEquals( "daId", deserialized.getId().asString() );
     assertNotNull( deserialized.getKey() );
     assertNotNull( deserialized.getValue() );
     assertEquals( "daKey", deserialized.getKey() );
@@ -141,7 +140,7 @@ public class RowSerializerTest {
     Row<Foo, Foo, ?> deserialized = new RowSerializer().deserialize( new Foo.Serializer(), new Foo.Serializer(), new ByteArrayInputStream( out.toByteArray() ) );
     assertNotNull( deserialized );
 
-    assertEquals( "daId", deserialized.getId() );
+    assertEquals( "daId", deserialized.getId().asString() );
     assertNotNull( deserialized.getKey() );
     assertNotNull( deserialized.getValue() );
     Assert.assertEquals( 4, deserialized.getKey().getaValue() );
@@ -162,7 +161,7 @@ public class RowSerializerTest {
     Row<List<? extends String>, Foo, ?> deserialized = new RowSerializer().deserialize( new ListSerializer(), new Foo.Serializer(), new ByteArrayInputStream( out.toByteArray() ) );
     assertNotNull( deserialized );
 
-    assertEquals( "daId", deserialized.getId() );
+    assertEquals( "daId", deserialized.getId().asString() );
     assertNotNull( deserialized.getKey() );
     assertNotNull( deserialized.getValue() );
     assertEquals( Arrays.asList( "key1", "key2", "key3" ), deserialized.getKey() );
@@ -182,7 +181,7 @@ public class RowSerializerTest {
     Row<List<? extends String>, Foo, Foo> deserialized = new RowSerializer().deserialize( new ListSerializer(), new Foo.Serializer(), new Foo.Serializer(), new ByteArrayInputStream( out.toByteArray() ) );
     assertNotNull( deserialized );
 
-    assertEquals( "daId", deserialized.getId() );
+    assertEquals( "daId", deserialized.getId().asString() );
     assertNotNull( deserialized.getKey() );
     assertNotNull( deserialized.getValue() );
     assertEquals( Arrays.asList( "key1", "key2", "key3" ), deserialized.getKey() );
@@ -190,8 +189,8 @@ public class RowSerializerTest {
     Assert.assertEquals( "asdf", deserialized.getValue().getDescription() );
 
     assertNotNull( deserialized.getDoc() );
-    assertEquals( "daFooId", deserialized.getDoc().getId() );
-    assertEquals( "daRev", deserialized.getDoc().getRev() );
+    assertEquals( "daFooId", deserialized.getDoc().getId().asString() );
+    assertEquals( "daRev", deserialized.getDoc().getRev().asString() );
     Assert.assertEquals( 7, deserialized.getDoc().getObject().getaValue() );
     Assert.assertEquals( "daDescription", deserialized.getDoc().getObject().getDescription() );
   }

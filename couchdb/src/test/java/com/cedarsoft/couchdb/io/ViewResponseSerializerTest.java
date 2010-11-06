@@ -35,8 +35,6 @@ import com.cedarsoft.JsonUtils;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Row;
 import com.cedarsoft.couchdb.ViewResponse;
-import com.cedarsoft.couchdb.io.RowSerializer;
-import com.cedarsoft.couchdb.io.ViewResponseSerializer;
 import com.cedarsoft.couchdb.test.Foo;
 import com.cedarsoft.serialization.jackson.ListSerializer;
 import com.cedarsoft.serialization.jackson.NullSerializer;
@@ -73,13 +71,13 @@ public class ViewResponseSerializerTest {
     assertEquals( 0, response.getOffset() );
     assertEquals( 2, response.getRows().size() );
 
-    assertEquals( "lens_canon_ef_35mm_f-1.4l", response.getRows().get( 0 ).getId() );
+    assertEquals( "lens_canon_ef_35mm_f-1.4l", response.getRows().get( 0 ).getId().asString() );
     assertEquals( null, response.getRows().get( 0 ).getValue() );
     assertEquals( 2, response.getRows().get( 0 ).getKey().size() );
     assertEquals( "lens", response.getRows().get( 0 ).getKey().get( 0 ) );
     assertEquals( "canon_ef_35mm_f-1.4l", response.getRows().get( 0 ).getKey().get( 1 ) );
 
-    assertEquals( "lens_canon_ef_70-200mm_f-2.8l_is", response.getRows().get( 1 ).getId() );
+    assertEquals( "lens_canon_ef_70-200mm_f-2.8l_is", response.getRows().get( 1 ).getId().asString() );
     assertEquals( null, response.getRows().get( 1 ).getValue() );
     assertEquals( 2, response.getRows().get( 1 ).getKey().size() );
     assertEquals( "lens", response.getRows().get( 1 ).getKey().get( 0 ) );
@@ -96,7 +94,7 @@ public class ViewResponseSerializerTest {
     assertEquals( 2, response.getRows().size() );
 
     assertNotNull( response.getRows().get( 0 ).getDoc() );
-    assertEquals( "lens_canon_ef_35mm_f-1.4l", response.getRows().get( 0 ).getDoc().getId() );
+    assertEquals( "lens_canon_ef_35mm_f-1.4l", response.getRows().get( 0 ).getDoc().getId().asString() );
     Assert.assertEquals( 7, ( ( Foo ) response.getRows().get( 0 ).getDoc().getObject() ).getaValue() );
     Assert.assertEquals( "daDescription", ( ( Foo ) response.getRows().get( 0 ).getDoc().getObject() ).getDescription() );
   }

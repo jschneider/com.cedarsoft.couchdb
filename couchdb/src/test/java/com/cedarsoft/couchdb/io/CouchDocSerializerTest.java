@@ -70,8 +70,8 @@ public class CouchDocSerializerTest {
       "}", out.toString() );
 
     CouchDoc<Foo> deserialized = serializer.deserialize( fooSerializer, new ByteArrayInputStream( out.toByteArray() ) );
-    assertEquals( "daId", deserialized.getId() );
-    assertEquals( "daRev", deserialized.getRev() );
+    assertEquals( "daId", deserialized.getId().asString() );
+    assertEquals( "daRev", deserialized.getRev().asString() );
     Assert.assertEquals( 7, deserialized.getObject().getaValue() );
     Assert.assertEquals( "asdf", deserialized.getObject().getDescription() );
   }
