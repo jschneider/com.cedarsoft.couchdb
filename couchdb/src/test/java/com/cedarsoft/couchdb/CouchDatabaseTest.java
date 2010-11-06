@@ -1,9 +1,14 @@
 package com.cedarsoft.couchdb;
 
+import com.cedarsoft.JsonUtils;
+import com.cedarsoft.couchdb.test.Foo;
+import com.google.common.io.ByteStreams;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import org.junit.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 

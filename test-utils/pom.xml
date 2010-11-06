@@ -16,13 +16,19 @@
       <artifactId>couchdb</artifactId>
     </dependency>
 
-    <!--Test Dependencies-->
+    <dependency>
+      <groupId>com.cedarsoft.commons</groupId>
+      <artifactId>exceptions</artifactId>
+      <version>3.0.1</version>
+    </dependency>
+
     <dependency>
       <groupId>com.cedarsoft.commons</groupId>
       <artifactId>test-utils</artifactId>
-      <version>3.0.2-SNAPSHOT</version>
+      <version>3.0.1</version>
       <scope>compile</scope>
     </dependency>
+
     <dependency>
       <groupId>com.cedarsoft.serialization</groupId>
       <artifactId>test-utils</artifactId>
@@ -41,6 +47,8 @@
       <artifactId>js</artifactId>
       <version>1.7R2</version>
     </dependency>
+
+    <!--Test Dependencies-->
 
   </dependencies>
 

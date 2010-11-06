@@ -39,6 +39,7 @@ import com.sun.jersey.api.client.WebResource;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.TestOnly;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,6 +57,9 @@ public class CouchDatabase {
   @NotNull
   private final ViewResponseSerializer viewResponseSerializer;
 
+  @NotNull
+  private final CouchDocSerializer couchDocSerializer = new CouchDocSerializer();
+
   @Deprecated
   public CouchDatabase( @NotNull @NonNls String host, int port, @NotNull @NonNls String dbName ) throws URISyntaxException {
     this( new URI( "http://" + host + ":" + port + "/" + dbName ) );
@@ -68,11 +72,11 @@ public class CouchDatabase {
   public CouchDatabase( @NotNull URI uri ) {
     client = new Client();
     db = client.resource( uri );
-    viewResponseSerializer = new ViewResponseSerializer( new RowSerializer( new CouchDocSerializer() ) );
+    viewResponseSerializer = new ViewResponseSerializer( new RowSerializer( couchDocSerializer ) );
   }
 
   @NotNull
-  public <T> CreationResponse createObject( @NotNull CouchDoc<T> info, @NotNull InputStream doc ) throws IOException, CreationFailedException {
+  public <T> CreationResponse create( @NotNull CouchDoc<T> info, @NotNull InputStream doc ) throws IOException, CreationFailedException {
     ClientResponse response = db.path( info.getId() ).put( ClientResponse.class, doc );
     return CreationResponse.create( response );
   }
@@ -133,6 +137,37 @@ public class CouchDatabase {
     return viewPath.get( InputStream.class );
   }
 
+  /**
+   * Returns the document
+   *
+   * @param id the id
+   * @return the view as stream
+   */
+  @NotNull
+  public InputStream get( @NotNull @NonNls String id ) {
+    return db.path( id ).get( InputStream.class );
+  }
+
+  /**
+   * Returns the document
+   *
+   * @param id         the id
+   * @param serializer the serializer
+   * @param <T>        the object type
+   * @return the doc
+   *
+   * @throws IOException
+   */
+  @NotNull
+  public <T> CouchDoc<T> get( @NotNull @NonNls String id, @NotNull JacksonSerializer<T> serializer ) throws IOException {
+    return couchDocSerializer.deserialize( serializer, get( id ) );
+  }
+
+  /**
+   * Returns the URI
+   *
+   * @return the URI
+   */
   @NotNull
   public URI getURI() {
     return db.getURI();
@@ -141,5 +176,21 @@ public class CouchDatabase {
   @NotNull
   protected Client getClient() {
     return client;
+  }
+
+  /**
+   * This implementation only works for the basic use cases
+   *
+   * @return the db name
+   */
+  @TestOnly
+  @NotNull
+  @NonNls
+  public String getDbName() {
+    return getURI().getPath().substring( 1 );
+  }
+
+  public void delete( @NotNull @NonNls String id, @NotNull @NonNls String rev ) {
+    db.path( id ).queryParam( "rev", rev ).delete();
   }
 }
