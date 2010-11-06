@@ -32,16 +32,16 @@ public class CouchDatabase2Test extends CouchDbTest {
 
   @Test
   public void testManually() throws Exception {
-    CreationResponse response = db.put( new CouchDoc<Bar>( "daId", new Bar( 7, "hey" ) ), serializer );
-    assertEquals( "daId", response.getId() );
+    CreationResponse response = db.put( new CouchDoc<Bar>( new DocId( "daId" ), new Bar( 7, "hey" ) ), serializer );
+    assertEquals( "daId", response.getId().asString() );
     assertEquals( REV, response.getRev() );
 
     {
-      byte[] read = ByteStreams.toByteArray( db.get( "daId" ) );
+      byte[] read = ByteStreams.toByteArray( db.get( new DocId( "daId" ) ) );
       JsonUtils.assertJsonEquals( getClass().getResource( "bar.json" ), new String( read ) );
 
       CouchDoc<Bar> doc = couchDocSerializer.deserialize( serializer, new ByteArrayInputStream( read ) );
-      assertEquals( "daId", doc.getId() );
+      assertEquals( "daId", doc.getId().asString() );
       assertEquals( REV, doc.getRev() );
       assertEquals( 7, doc.getObject().getValue() );
       assertEquals( "hey", doc.getObject().getDescription() );
@@ -50,7 +50,7 @@ public class CouchDatabase2Test extends CouchDbTest {
 
   @Test
   public void testDocRevUpdated() throws Exception {
-    CouchDoc<Bar> doc = new CouchDoc<Bar>( "daId", new Bar( 7, "hey" ) );
+    CouchDoc<Bar> doc = new CouchDoc<Bar>( new DocId( "daId" ), new Bar( 7, "hey" ) );
     assertNull( doc.getRev() );
     CreationResponse response = db.put( doc, serializer );
     assertNotNull( doc.getRev() );
@@ -60,25 +60,26 @@ public class CouchDatabase2Test extends CouchDbTest {
   @Test
   public void testCreateGetDelete() throws Exception {
     {
-      CreationResponse response = db.put( new CouchDoc<Bar>( "daId", new Bar( 7, "hey" ) ), serializer );
+      CreationResponse response = db.put( new CouchDoc<Bar>( new DocId( "daId" ), new Bar( 7, "hey" ) ), serializer );
 
-      assertEquals( "daId", response.getId() );
+      assertEquals( "daId", response.getId().asString() );
       assertEquals( REV, response.getRev() );
     }
 
+    DocId id = new DocId( "daId" );
     {
-      CouchDoc<Bar> doc = db.get( "daId", serializer );
-      assertEquals( "daId", doc.getId() );
+      CouchDoc<Bar> doc = db.get( id, serializer );
+      assertEquals( "daId", doc.getId().asString() );
       assertEquals( REV, doc.getRev() );
       assertEquals( 7, doc.getObject().getValue() );
     }
 
-    db.delete( "daId", REV );
+    db.delete( id, REV );
 
 
     //Check deleted
     try {
-      db.get( "daId", serializer );
+      db.get( id, serializer );
     } catch ( UniformInterfaceException e ) {
       assertEquals( 404, e.getResponse().getStatus() );
       assertEquals( "{\"error\":\"not_found\",\"reason\":\"deleted\"}", e.getResponse().getEntity( String.class ).trim() );
@@ -88,13 +89,14 @@ public class CouchDatabase2Test extends CouchDbTest {
   @Test
   public void testUpdated() throws Exception {
     //Create
+    DocId id = new DocId( "daId" );
     {
-      db.put( new CouchDoc<Bar>( "daId", new Bar( 7, "hey" ) ), serializer );
+      db.put( new CouchDoc<Bar>( id, new Bar( 7, "hey" ) ), serializer );
     }
 
     //fetch
     {
-      CouchDoc<Bar> doc = db.get( "daId", serializer );
+      CouchDoc<Bar> doc = db.get( id, serializer );
       Bar bar = doc.getObject();
 
       assertEquals( "hey", bar.getDescription() );
@@ -109,7 +111,7 @@ public class CouchDatabase2Test extends CouchDbTest {
 
     //fetch2
     {
-      CouchDoc<Bar> doc = db.get( "daId", serializer );
+      CouchDoc<Bar> doc = db.get( id, serializer );
       Bar bar = doc.getObject();
 
       assertEquals( "updatedDescription", bar.getDescription() );
@@ -123,7 +125,7 @@ public class CouchDatabase2Test extends CouchDbTest {
     }
 
     {
-      CouchDoc<Bar> doc = db.get( "daId", serializer );
+      CouchDoc<Bar> doc = db.get( id, serializer );
       Bar bar = doc.getObject();
 
       assertEquals( "updatedDescription2", bar.getDescription() );
@@ -134,7 +136,7 @@ public class CouchDatabase2Test extends CouchDbTest {
     expectedException.expect( CreationFailedException.class );
     expectedException.expectMessage( "conflict: Document update conflict." );
 
-    db.put( new CouchDoc<Bar>( "daId", new Bar( 1, "should not work!" ) ), serializer );
+    db.put( new CouchDoc<Bar>( id, new Bar( 1, "should not work!" ) ), serializer );
   }
 
   @Rule

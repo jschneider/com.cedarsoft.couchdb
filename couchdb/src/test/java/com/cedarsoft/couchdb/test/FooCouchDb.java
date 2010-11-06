@@ -38,6 +38,7 @@ import com.cedarsoft.couchdb.CreationFailedException;
 import com.cedarsoft.couchdb.CreationFailedExceptionSerializer;
 import com.cedarsoft.couchdb.CreationResponse;
 import com.cedarsoft.couchdb.CreationResponseSerializer;
+import com.cedarsoft.couchdb.DocId;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -88,7 +89,7 @@ public class FooCouchDb {
     Foo foo = new Foo( 42, "asdf" );
     Foo.Serializer fooSerializer = new Foo.Serializer();
 
-    CouchDoc<Foo> info = new CouchDoc( "daId", foo );
+    CouchDoc<Foo> info = new CouchDoc<Foo>( new DocId( "daId" ), foo );
     CouchDocSerializer serializer = new CouchDocSerializer();
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();

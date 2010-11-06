@@ -50,6 +50,9 @@ import java.net.URISyntaxException;
  *
  */
 public class CouchDatabase {
+  @NonNls
+  public static final String PARAM_REV = "rev";
+
   @NotNull
   private final Client client;
   @NotNull
@@ -76,14 +79,14 @@ public class CouchDatabase {
   }
 
   @NotNull
-  public <T> CreationResponse put( @NotNull @NonNls String id, @NotNull InputStream doc ) throws IOException, CreationFailedException {
-    ClientResponse response = db.path( id ).put( ClientResponse.class, doc );
+  public <T> CreationResponse put( @NotNull @NonNls DocId id, @NotNull InputStream doc ) throws IOException, CreationFailedException {
+    ClientResponse response = db.path( id.asString() ).put( ClientResponse.class, doc );
     return CreationResponse.create( response );
   }
 
   @NotNull
   public <T> CreationResponse put( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws IOException, CreationFailedException {
-    ClientResponse clientResponse = db.path( doc.getId() ).put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
+    ClientResponse clientResponse = db.path( doc.getId().asString() ).put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
     CreationResponse creationResponse = CreationResponse.create( clientResponse );
 
     //Update the rev
@@ -165,8 +168,8 @@ public class CouchDatabase {
    * @return the view as stream
    */
   @NotNull
-  public InputStream get( @NotNull @NonNls String id ) {
-    return db.path( id ).get( InputStream.class );
+  public InputStream get( @NotNull @NonNls DocId id ) {
+    return db.path( id.asString() ).get( InputStream.class );
   }
 
   /**
@@ -180,7 +183,7 @@ public class CouchDatabase {
    * @throws IOException
    */
   @NotNull
-  public <T> CouchDoc<T> get( @NotNull @NonNls String id, @NotNull JacksonSerializer<T> serializer ) throws IOException {
+  public <T> CouchDoc<T> get( @NotNull @NonNls DocId id, @NotNull JacksonSerializer<T> serializer ) throws IOException {
     return couchDocSerializer.deserialize( serializer, get( id ) );
   }
 
@@ -211,7 +214,7 @@ public class CouchDatabase {
     return getURI().getPath().substring( 1 );
   }
 
-  public void delete( @NotNull @NonNls String id, @NotNull @NonNls Revision revision ) {
-    db.path( id ).queryParam( "rev", revision.asString() ).delete();
+  public void delete( @NotNull @NonNls DocId id, @NotNull @NonNls Revision revision ) {
+    db.path( id.asString() ).queryParam( PARAM_REV, revision.asString() ).delete();
   }
 }

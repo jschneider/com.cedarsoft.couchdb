@@ -49,7 +49,7 @@ public class CouchDocSerializerTest {
     Foo foo = new Foo( 7, "asdf" );
     Foo.Serializer fooSerializer = new Foo.Serializer();
 
-    CouchDoc<Foo> info = new CouchDoc<Foo>( "daId", new Revision( "daRev" ), foo );
+    CouchDoc<Foo> info = new CouchDoc<Foo>( new DocId( "daId" ), new Revision( "daRev" ), foo );
 
     CouchDocSerializer serializer = new CouchDocSerializer();
 
@@ -77,7 +77,7 @@ public class CouchDocSerializerTest {
     Foo foo = new Foo( 7, "asdf" );
     Foo.Serializer fooSerializer = new Foo.Serializer();
 
-    CouchDoc<Foo> info = new CouchDoc<Foo>( "daId", foo );
+    CouchDoc<Foo> info = new CouchDoc<Foo>( new DocId( "daId" ), foo );
 
     CouchDocSerializer serializer = new CouchDocSerializer();
 

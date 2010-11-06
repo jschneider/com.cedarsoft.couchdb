@@ -43,7 +43,7 @@ import org.jetbrains.annotations.Nullable;
 public class CouchDoc<T> {
   @NotNull
   @NonNls
-  private final String id;
+  private final DocId id;
   @Nullable
   @NonNls
   private Revision rev;
@@ -57,7 +57,7 @@ public class CouchDoc<T> {
    * @param id     the id
    * @param object the object
    */
-  public CouchDoc( @NotNull @NonNls String id, @NotNull T object ) {
+  public CouchDoc( @NotNull @NonNls DocId id, @NotNull T object ) {
     this( id, ( Revision ) null, object );
   }
 
@@ -68,7 +68,7 @@ public class CouchDoc<T> {
    * @param rev    the revision
    * @param object the object
    */
-  public CouchDoc( @NotNull @NonNls String id, @Nullable @NonNls Revision rev, @NotNull T object ) {
+  public CouchDoc( @NotNull @NonNls DocId id, @Nullable @NonNls Revision rev, @NotNull T object ) {
     this.id = id;
     this.rev = rev;
     this.object = object;
@@ -90,7 +90,7 @@ public class CouchDoc<T> {
    * @return the id
    */
   @NotNull
-  public String getId() {
+  public DocId getId() {
     return id;
   }
 

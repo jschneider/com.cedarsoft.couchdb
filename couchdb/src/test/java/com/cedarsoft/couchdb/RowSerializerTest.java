@@ -59,7 +59,7 @@ public class RowSerializerTest {
 
   @Test
   public void testNullValue() throws Exception {
-    Row<String, Void, ?> row = new Row<String, Void, Void>( "daId", "daKey", null );
+    Row<String, Void, ?> row = new Row<String, Void, Void>( new DocId( "daId" ), "daKey", null );
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     new RowSerializer().serialize( row, new StringSerializer(), NullSerializer.INSTANCE, out );
@@ -81,7 +81,7 @@ public class RowSerializerTest {
 
   @Test
   public void testSerializeRow() throws Exception {
-    Row<String, String, ?> row = new Row<String, String, Void>( "daId", "daKey", "daValue" );
+    Row<String, String, ?> row = new Row<String, String, Void>( new DocId( "daId" ), "daKey", "daValue" );
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     new RowSerializer().serialize( row, new StringSerializer(), new StringSerializer(), out );
@@ -105,7 +105,7 @@ public class RowSerializerTest {
 
   @Test
   public void testFooValue() throws Exception {
-    Row<String, Foo, ?> row = new Row<String, Foo, Void>( "daId", "daKey", new Foo( 7, "asdf" ) );
+    Row<String, Foo, ?> row = new Row<String, Foo, Void>( new DocId( "daId" ), "daKey", new Foo( 7, "asdf" ) );
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     new RowSerializer().serialize( row, new StringSerializer(), new Foo.Serializer(), out );
@@ -125,7 +125,7 @@ public class RowSerializerTest {
 
   @Test
   public void testFooKeyAndValue() throws Exception {
-    Row<Foo, Foo, ?> row = new Row<Foo, Foo, Void>( "daId", new Foo( 4, "inKey" ), new Foo( 7, "asdf" ) );
+    Row<Foo, Foo, ?> row = new Row<Foo, Foo, Void>( new DocId( "daId" ), new Foo( 4, "inKey" ), new Foo( 7, "asdf" ) );
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     new RowSerializer().serialize( row, new Foo.Serializer(), new Foo.Serializer(), out );
@@ -146,7 +146,7 @@ public class RowSerializerTest {
 
   @Test
   public void testStringColl() throws Exception {
-    Row<List<? extends String>, Foo, ?> row = new Row<List<? extends String>, Foo, Void>( "daId", Arrays.asList( "key1", "key2", "key3" ), new Foo( 7, "asdf" ) );
+    Row<List<? extends String>, Foo, ?> row = new Row<List<? extends String>, Foo, Void>( new DocId( "daId" ), Arrays.asList( "key1", "key2", "key3" ), new Foo( 7, "asdf" ) );
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     new RowSerializer().serialize( row, new ListSerializer(), new Foo.Serializer(), out );
@@ -167,8 +167,8 @@ public class RowSerializerTest {
 
   @Test
   public void testInclDoc() throws Exception {
-    CouchDoc<Foo> info = new CouchDoc<Foo>( "daFooId", "daRev" == null ? null : new Revision( "daRev" ), new Foo( 7, "daDescription" ) );
-    Row<List<? extends String>, Foo, Foo> row = new Row<List<? extends String>, Foo, Foo>( "daId", Arrays.asList( "key1", "key2", "key3" ), new Foo( 7, "asdf" ), info );
+    CouchDoc<Foo> info = new CouchDoc<Foo>( new DocId( "daFooId" ), new Revision( "daRev" ), new Foo( 7, "daDescription" ) );
+    Row<List<? extends String>, Foo, Foo> row = new Row<List<? extends String>, Foo, Foo>( new DocId( "daId" ), Arrays.asList( "key1", "key2", "key3" ), new Foo( 7, "asdf" ), info );
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     new RowSerializer().serialize( row, new ListSerializer(), new Foo.Serializer(), new Foo.Serializer(), out );

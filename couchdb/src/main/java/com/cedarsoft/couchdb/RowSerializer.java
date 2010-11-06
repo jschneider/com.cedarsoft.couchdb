@@ -91,7 +91,7 @@ public class RowSerializer {
 
   public <K, V, D> void serialize( @NotNull Row<K, V, D> row, @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @Nullable JacksonSerializer<? super D> documentSerializer, @NotNull JsonGenerator generator ) throws IOException {
     generator.writeStartObject();
-    generator.writeStringField( PROPERTY_ID, row.getId() );
+    generator.writeStringField( PROPERTY_ID, row.getId().asString() );
 
     //The key
     generator.writeFieldName( PROPERTY_KEY );
@@ -144,7 +144,7 @@ public class RowSerializer {
   public <K, V, D> Row<K, V, D> deserialize( @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @Nullable JacksonSerializer<? extends D> documentSerializer, @NotNull JsonParser parser ) throws IOException, InvalidTypeException {
     //The id
     AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_ID );
-    String id = parser.getText();
+    DocId id = new DocId( parser.getText() );
 
     //The key
     AbstractJacksonSerializer.nextField( parser, PROPERTY_KEY );

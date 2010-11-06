@@ -44,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
 public class Row<K, V, D> {
   @NotNull
   @NonNls
-  private final String id;
+  private final DocId id;
   @NotNull
   private final K key;
   @Nullable
@@ -53,11 +53,11 @@ public class Row<K, V, D> {
   @Nullable
   private final CouchDoc<? extends D> doc;
 
-  public Row( @NotNull String id, @NotNull K key, @Nullable V value ) {
+  public Row( @NotNull DocId id, @NotNull K key, @Nullable V value ) {
     this( id, key, value, null );
   }
 
-  public Row( @NotNull String id, @NotNull K key, @Nullable V value, @Nullable CouchDoc<? extends D> doc ) {
+  public Row( @NotNull DocId id, @NotNull K key, @Nullable V value, @Nullable CouchDoc<? extends D> doc ) {
     this.id = id;
     this.key = key;
     this.value = value;
@@ -65,7 +65,7 @@ public class Row<K, V, D> {
   }
 
   @NotNull
-  public String getId() {
+  public DocId getId() {
     return id;
   }
 

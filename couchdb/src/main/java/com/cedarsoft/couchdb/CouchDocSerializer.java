@@ -87,7 +87,7 @@ public class CouchDocSerializer {
   }
 
   public void serializeIdAndRev( @NotNull JsonGenerator serializeTo, @NotNull CouchDoc<?> object ) throws IOException, JsonProcessingException {
-    serializeTo.writeStringField( PROPERTY_ID, object.getId() );
+    serializeTo.writeStringField( PROPERTY_ID, object.getId().asString() );
 
     Revision rev = object.getRev();
     if ( rev != null ) {
@@ -128,6 +128,6 @@ public class CouchDocSerializer {
     T wrapped = wrappedSerializer.deserialize( parser, version );
 
     AbstractJacksonSerializer.ensureObjectClosed( parser );
-    return new CouchDoc<T>( id, rev == null ? null : new Revision( rev ), wrapped );
+    return new CouchDoc<T>( new DocId( id ), rev == null ? null : new Revision( rev ), wrapped );
   }
 }

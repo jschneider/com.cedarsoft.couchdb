@@ -43,19 +43,19 @@ import java.io.IOException;
 public class CreationResponse {
   @NotNull
   @NonNls
-  private final String id;
+  private final DocId id;
   @NotNull
   @NonNls
   private final Revision rev;
 
-  public CreationResponse( @NotNull String id, @NotNull Revision rev ) {
+  public CreationResponse( @NotNull DocId id, @NotNull Revision rev ) {
     this.id = id;
     this.rev = rev;
   }
 
   @NotNull
   @NonNls
-  public String getId() {
+  public DocId getId() {
     return id;
   }
 

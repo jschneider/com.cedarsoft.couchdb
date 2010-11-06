@@ -99,8 +99,8 @@ public class ViewResponseSerializerTest {
   @Test
   public void testFooList() throws Exception {
     ViewResponse<Foo, List<? extends String>, ?> viewResponse = new ViewResponse<Foo, List<? extends String>, Void>( 777, 12, Arrays.asList(
-      new Row<Foo, List<? extends String>, Void>( "daId0", new Foo( 8, "daKeyFoo" ), Arrays.asList( "a", "b" ) ),
-      new Row<Foo, List<? extends String>, Void>( "daId1", new Foo( 10, "daKeyFoo" ), Arrays.asList( "c", "d" ) )
+      new Row<Foo, List<? extends String>, Void>( new DocId( "daId0" ), new Foo( 8, "daKeyFoo" ), Arrays.asList( "a", "b" ) ),
+      new Row<Foo, List<? extends String>, Void>( new DocId( "daId1" ), new Foo( 10, "daKeyFoo" ), Arrays.asList( "c", "d" ) )
     ) );
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -119,8 +119,8 @@ public class ViewResponseSerializerTest {
   @Test
   public void testFooFoo() throws Exception {
     ViewResponse<Foo, Foo, Void> viewResponse = new ViewResponse<Foo, Foo, Void>( 777, 12, Arrays.asList(
-      new Row<Foo, Foo, Void>( "daId0", new Foo( 8, "daKeyFoo" ), new Foo( 9, "daValueFoo" ) ),
-      new Row<Foo, Foo, Void>( "daId1", new Foo( 10, "daKeyFoo" ), new Foo( 11, "daValueFoo" ) )
+      new Row<Foo, Foo, Void>( new DocId( "daId0" ), new Foo( 8, "daKeyFoo" ), new Foo( 9, "daValueFoo" ) ),
+      new Row<Foo, Foo, Void>( new DocId( "daId1" ), new Foo( 10, "daKeyFoo" ), new Foo( 11, "daValueFoo" ) )
     ) );
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -139,8 +139,8 @@ public class ViewResponseSerializerTest {
   @Test
   public void testFooString() throws Exception {
     ViewResponse<Foo, String, Void> viewResponse = new ViewResponse<Foo, String, Void>( 777, 12, Arrays.asList(
-      new Row<Foo, String, Void>( "daId0", new Foo( 8, "daKeyFoo" ), "daValue0" ),
-      new Row<Foo, String, Void>( "daId1", new Foo( 10, "daKeyFoo" ), "daValue1" )
+      new Row<Foo, String, Void>( new DocId( "daId0" ), new Foo( 8, "daKeyFoo" ), "daValue0" ),
+      new Row<Foo, String, Void>( new DocId( "daId1" ), new Foo( 10, "daKeyFoo" ), "daValue1" )
     ) );
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -159,8 +159,8 @@ public class ViewResponseSerializerTest {
   @Test
   public void testStringString() throws Exception {
     ViewResponse<String, String, Void> viewResponse = new ViewResponse<String, String, Void>( 777, 12, Arrays.asList(
-      new Row<String, String, Void>( "daId0", "daKey", "daValue" ),
-      new Row<String, String, Void>( "daId1", "daOtherKey", "daOtherValue" )
+      new Row<String, String, Void>( new DocId( "daId0" ), "daKey", "daValue" ),
+      new Row<String, String, Void>( new DocId( "daId1" ), "daOtherKey", "daOtherValue" )
     ) );
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
