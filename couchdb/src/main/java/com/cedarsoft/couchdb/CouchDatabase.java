@@ -56,8 +56,13 @@ public class CouchDatabase {
   @NotNull
   private final ViewResponseSerializer viewResponseSerializer;
 
+  @Deprecated
   public CouchDatabase( @NotNull @NonNls String host, int port, @NotNull @NonNls String dbName ) throws URISyntaxException {
     this( new URI( "http://" + host + ":" + port + "/" + dbName ) );
+  }
+
+  public CouchDatabase( @NotNull URI serverUri, @NotNull @NonNls String dbName ) {
+    this( serverUri.resolve( "/" + dbName ) );
   }
 
   public CouchDatabase( @NotNull URI uri ) {
@@ -126,6 +131,11 @@ public class CouchDatabase {
     }
 
     return viewPath.get( InputStream.class );
+  }
+
+  @NotNull
+  public URI getURI() {
+    return db.getURI();
   }
 
   @NotNull

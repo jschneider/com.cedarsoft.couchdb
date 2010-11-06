@@ -22,6 +22,12 @@ public class CouchDatabaseTest {
   }
 
   @Test
+  public void testConstructors() throws Exception {
+    assertEquals( "http://localhost:8080/dbName$asdf", new CouchDatabase( new URI( "http://localhost:8080/dbName$asdf" ) ).getURI().toString() );
+    assertEquals( "http://localhost:8080/dbName$asdf", new CouchDatabase( new URI( "http://localhost:8080" ), "dbName$asdf" ).getURI().toString() );
+  }
+
+  @Test
   public void testDbNameUri() throws Exception {
     URI serverUri = new URI( "http://localhost:8080" );
     String dbName = "daDb";
