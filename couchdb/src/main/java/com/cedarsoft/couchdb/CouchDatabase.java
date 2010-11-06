@@ -76,24 +76,25 @@ public class CouchDatabase {
   }
 
   @NotNull
-  public <T> CreationResponse create( @NotNull @NonNls String id, @NotNull InputStream doc ) throws IOException, CreationFailedException {
+  public <T> CreationResponse put( @NotNull @NonNls String id, @NotNull InputStream doc ) throws IOException, CreationFailedException {
     ClientResponse response = db.path( id ).put( ClientResponse.class, doc );
     return CreationResponse.create( response );
   }
 
   @NotNull
-  public <T> CreationResponse create( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws IOException, CreationFailedException {
+  public <T> CreationResponse put( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws IOException, CreationFailedException {
     ClientResponse response = db.path( doc.getId() ).put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
     return CreationResponse.create( response );
   }
 
+  @Deprecated
   @NotNull
-  public <T> CreationResponse update( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws CreationFailedException, IOException {
+  public <T> CreationResponse putUpdated( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws CreationFailedException, IOException {
     if ( doc.getRev() == null ) {
       throw new IllegalArgumentException( "Cannot update a doc without REV" );
     }
 
-    return create( doc, serializer );
+    return put( doc, serializer );
   }
 
   @NotNull

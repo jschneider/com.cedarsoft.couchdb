@@ -32,7 +32,7 @@ public class CouchDatabase2Test extends CouchDbTest {
 
   @Test
   public void testManually() throws Exception {
-    CreationResponse response = db.create( new CouchDoc<Bar>( "daId", new Bar( 7, "hey" ) ), serializer );
+    CreationResponse response = db.put( new CouchDoc<Bar>( "daId", new Bar( 7, "hey" ) ), serializer );
     assertEquals( "daId", response.getId() );
     assertEquals( REV, response.getRev() );
 
@@ -51,7 +51,7 @@ public class CouchDatabase2Test extends CouchDbTest {
   @Test
   public void testCreateGetDelete() throws Exception {
     {
-      CreationResponse response = db.create( new CouchDoc<Bar>( "daId", new Bar( 7, "hey" ) ), serializer );
+      CreationResponse response = db.put( new CouchDoc<Bar>( "daId", new Bar( 7, "hey" ) ), serializer );
 
       assertEquals( "daId", response.getId() );
       assertEquals( REV, response.getRev() );
@@ -80,7 +80,7 @@ public class CouchDatabase2Test extends CouchDbTest {
   public void testUpdated() throws Exception {
     //Create
     {
-      db.create( new CouchDoc<Bar>( "daId", new Bar( 7, "hey" ) ), serializer );
+      db.put( new CouchDoc<Bar>( "daId", new Bar( 7, "hey" ) ), serializer );
     }
 
     //fetch
@@ -95,7 +95,7 @@ public class CouchDatabase2Test extends CouchDbTest {
       bar.setValue( 42 );
 
       //Update
-      db.update( doc, serializer );
+      db.putUpdated( doc, serializer );
     }
 
     //fetch2
@@ -110,7 +110,7 @@ public class CouchDatabase2Test extends CouchDbTest {
       bar.setValue( 11 );
 
       //Update
-      db.update( doc, serializer );
+      db.putUpdated( doc, serializer );
     }
 
     {
@@ -125,7 +125,7 @@ public class CouchDatabase2Test extends CouchDbTest {
     expectedException.expect( CreationFailedException.class );
     expectedException.expectMessage( "conflict: Document update conflict." );
 
-    db.create( new CouchDoc<Bar>( "daId", new Bar( 1, "should not work!" ) ), serializer );
+    db.put( new CouchDoc<Bar>( "daId", new Bar( 1, "should not work!" ) ), serializer );
   }
 
   @Rule
