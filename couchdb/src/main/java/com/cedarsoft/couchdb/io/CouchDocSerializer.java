@@ -41,6 +41,7 @@ import com.cedarsoft.serialization.jackson.JacksonSerializer;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
@@ -48,7 +49,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class CouchDocSerializer extends RawCouchDocSerializer {
+public class CouchDocSerializer {
+  @NonNls
+  public static final String PROPERTY_ID = RawCouchDocSerializer.PROPERTY_ID;
+  @NonNls
+  public static final String PROPERTY_REV = RawCouchDocSerializer.PROPERTY_REV;
+
   @NotNull
   public <T> byte[] serialize( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> wrappedSerializer ) throws IOException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -57,7 +63,7 @@ public class CouchDocSerializer extends RawCouchDocSerializer {
   }
 
   public <T> void serialize( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> wrappedSerializer, @NotNull OutputStream out ) throws IOException {
-    JsonGenerator generator = createJsonGenerator( out );
+    JsonGenerator generator = RawCouchDocSerializer.createJsonGenerator( out );
 
     serialize( doc, wrappedSerializer, generator );
     generator.close();
@@ -65,7 +71,7 @@ public class CouchDocSerializer extends RawCouchDocSerializer {
 
   public <T> void serialize( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> wrappedSerializer, @NotNull JsonGenerator generator ) throws IOException {
     generator.writeStartObject();
-    serializeIdAndRev( generator, doc );
+    RawCouchDocSerializer.serializeIdAndRev( generator, doc );
 
     //Type
     generator.writeStringField( AbstractJacksonSerializer.PROPERTY_TYPE, wrappedSerializer.getType() );
@@ -81,7 +87,7 @@ public class CouchDocSerializer extends RawCouchDocSerializer {
   @NotNull
   public <T> CouchDoc<T> deserialize( @NotNull JacksonSerializer<T> wrappedSerializer, @NotNull InputStream in ) throws IOException {
     try {
-      JsonParser parser = createJsonParser( in );
+      JsonParser parser = RawCouchDocSerializer.createJsonParser( in );
       CouchDoc<T> doc = deserialize( wrappedSerializer, parser );
 
       AbstractJacksonSerializer.ensureParserClosed( parser );

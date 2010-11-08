@@ -51,15 +51,6 @@ public class RawCouchDocSerializer {
     generator.writeEndObject();
   }
 
-  public void serializeIdAndRev( @NotNull JsonGenerator serializeTo, @NotNull RawCouchDoc doc ) throws IOException, JsonProcessingException {
-    serializeTo.writeStringField( PROPERTY_ID, doc.getId().asString() );
-
-    Revision rev = doc.getRev();
-    if ( rev != null ) {
-      serializeTo.writeStringField( PROPERTY_REV, rev.asString() );
-    }
-  }
-
   @NotNull
   public RawCouchDoc deserialize( @NotNull InputStream in ) throws IOException {
     try {
@@ -89,14 +80,23 @@ public class RawCouchDocSerializer {
     return new RawCouchDoc( new DocId( id ), new Revision( rev ) );
   }
 
+  public static void serializeIdAndRev( @NotNull JsonGenerator serializeTo, @NotNull RawCouchDoc doc ) throws IOException, JsonProcessingException {
+    serializeTo.writeStringField( PROPERTY_ID, doc.getId().asString() );
+
+    Revision rev = doc.getRev();
+    if ( rev != null ) {
+      serializeTo.writeStringField( PROPERTY_REV, rev.asString() );
+    }
+  }
+
   @NotNull
-  protected JsonParser createJsonParser( @NotNull InputStream in ) throws IOException {
+  protected static JsonParser createJsonParser( @NotNull InputStream in ) throws IOException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
     return jsonFactory.createJsonParser( in );
   }
 
   @NotNull
-  protected JsonGenerator createJsonGenerator( @NotNull OutputStream out ) throws IOException {
+  protected static JsonGenerator createJsonGenerator( @NotNull OutputStream out ) throws IOException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
     return jsonFactory.createJsonGenerator( out, JsonEncoding.UTF8 );
   }
