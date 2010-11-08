@@ -29,35 +29,34 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.io;
 
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+import com.cedarsoft.JsonUtils;
+import com.cedarsoft.couchdb.CreationResponse;
+import com.cedarsoft.couchdb.DeletionResponse;
+import com.cedarsoft.couchdb.DocId;
+import com.cedarsoft.couchdb.Revision;
+import com.cedarsoft.serialization.AbstractSerializerTest2;
+import com.cedarsoft.serialization.Entry;
+import org.junit.experimental.theories.*;
+import org.junit.runner.*;
 
-/**
- *
- */
-public class CreationFailedException extends CouchDbException {
-  @NotNull
-  @NonNls
-  private final String error;
-  @NotNull
-  @NonNls
-  private final String reason;
+import java.io.ByteArrayOutputStream;
 
-  public CreationFailedException( @NotNull String error, @NotNull String reason ) {
-    super( error + ": " + reason );
-    this.error = error;
-    this.reason = reason;
-  }
 
-  @NotNull
-  public String getError() {
-    return error;
-  }
+@RunWith( Theories.class )
+public class DeletionResponseSerializerTest {
+  @DataPoint
+  public static final Entry<? extends DeletionResponse> SUCCESS = AbstractSerializerTest2.create(
+    new DeletionResponse( new DocId( "daid" ), new Revision( "darev" ) ),
+    DeletionResponseSerializerTest.class.getResource( "DeletionResponse.json" )
+  );
 
-  @NotNull
-  public String getReason() {
-    return reason;
+  @Theory
+  public void testName( Entry<? extends DeletionResponse> entry ) throws Exception {
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    new DeletionResponseSerializer().serialize( entry.getObject(), out );
+
+    JsonUtils.assertJsonEquals( new String( entry.getExpected() ), new String( out.toByteArray() ) );
   }
 }

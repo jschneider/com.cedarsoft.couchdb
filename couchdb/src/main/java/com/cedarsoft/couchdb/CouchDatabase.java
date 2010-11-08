@@ -209,6 +209,11 @@ public class CouchDatabase {
     return couchDocSerializer.deserialize( serializer, get( id ) );
   }
 
+  @NotNull
+  public InputStream get( @NotNull DocId docId, @NotNull AttachmentId attachmentId ) {
+    return dbRoot.path( docId.asString() ).path( attachmentId.asString() ).get( InputStream.class );
+  }
+
   /**
    * Returns the URI
    *
@@ -241,7 +246,14 @@ public class CouchDatabase {
     return getURI().getPath().substring( 1 );
   }
 
-  public void delete( @NotNull @NonNls DocId id, @NotNull @NonNls Revision revision ) {
-    dbRoot.path( id.asString() ).queryParam( PARAM_REV, revision.asString() ).delete();
+  public DeletionResponse delete( @NotNull @NonNls DocId id, @NotNull @NonNls Revision revision ) throws DeletionFailedException, IOException {
+    ClientResponse response = dbRoot.path( id.asString() ).queryParam( PARAM_REV, revision.asString() ).delete( ClientResponse.class );
+    return DeletionResponse.create( response );
+  }
+
+  @NotNull
+  public DeletionResponse delete( @NotNull @NonNls DocId id, @NotNull @NonNls Revision revision, @NotNull AttachmentId attachmentId ) throws DeletionFailedException, IOException {
+    ClientResponse response = dbRoot.path( id.asString() ).path( attachmentId.asString() ).queryParam( PARAM_REV, revision.asString() ).delete( ClientResponse.class );
+    return DeletionResponse.create( response );
   }
 }

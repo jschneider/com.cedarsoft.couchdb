@@ -1,17 +1,24 @@
 package com.cedarsoft.couchdb.test;
 
+import com.cedarsoft.AssertUtils;
 import com.cedarsoft.JsonUtils;
 import com.cedarsoft.couchdb.AttachmentId;
 import com.cedarsoft.couchdb.CouchDbTest;
 import com.cedarsoft.couchdb.CreationResponse;
+import com.cedarsoft.couchdb.DeletionFailedException;
+import com.cedarsoft.couchdb.DeletionResponse;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.couchdb.io.RawCouchDocSerializer;
+import com.google.common.io.ByteStreams;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.junit.*;
 
 import javax.ws.rs.core.MediaType;
+import java.io.ByteArrayInputStream;
 import java.net.URISyntaxException;
 
 import static org.junit.Assert.*;
@@ -20,6 +27,17 @@ import static org.junit.Assert.*;
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class AttachmentsTest extends CouchDbTest {
+  @NonNls
+  public static final String REV_1 = "1-4b8635c26c5b91bd2bc658ed866c727a";
+  @NonNls
+  public static final String REV_2 = "2-929f2959f8e81ed6b6c7784bee926065";
+  @NotNull
+  public static final String REV_3 = "3-46baf5940bdf721b5a1c590de66bfd94";
+  @NotNull
+  public static final String REV_4 = "4-0686197065ccc1e0a310e894da9c8dd7";
+  @NotNull
+  public static final DocId DOC_ID = new DocId( "daDocId" );
+
   private RawCouchDocSerializer serializer;
 
   @Before
@@ -31,23 +49,21 @@ public class AttachmentsTest extends CouchDbTest {
   public void testManually() throws Exception {
     WebResource dbRoot = db.getDbRoot();
 
-    String docId = "daDocId";
-
     {
-      ClientResponse response = dbRoot.path( docId ).path( "test_data.xml" ).type( MediaType.APPLICATION_XML_TYPE ).put( ClientResponse.class, getClass().getResourceAsStream( "test_data.xml" ) );
-      assertEquals( "{\"ok\":true,\"id\":\"daDocId\",\"rev\":\"1-4b8635c26c5b91bd2bc658ed866c727a\"}", response.getEntity( String.class ).trim() );
+      ClientResponse response = dbRoot.path( DOC_ID.asString() ).path( "test_data.xml" ).type( MediaType.APPLICATION_XML_TYPE ).put( ClientResponse.class, getClass().getResourceAsStream( "test_data.xml" ) );
+      assertEquals( "{\"ok\":true,\"id\":\"daDocId\",\"rev\":\"" + REV_1 + "\"}", response.getEntity( String.class ).trim() );
       assertEquals( 201, response.getStatus() );
 
-      String doc = dbRoot.path( docId ).get( String.class );
+      String doc = dbRoot.path( DOC_ID.asString() ).get( String.class );
       JsonUtils.assertJsonEquals( getClass().getResource( "doc_with_attachment.json" ), doc );
     }
 
     {
-      ClientResponse response = dbRoot.path( docId ).path( "test_data2.xml" ).queryParam( "rev", "1-4b8635c26c5b91bd2bc658ed866c727a" ).type( MediaType.APPLICATION_XML_TYPE ).put( ClientResponse.class, getClass().getResourceAsStream( "test_data2.xml" ) );
-      assertEquals( "{\"ok\":true,\"id\":\"daDocId\",\"rev\":\"2-929f2959f8e81ed6b6c7784bee926065\"}", response.getEntity( String.class ).trim() );
+      ClientResponse response = dbRoot.path( DOC_ID.asString() ).path( "test_data2.xml" ).queryParam( "rev", REV_1 ).type( MediaType.APPLICATION_XML_TYPE ).put( ClientResponse.class, getClass().getResourceAsStream( "test_data2.xml" ) );
+      assertEquals( "{\"ok\":true,\"id\":\"daDocId\",\"rev\":\"" + REV_2 + "\"}", response.getEntity( String.class ).trim() );
       assertEquals( 201, response.getStatus() );
 
-      String doc = dbRoot.path( docId ).get( String.class );
+      String doc = dbRoot.path( DOC_ID.asString() ).get( String.class );
       JsonUtils.assertJsonEquals( getClass().getResource( "doc_with_attachment2.json" ), doc );
     }
   }
@@ -55,16 +71,70 @@ public class AttachmentsTest extends CouchDbTest {
   @Test
   public void testDoc2() throws Exception {
     {
-      CreationResponse response = db.putAttachment( new DocId( "daId" ), null, new AttachmentId( "data1" ), MediaType.APPLICATION_XML_TYPE, getClass().getResourceAsStream( "test_data.xml" ) );
-      assertEquals( "daId", response.getId().asString() );
-      assertEquals( "1-3499ac5c79c87e384eb9178bd181c65d", response.getRev().asString() );
+      CreationResponse response = db.putAttachment( DOC_ID, null, new AttachmentId( "test_data.xml" ), MediaType.APPLICATION_XML_TYPE, getClass().getResourceAsStream( "test_data.xml" ) );
+      assertEquals( "daDocId", response.getId().asString() );
+      assertEquals( REV_1, response.getRev().asString() );
     }
 
     //Add a second attachment
     {
-      CreationResponse response = db.putAttachment( new DocId( "daId" ), new Revision( "1-3499ac5c79c87e384eb9178bd181c65d" ), new AttachmentId( "data2" ), MediaType.APPLICATION_XML_TYPE, getClass().getResourceAsStream( "test_data2.xml" ) );
-      assertEquals( "daId", response.getId().asString() );
-      assertEquals( "2-6f5ea432644e1d9ca07990e8215be17f", response.getRev().asString() );
+      CreationResponse response = db.putAttachment( DOC_ID, new Revision( REV_1 ), new AttachmentId( "test_data2.xml" ), MediaType.APPLICATION_XML_TYPE, getClass().getResourceAsStream( "test_data2.xml" ) );
+      assertEquals( "daDocId", response.getId().asString() );
+      assertEquals( REV_2, response.getRev().asString() );
     }
+
+    //Get the doc
+    {
+      byte[] read = ByteStreams.toByteArray( db.get( DOC_ID ) );
+      JsonUtils.assertJsonEquals( getClass().getResource( "doc_with_attachment2.json" ), new String( read ) );
+    }
+
+    //Get the attachment1
+    {
+      byte[] read = ByteStreams.toByteArray( db.get( DOC_ID, new AttachmentId( "test_data.xml" ) ) );
+      AssertUtils.assertXMLEquals( getClass().getResource( "test_data.xml" ), new String( read ) );
+      assertEquals( new String( ByteStreams.toByteArray( getClass().getResourceAsStream( "test_data.xml" ) ) ), new String( read ) );
+    }
+    //Get the attachment2
+    {
+      byte[] read = ByteStreams.toByteArray( db.get( DOC_ID, new AttachmentId( "test_data2.xml" ) ) );
+      AssertUtils.assertXMLEquals( getClass().getResource( "test_data2.xml" ), new String( read ) );
+      assertEquals( new String( ByteStreams.toByteArray( getClass().getResourceAsStream( "test_data2.xml" ) ) ), new String( read ) );
+    }
+
+    //Update the attachment
+    {
+      CreationResponse response = db.putAttachment( DOC_ID, new Revision( REV_2 ), new AttachmentId( "test_data2.xml" ), MediaType.TEXT_PLAIN_TYPE, new ByteArrayInputStream( "newContent".getBytes() ) );
+      assertEquals( "daDocId", response.getId().asString() );
+      assertEquals( REV_3, response.getRev().asString() );
+
+      byte[] read = ByteStreams.toByteArray( db.get( DOC_ID, new AttachmentId( "test_data2.xml" ) ) );
+      assertEquals( "newContent", new String( read ) );
+    }
+
+    //Delete the attachment
+    {
+      DeletionResponse response = db.delete( DOC_ID, new Revision( REV_3 ), new AttachmentId( "test_data.xml" ) );
+      assertEquals( DOC_ID, response.getId() );
+      assertEquals( REV_4, response.getRev().asString() );
+    }
+
+    {
+      byte[] read = ByteStreams.toByteArray( db.get( DOC_ID ) );
+      JsonUtils.assertJsonEquals( getClass().getResource( "doc_with_attachment_deleted.json" ), new String( read ) );
+    }
+
+
+    //Delete attachment with invalid rev
+    {
+      try {
+        db.delete( DOC_ID, new Revision( REV_1 ), new AttachmentId( "test_data2.xml" ) );
+        fail( "Where is the Exception" );
+      } catch ( DeletionFailedException e ) {
+        assertEquals( "conflict", e.getError() );
+        assertEquals( "Document update conflict.", e.getReason() );
+      }
+    }
+
   }
 }

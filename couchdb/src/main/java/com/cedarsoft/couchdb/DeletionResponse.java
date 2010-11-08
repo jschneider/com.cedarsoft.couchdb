@@ -31,33 +31,76 @@
 
 package com.cedarsoft.couchdb;
 
+import com.cedarsoft.couchdb.io.DeletionFailedExceptionSerializer;
+import com.cedarsoft.couchdb.io.DeletionResponseSerializer;
+import com.sun.jersey.api.client.ClientResponse;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 /**
  *
  */
-public class CreationFailedException extends CouchDbException {
+public class DeletionResponse {
   @NotNull
   @NonNls
-  private final String error;
+  private final DocId id;
   @NotNull
   @NonNls
-  private final String reason;
+  private final Revision rev;
 
-  public CreationFailedException( @NotNull String error, @NotNull String reason ) {
-    super( error + ": " + reason );
-    this.error = error;
-    this.reason = reason;
+  public DeletionResponse( @NotNull DocId id, @NotNull Revision rev ) {
+    this.id = id;
+    this.rev = rev;
   }
 
   @NotNull
-  public String getError() {
-    return error;
+  @NonNls
+  public DocId getId() {
+    return id;
   }
 
   @NotNull
-  public String getReason() {
-    return reason;
+  @NonNls
+  public Revision getRev() {
+    return rev;
+  }
+
+  @Override
+  public String toString() {
+    return "Success{" +
+      "id='" + id + '\'' +
+      ", rev='" + rev + '\'' +
+      '}';
+  }
+
+  @Override
+  public boolean equals( Object o ) {
+    if ( this == o ) return true;
+    if ( !( o instanceof DeletionResponse ) ) return false;
+
+    DeletionResponse success = ( DeletionResponse ) o;
+
+    if ( !id.equals( success.id ) ) return false;
+    if ( !rev.equals( success.rev ) ) return false;
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = id.hashCode();
+    result = 31 * result + rev.hashCode();
+    return result;
+  }
+
+  @NotNull
+  public static DeletionResponse create( @NotNull ClientResponse response ) throws IOException, DeletionFailedException {
+    if ( response.getStatus() != 200 ) {
+      throw new DeletionFailedExceptionSerializer().deserialize( response.getEntityInputStream() );
+    }
+
+    return new DeletionResponseSerializer().deserialize( response.getEntityInputStream() );
   }
 }
