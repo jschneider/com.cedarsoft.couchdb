@@ -280,4 +280,14 @@ public class CouchDatabase {
     }
     return new Revision( entityTag.getValue() );
   }
+
+  @NotNull
+  public ClientResponse getHead( @NotNull DocId docId ) {
+    return dbRoot.path( docId.asString() ).head();
+  }
+
+  @NotNull
+  public ClientResponse getHead( @NotNull DocId docId, @NotNull AttachmentId attachmentId ) {
+    return dbRoot.path( docId.asString() ).path( attachmentId.asString() ).head();
+  }
 }
