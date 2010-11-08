@@ -59,7 +59,7 @@ public class CouchDatabase {
   @NotNull
   private final Client client;
   @NotNull
-  private final WebResource db;
+  private final WebResource dbRoot;
   @NotNull
   private final ViewResponseSerializer viewResponseSerializer;
 
@@ -77,19 +77,19 @@ public class CouchDatabase {
 
   public CouchDatabase( @NotNull URI uri ) {
     client = new Client();
-    db = client.resource( uri );
+    dbRoot = client.resource( uri );
     viewResponseSerializer = new ViewResponseSerializer( new RowSerializer( couchDocSerializer ) );
   }
 
   @NotNull
   public <T> CreationResponse put( @NotNull @NonNls DocId id, @NotNull InputStream doc ) throws IOException, CreationFailedException {
-    ClientResponse response = db.path( id.asString() ).put( ClientResponse.class, doc );
+    ClientResponse response = dbRoot.path( id.asString() ).put( ClientResponse.class, doc );
     return CreationResponse.create( response );
   }
 
   @NotNull
   public <T> CreationResponse put( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws IOException, CreationFailedException {
-    ClientResponse clientResponse = db.path( doc.getId().asString() ).put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
+    ClientResponse clientResponse = dbRoot.path( doc.getId().asString() ).put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
     CreationResponse creationResponse = CreationResponse.create( clientResponse );
 
     //Update the rev
@@ -148,7 +148,7 @@ public class CouchDatabase {
 
   @NotNull
   public InputStream query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, boolean includeDocs, @Nullable String startKey, @Nullable String endKey ) {
-    WebResource viewPath = db.path( "_design" ).path( designDocumentId ).path( "_view" ).path( viewId );
+    WebResource viewPath = dbRoot.path( "_design" ).path( designDocumentId ).path( "_view" ).path( viewId );
 
     if ( startKey != null ) {
       viewPath = viewPath.queryParam( "startkey", startKey );
@@ -172,7 +172,7 @@ public class CouchDatabase {
    */
   @NotNull
   public InputStream get( @NotNull @NonNls DocId id ) {
-    return db.path( id.asString() ).get( InputStream.class );
+    return dbRoot.path( id.asString() ).get( InputStream.class );
   }
 
   /**
@@ -197,7 +197,12 @@ public class CouchDatabase {
    */
   @NotNull
   public URI getURI() {
-    return db.getURI();
+    return dbRoot.getURI();
+  }
+
+  @NotNull
+  public WebResource getDbRoot() {
+    return dbRoot;
   }
 
   @NotNull
@@ -218,6 +223,6 @@ public class CouchDatabase {
   }
 
   public void delete( @NotNull @NonNls DocId id, @NotNull @NonNls Revision revision ) {
-    db.path( id.asString() ).queryParam( PARAM_REV, revision.asString() ).delete();
+    dbRoot.path( id.asString() ).queryParam( PARAM_REV, revision.asString() ).delete();
   }
 }
