@@ -40,15 +40,9 @@ import org.jetbrains.annotations.Nullable;
  *
  * @param <T> the type of the object object
  */
-public class CouchDoc<T> {
-  @NotNull
-  @NonNls
-  private final DocId id;
-  @Nullable
-  @NonNls
-  private Revision rev;
+public class CouchDoc<T> extends RawCouchDoc {
 
-  @NotNull
+  @Nullable
   private final T object;
 
   /**
@@ -58,7 +52,7 @@ public class CouchDoc<T> {
    * @param object the object
    */
   public CouchDoc( @NotNull @NonNls DocId id, @NotNull T object ) {
-    this( id, ( Revision ) null, object );
+    this( id, null, object );
   }
 
   /**
@@ -69,8 +63,7 @@ public class CouchDoc<T> {
    * @param object the object
    */
   public CouchDoc( @NotNull @NonNls DocId id, @Nullable @NonNls Revision rev, @NotNull T object ) {
-    this.id = id;
-    this.rev = rev;
+    super( id, rev );
     this.object = object;
   }
 
@@ -84,33 +77,4 @@ public class CouchDoc<T> {
     return object;
   }
 
-  /**
-   * Returns the id
-   *
-   * @return the id
-   */
-  @NotNull
-  public DocId getId() {
-    return id;
-  }
-
-  /**
-   * Sets the revision. Should only be called when the doc has been updated
-   *
-   * @param rev the revision
-   */
-  void setRev( @Nullable Revision rev ) {
-    this.rev = rev;
-  }
-
-  /**
-   * Returns the revision
-   *
-   * @return the revision
-   */
-  @Nullable
-  @NonNls
-  public Revision getRev() {
-    return rev;
-  }
 }

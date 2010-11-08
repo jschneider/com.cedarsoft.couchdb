@@ -53,30 +53,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class CouchDocSerializer {
-  @NonNls
-  public static final String PROPERTY_ID = "_id";
-  @NonNls
-  public static final String PROPERTY_REV = "_rev";
-
+public class CouchDocSerializer extends RawCouchDocSerializer {
   @NotNull
-  public <T> byte[] serialize( @NotNull CouchDoc<T> info, @NotNull JacksonSerializer<? super T> wrappedSerializer ) throws IOException {
+  public <T> byte[] serialize( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> wrappedSerializer ) throws IOException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    serialize( info, wrappedSerializer, out );
+    serialize( doc, wrappedSerializer, out );
     return out.toByteArray();
   }
 
-  public <T> void serialize( @NotNull CouchDoc<T> info, @NotNull JacksonSerializer<? super T> wrappedSerializer, @NotNull OutputStream out ) throws IOException {
+  public <T> void serialize( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> wrappedSerializer, @NotNull OutputStream out ) throws IOException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
     JsonGenerator generator = jsonFactory.createJsonGenerator( out, JsonEncoding.UTF8 );
 
-    serialize( info, wrappedSerializer, generator );
+    serialize( doc, wrappedSerializer, generator );
     generator.close();
   }
 
-  public <T> void serialize( @NotNull CouchDoc<T> info, @NotNull JacksonSerializer<? super T> wrappedSerializer, @NotNull JsonGenerator generator ) throws IOException {
+  public <T> void serialize( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> wrappedSerializer, @NotNull JsonGenerator generator ) throws IOException {
     generator.writeStartObject();
-    serializeIdAndRev( generator, info );
+    serializeIdAndRev( generator, doc );
 
     //Type
     generator.writeStringField( AbstractJacksonSerializer.PROPERTY_TYPE, wrappedSerializer.getType() );
@@ -84,18 +79,9 @@ public class CouchDocSerializer {
     generator.writeStringField( AbstractJacksonSerializer.PROPERTY_VERSION, wrappedSerializer.getFormatVersion().format() );
 
     //The wrapped object
-    wrappedSerializer.serialize( generator, info.getObject(), wrappedSerializer.getFormatVersion() );
+    wrappedSerializer.serialize( generator, doc.getObject(), wrappedSerializer.getFormatVersion() );
 
     generator.writeEndObject();
-  }
-
-  public void serializeIdAndRev( @NotNull JsonGenerator serializeTo, @NotNull CouchDoc<?> object ) throws IOException, JsonProcessingException {
-    serializeTo.writeStringField( PROPERTY_ID, object.getId().asString() );
-
-    Revision rev = object.getRev();
-    if ( rev != null ) {
-      serializeTo.writeStringField( PROPERTY_REV, rev.asString() );
-    }
   }
 
   @NotNull
@@ -103,10 +89,10 @@ public class CouchDocSerializer {
     try {
       JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
       JsonParser parser = jsonFactory.createJsonParser( in );
-      CouchDoc<T> info = deserialize( wrappedSerializer, parser );
+      CouchDoc<T> doc = deserialize( wrappedSerializer, parser );
 
       AbstractJacksonSerializer.ensureParserClosed( parser );
-      return info;
+      return doc;
     } catch ( InvalidTypeException e ) {
       throw new IOException( "Could not parse due to " + e.getMessage(), e );
     }
