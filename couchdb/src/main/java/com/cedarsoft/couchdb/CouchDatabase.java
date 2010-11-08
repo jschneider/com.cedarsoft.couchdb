@@ -103,7 +103,7 @@ public class CouchDatabase {
   }
 
   @NotNull
-  public ActionResponse putAttachment( @NotNull DocId docId, @Nullable Revision revision, @NotNull AttachmentId attachmentId, @NotNull MediaType mediaType, @NotNull InputStream attachment ) throws ActionFailedException, IOException {
+  public ActionResponse put( @NotNull DocId docId, @Nullable Revision revision, @NotNull AttachmentId attachmentId, @NotNull MediaType mediaType, @NotNull InputStream attachment ) throws ActionFailedException, IOException {
     WebResource resource = dbRoot
       .path( docId.asString() )
       .path( attachmentId.asString() );

@@ -70,14 +70,14 @@ public class AttachmentsTest extends CouchDbTest {
   @Test
   public void testDoc2() throws Exception {
     {
-      ActionResponse response = db.putAttachment( DOC_ID, null, new AttachmentId( "test_data.xml" ), MediaType.APPLICATION_XML_TYPE, getClass().getResourceAsStream( "test_data.xml" ) );
+      ActionResponse response = db.put( DOC_ID, null, new AttachmentId( "test_data.xml" ), MediaType.APPLICATION_XML_TYPE, getClass().getResourceAsStream( "test_data.xml" ) );
       assertEquals( "daDocId", response.getId().asString() );
       assertEquals( REV_1, response.getRev().asString() );
     }
 
     //Add a second attachment
     {
-      ActionResponse response = db.putAttachment( DOC_ID, new Revision( REV_1 ), new AttachmentId( "test_data2.xml" ), MediaType.APPLICATION_XML_TYPE, getClass().getResourceAsStream( "test_data2.xml" ) );
+      ActionResponse response = db.put( DOC_ID, new Revision( REV_1 ), new AttachmentId( "test_data2.xml" ), MediaType.APPLICATION_XML_TYPE, getClass().getResourceAsStream( "test_data2.xml" ) );
       assertEquals( "daDocId", response.getId().asString() );
       assertEquals( REV_2, response.getRev().asString() );
     }
@@ -103,7 +103,7 @@ public class AttachmentsTest extends CouchDbTest {
 
     //Update the attachment
     {
-      ActionResponse response = db.putAttachment( DOC_ID, new Revision( REV_2 ), new AttachmentId( "test_data2.xml" ), MediaType.TEXT_PLAIN_TYPE, new ByteArrayInputStream( "newContent".getBytes() ) );
+      ActionResponse response = db.put( DOC_ID, new Revision( REV_2 ), new AttachmentId( "test_data2.xml" ), MediaType.TEXT_PLAIN_TYPE, new ByteArrayInputStream( "newContent".getBytes() ) );
       assertEquals( "daDocId", response.getId().asString() );
       assertEquals( REV_3, response.getRev().asString() );
 
