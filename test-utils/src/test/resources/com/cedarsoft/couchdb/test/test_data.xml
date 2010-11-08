@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test>
+  <data>some test data with umlauts and other stuff: äöüß</data>
+  <ä>Hey!</ä>
+  <q>Hänsel und Gretel gingen in den Wald...</q>
+</test>

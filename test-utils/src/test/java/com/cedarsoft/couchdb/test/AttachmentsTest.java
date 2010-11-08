@@ -168,4 +168,3 @@ public class AttachmentsTest extends CouchDbTest {
 
   }
 }
- 
