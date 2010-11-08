@@ -37,6 +37,7 @@ import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
+import com.sun.jersey.api.client.ClientResponse;
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -77,13 +78,18 @@ public class CreationResponseSerializer {
   }
 
   @NotNull
-  public ActionResponse deserialize( @NotNull InputStream in ) throws IOException, VersionException {
+  public ActionResponse deserialize( @NotNull ClientResponse response ) throws IOException, VersionException {
+    return deserialize( response.getStatus(), response.getEntityInputStream() );
+  }
+
+  @NotNull
+  public ActionResponse deserialize( int status, @NotNull InputStream in ) throws IOException, VersionException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
     JsonParser parser = jsonFactory.createJsonParser( in );
     AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
 
-    ActionResponse deserialized = deserialize( parser );
+    ActionResponse deserialized = deserialize( status, parser );
 
     AbstractJacksonSerializer.ensureParserClosedObject( parser );
 
@@ -103,14 +109,14 @@ public class CreationResponseSerializer {
   }
 
   @NotNull
-  public ActionResponse deserialize( @NotNull JsonParser deserializeFrom ) throws VersionException, IOException, JsonProcessingException {
+  public ActionResponse deserialize( int status, @NotNull JsonParser deserializeFrom ) throws VersionException, IOException, JsonProcessingException {
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_OK );
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_ID );
     String id = deserializeFrom.getText();
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_REV );
     String rev = deserializeFrom.getText();
     AbstractJacksonSerializer.closeObject( deserializeFrom );
-    return new ActionResponse( new DocId( id ), new Revision( rev ) );
+    return new ActionResponse( new DocId( id ), new Revision( rev ), status );
 
     //    AbstractJacksonSerializer.nextToken( deserializeFrom, JsonToken.FIELD_NAME );
     //    if ( deserializeFrom.getCurrentName().equals( PROPERTY_OK ) ) {

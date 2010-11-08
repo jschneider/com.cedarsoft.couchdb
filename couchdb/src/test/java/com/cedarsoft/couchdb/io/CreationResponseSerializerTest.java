@@ -47,7 +47,7 @@ import java.io.ByteArrayOutputStream;
 public class CreationResponseSerializerTest {
   @DataPoint
   public static final Entry<? extends ActionResponse> SUCCESS = AbstractSerializerTest2.create(
-    new ActionResponse( new DocId( "daid" ), new Revision( "darev" ) ),
+    new ActionResponse( new DocId( "daid" ), new Revision( "darev" ), 200 ),
     CreationResponseSerializerTest.class.getResource( "ActionResponse.json" )
   );
 

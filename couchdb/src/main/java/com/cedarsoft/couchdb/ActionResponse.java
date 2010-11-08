@@ -50,9 +50,16 @@ public class ActionResponse {
   @NonNls
   private final Revision rev;
 
-  public ActionResponse( @NotNull DocId id, @NotNull Revision rev ) {
+  private final int status;
+
+  public ActionResponse( @NotNull DocId id, @NotNull Revision rev, int status ) {
     this.id = id;
     this.rev = rev;
+    this.status = status;
+  }
+
+  public int getStatus() {
+    return status;
   }
 
   @NotNull
@@ -69,9 +76,10 @@ public class ActionResponse {
 
   @Override
   public String toString() {
-    return "Success{" +
-      "id='" + id + '\'' +
-      ", rev='" + rev + '\'' +
+    return "ActionResponse{" +
+      "id=" + id +
+      ", rev=" + rev +
+      ", status=" + status +
       '}';
   }
 
@@ -98,7 +106,7 @@ public class ActionResponse {
   @NotNull
   public static ActionResponse create( @NotNull ClientResponse response ) throws IOException, ActionFailedException {
     verifyNoError( response );
-    return new CreationResponseSerializer().deserialize( response.getEntityInputStream() );
+    return new CreationResponseSerializer().deserialize( response );
   }
 
   /**

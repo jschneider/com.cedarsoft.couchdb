@@ -32,9 +32,9 @@
 package com.cedarsoft.couchdb.test;
 
 import com.cedarsoft.JsonUtils;
+import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.CouchDoc;
-import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.io.ActionFailedExceptionSerializer;
 import com.cedarsoft.couchdb.io.CouchDocSerializer;
@@ -129,7 +129,7 @@ public class FooCouchDb {
       assertEquals( "asdf", deserialized.getObject().getDescription() );
 
       Response response2 = server.put( uri, responseContent1.getBytes(), MediaType.APPLICATION_JSON );
-      ActionResponse actionResponse = new CreationResponseSerializer().deserialize( response2.getInputStream() );
+      ActionResponse actionResponse = new CreationResponseSerializer().deserialize( 201, response2.getInputStream() );
       assertEquals( "2-4ffec4730eec590d07f82789cbe991c6", actionResponse.getRev().asString() );
       assertEquals( 201, response2.getCode() );
       assertEquals( deserialized.getId(), actionResponse.getId() );
@@ -168,7 +168,7 @@ public class FooCouchDb {
       assertEquals( 201, response.getStatus() );
       JsonUtils.assertJsonEquals( "{\"ok\":true,\"id\":\"daDoc\",\"rev\":\"1-a61702329aa7cc6b870f7cfcc24aacac\"}", responseAsString );
 
-      ActionResponse actionResponse = new CreationResponseSerializer().deserialize( new ByteArrayInputStream( responseAsString.getBytes() ) );
+      ActionResponse actionResponse = new CreationResponseSerializer().deserialize( 201, new ByteArrayInputStream( responseAsString.getBytes() ) );
       assertNotNull( actionResponse );
       assertEquals( "daDoc", actionResponse.getId().asString() );
       assertEquals( "1-a61702329aa7cc6b870f7cfcc24aacac", actionResponse.getRev().asString() );
@@ -208,7 +208,7 @@ public class FooCouchDb {
 
     {
       ClientResponse response = db.path( "daDoc" ).put( ClientResponse.class, serialized );
-      ActionResponse actionResponse = new CreationResponseSerializer().deserialize( response.getEntityInputStream() );
+      ActionResponse actionResponse = new CreationResponseSerializer().deserialize( response );
 
       assertEquals( "daDoc", actionResponse.getId().asString() );
       assertEquals( "1-a61702329aa7cc6b870f7cfcc24aacac", actionResponse.getRev().asString() );
