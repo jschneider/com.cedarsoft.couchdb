@@ -38,14 +38,9 @@ import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.InvalidTypeException;
 import com.cedarsoft.serialization.jackson.JacksonSerializer;
-import com.cedarsoft.serialization.jackson.JacksonSupport;
-import org.codehaus.jackson.JsonEncoding;
-import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.JsonToken;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
@@ -62,8 +57,7 @@ public class CouchDocSerializer extends RawCouchDocSerializer {
   }
 
   public <T> void serialize( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> wrappedSerializer, @NotNull OutputStream out ) throws IOException {
-    JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
-    JsonGenerator generator = jsonFactory.createJsonGenerator( out, JsonEncoding.UTF8 );
+    JsonGenerator generator = createJsonGenerator( out );
 
     serialize( doc, wrappedSerializer, generator );
     generator.close();
@@ -87,8 +81,7 @@ public class CouchDocSerializer extends RawCouchDocSerializer {
   @NotNull
   public <T> CouchDoc<T> deserialize( @NotNull JacksonSerializer<T> wrappedSerializer, @NotNull InputStream in ) throws IOException {
     try {
-      JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
-      JsonParser parser = jsonFactory.createJsonParser( in );
+      JsonParser parser = createJsonParser( in );
       CouchDoc<T> doc = deserialize( wrappedSerializer, parser );
 
       AbstractJacksonSerializer.ensureParserClosed( parser );

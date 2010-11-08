@@ -29,20 +29,20 @@ public class RawCouchDocSerializer {
   @NonNls
   public static final String PROPERTY_REV = "_rev";
 
-
   @NotNull
-  public <T> byte[] serialize( @NotNull RawCouchDoc info ) throws IOException {
+  public byte[] serialize( @NotNull RawCouchDoc info ) throws IOException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     serialize( info, out );
     return out.toByteArray();
   }
 
   public void serialize( @NotNull RawCouchDoc doc, @NotNull OutputStream out ) throws IOException {
-    JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
-    JsonGenerator generator = jsonFactory.createJsonGenerator( out, JsonEncoding.UTF8 );
-
-    serialize( doc, generator );
-    generator.close();
+    JsonGenerator generator = createJsonGenerator( out );
+    try {
+      serialize( doc, generator );
+    } finally {
+      generator.close();
+    }
   }
 
   public void serialize( @NotNull RawCouchDoc doc, @NotNull JsonGenerator generator ) throws IOException {
@@ -63,8 +63,7 @@ public class RawCouchDocSerializer {
   @NotNull
   public RawCouchDoc deserialize( @NotNull InputStream in ) throws IOException {
     try {
-      JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
-      JsonParser parser = jsonFactory.createJsonParser( in );
+      JsonParser parser = createJsonParser( in );
       RawCouchDoc doc = deserialize( parser );
 
       AbstractJacksonSerializer.ensureParserClosed( parser );
@@ -88,5 +87,17 @@ public class RawCouchDocSerializer {
 
     AbstractJacksonSerializer.ensureObjectClosed( parser );
     return new RawCouchDoc( new DocId( id ), new Revision( rev ) );
+  }
+
+  @NotNull
+  protected JsonParser createJsonParser( @NotNull InputStream in ) throws IOException {
+    JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
+    return jsonFactory.createJsonParser( in );
+  }
+
+  @NotNull
+  protected JsonGenerator createJsonGenerator( @NotNull OutputStream out ) throws IOException {
+    JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
+    return jsonFactory.createJsonGenerator( out, JsonEncoding.UTF8 );
   }
 }
