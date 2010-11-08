@@ -45,6 +45,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.InputStream;
@@ -256,5 +257,25 @@ public class CouchDatabase {
   public ActionResponse delete( @NotNull @NonNls DocId id, @NotNull @NonNls Revision revision, @NotNull AttachmentId attachmentId ) throws ActionFailedException, IOException {
     ClientResponse response = dbRoot.path( id.asString() ).path( attachmentId.asString() ).queryParam( PARAM_REV, revision.asString() ).delete( ClientResponse.class );
     return ActionResponse.create( response );
+  }
+
+  /**
+   * Returns the revision using HEAD
+   *
+   * @param docId the doc id
+   * @return the current revision for the given doc id
+   *
+   * @throws ActionFailedException
+   */
+  @NotNull
+  public Revision getRev( @NotNull DocId docId ) throws ActionFailedException, IOException {
+    ClientResponse response = dbRoot.path( docId.asString() ).head();
+    ActionResponse.verifyNoError( response );
+
+    EntityTag entityTag = response.getEntityTag();
+    if ( entityTag == null ) {
+      throw new IllegalArgumentException( "No Etag found" );
+    }
+    return new Revision( entityTag.getValue() );
   }
 }

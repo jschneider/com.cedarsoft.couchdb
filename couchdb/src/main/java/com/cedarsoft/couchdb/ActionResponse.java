@@ -97,10 +97,30 @@ public class ActionResponse {
 
   @NotNull
   public static ActionResponse create( @NotNull ClientResponse response ) throws IOException, ActionFailedException {
-    if ( response.getStatus() < 200 || response.getStatus() > 299 ) {
-      throw new ActionFailedExceptionSerializer().deserialize( response.getEntityInputStream() );
+    verifyNoError( response );
+    return new CreationResponseSerializer().deserialize( response.getEntityInputStream() );
+  }
+
+  /**
+   * Throws an exception if the response contains a value
+   *
+   * @param response the response
+   * @throws ActionFailedException
+   * @throws IOException
+   */
+  public static void verifyNoError( @NotNull ClientResponse response ) throws ActionFailedException, IOException {
+    if ( !isNotSuccessful( response ) ) {
+      return;
     }
 
-    return new CreationResponseSerializer().deserialize( response.getEntityInputStream() );
+    if ( !response.hasEntity() ) {
+      throw new ActionFailedException( "unknown", "unknown" );
+    }
+
+    throw new ActionFailedExceptionSerializer().deserialize( response.getEntityInputStream() );
+  }
+
+  public static boolean isNotSuccessful( @NotNull ClientResponse response ) {
+    return response.getStatus() < 200 || response.getStatus() > 299;
   }
 }

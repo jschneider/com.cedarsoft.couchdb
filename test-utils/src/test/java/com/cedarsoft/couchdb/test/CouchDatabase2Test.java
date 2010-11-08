@@ -43,6 +43,7 @@ import com.cedarsoft.couchdb.io.CouchDocSerializer;
 import com.google.common.io.ByteStreams;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.junit.*;
 import org.junit.rules.*;
 
@@ -59,6 +60,7 @@ public class CouchDatabase2Test extends CouchDbTest {
   private static final Revision REV = new Revision( "1-8908180fecd9b17657889f91973f89eb" );
 
   private CouchDocSerializer couchDocSerializer;
+  @NotNull
   private final Bar.Serializer serializer = new Bar.Serializer();
 
   @Before
@@ -182,6 +184,23 @@ public class CouchDatabase2Test extends CouchDbTest {
     expectedException.expectMessage( "conflict: Document update conflict." );
 
     db.put( new CouchDoc<Bar>( id, new Bar( 1, "should not work!" ) ), serializer );
+  }
+
+  @Test
+  public void testGetRev() throws Exception {
+    DocId id = new DocId( "daId" );
+    ActionResponse response = db.put( new CouchDoc<Bar>( id, new Bar( 7, "hey" ) ), serializer );
+    assertEquals( "1-8908180fecd9b17657889f91973f89eb", response.getRev().asString() );
+    assertEquals( "1-8908180fecd9b17657889f91973f89eb", db.getRev( id ).asString() );
+
+    //test non existent doc
+    try {
+      db.getRev( new DocId( "does_not_exist" ) );
+      fail( "Where is the Exception" );
+    } catch ( ActionFailedException e ) {
+      assertEquals( "unknown", e.getError() );
+      assertEquals( "unknown", e.getReason() );
+    }
   }
 
   @Rule
