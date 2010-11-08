@@ -31,26 +31,24 @@
 
 package com.cedarsoft.couchdb.test;
 
-import com.cedarsoft.CanceledException;
 import com.cedarsoft.JsonUtils;
 import com.cedarsoft.couchdb.Bar;
 import com.cedarsoft.couchdb.CouchDbTest;
 import com.cedarsoft.couchdb.CouchDoc;
 import com.cedarsoft.couchdb.CreationFailedException;
 import com.cedarsoft.couchdb.CreationResponse;
+import com.cedarsoft.couchdb.DeletionFailedException;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.couchdb.io.CouchDocSerializer;
 import com.google.common.io.ByteStreams;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.junit.*;
 import org.junit.rules.*;
 
 import java.io.ByteArrayInputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
 
 import static org.junit.Assert.*;
 
@@ -122,6 +120,15 @@ public class CouchDatabase2Test extends CouchDbTest {
     } catch ( UniformInterfaceException e ) {
       assertEquals( 404, e.getResponse().getStatus() );
       assertEquals( "{\"error\":\"not_found\",\"reason\":\"deleted\"}", e.getResponse().getEntity( String.class ).trim() );
+    }
+
+
+    try {
+      db.delete( id, REV );
+      fail( "Where is the Exception" );
+    } catch ( DeletionFailedException e ) {
+      assertEquals( "not_found", e.getError() );
+      assertEquals( "deleted", e.getReason() );
     }
   }
 
