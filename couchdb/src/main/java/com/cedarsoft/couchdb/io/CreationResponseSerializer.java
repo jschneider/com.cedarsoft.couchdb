@@ -78,22 +78,26 @@ public class CreationResponseSerializer {
   }
 
   @NotNull
-  public ActionResponse deserialize( @NotNull ClientResponse response ) throws IOException, VersionException {
+  public ActionResponse deserialize( @NotNull ClientResponse response ) throws VersionException {
     return deserialize( response.getStatus(), response.getEntityInputStream() );
   }
 
   @NotNull
-  public ActionResponse deserialize( int status, @NotNull InputStream in ) throws IOException, VersionException {
-    JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
+  public ActionResponse deserialize( int status, @NotNull InputStream in ) throws VersionException {
+    try {
+      JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
-    JsonParser parser = jsonFactory.createJsonParser( in );
-    AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
+      JsonParser parser = jsonFactory.createJsonParser( in );
+      AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
 
-    ActionResponse deserialized = deserialize( status, parser );
+      ActionResponse deserialized = deserialize( status, parser );
 
-    AbstractJacksonSerializer.ensureParserClosedObject( parser );
+      AbstractJacksonSerializer.ensureParserClosedObject( parser );
 
-    return deserialized;
+      return deserialized;
+    } catch ( IOException e ) {
+      throw new RuntimeException( e );
+    }
   }
 
   public void serialize( @NotNull JsonGenerator serializeTo, @NotNull ActionResponse object ) throws IOException, JsonProcessingException {

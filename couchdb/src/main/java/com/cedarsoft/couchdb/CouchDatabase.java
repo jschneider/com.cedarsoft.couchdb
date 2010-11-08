@@ -93,7 +93,7 @@ public class CouchDatabase {
   }
 
   @NotNull
-  public <T> ActionResponse put( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws IOException, ActionFailedException {
+  public <T> ActionResponse put( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws ActionFailedException {
     ClientResponse clientResponse = dbRoot.path( doc.getId().asString() ).put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
     ActionResponse actionResponse = ActionResponse.create( clientResponse );
 

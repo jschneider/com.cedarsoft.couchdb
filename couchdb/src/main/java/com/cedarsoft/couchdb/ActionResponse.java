@@ -37,8 +37,6 @@ import com.sun.jersey.api.client.ClientResponse;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-
 /**
  * A response for an action like put/delete
  */
@@ -104,7 +102,7 @@ public class ActionResponse {
   }
 
   @NotNull
-  public static ActionResponse create( @NotNull ClientResponse response ) throws IOException, ActionFailedException {
+  public static ActionResponse create( @NotNull ClientResponse response ) throws ActionFailedException {
     verifyNoError( response );
     return new CreationResponseSerializer().deserialize( response );
   }
@@ -114,9 +112,8 @@ public class ActionResponse {
    *
    * @param response the response
    * @throws ActionFailedException
-   * @throws IOException
    */
-  public static void verifyNoError( @NotNull ClientResponse response ) throws ActionFailedException, IOException {
+  public static void verifyNoError( @NotNull ClientResponse response ) throws ActionFailedException {
     if ( !isNotSuccessful( response ) ) {
       return;
     }

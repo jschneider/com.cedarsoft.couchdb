@@ -56,17 +56,21 @@ public class CouchDocSerializer {
   public static final String PROPERTY_REV = RawCouchDocSerializer.PROPERTY_REV;
 
   @NotNull
-  public <T> byte[] serialize( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> wrappedSerializer ) throws IOException {
+  public <T> byte[] serialize( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> wrappedSerializer ) {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     serialize( doc, wrappedSerializer, out );
     return out.toByteArray();
   }
 
-  public <T> void serialize( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> wrappedSerializer, @NotNull OutputStream out ) throws IOException {
-    JsonGenerator generator = RawCouchDocSerializer.createJsonGenerator( out );
+  public <T> void serialize( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> wrappedSerializer, @NotNull OutputStream out ) {
+    try {
+      JsonGenerator generator = RawCouchDocSerializer.createJsonGenerator( out );
 
-    serialize( doc, wrappedSerializer, generator );
-    generator.close();
+      serialize( doc, wrappedSerializer, generator );
+      generator.close();
+    } catch ( IOException e ) {
+      throw new RuntimeException( "Could not parse due to " + e.getMessage(), e );
+    }
   }
 
   public <T> void serialize( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> wrappedSerializer, @NotNull JsonGenerator generator ) throws IOException {
@@ -85,7 +89,7 @@ public class CouchDocSerializer {
   }
 
   @NotNull
-  public <T> CouchDoc<T> deserialize( @NotNull JacksonSerializer<T> wrappedSerializer, @NotNull InputStream in ) throws IOException {
+  public <T> CouchDoc<T> deserialize( @NotNull JacksonSerializer<T> wrappedSerializer, @NotNull InputStream in ) {
     try {
       JsonParser parser = RawCouchDocSerializer.createJsonParser( in );
       CouchDoc<T> doc = deserialize( wrappedSerializer, parser );
@@ -93,12 +97,14 @@ public class CouchDocSerializer {
       AbstractJacksonSerializer.ensureParserClosed( parser );
       return doc;
     } catch ( InvalidTypeException e ) {
-      throw new IOException( "Could not parse due to " + e.getMessage(), e );
+      throw new RuntimeException( "Could not parse due to " + e.getMessage(), e );
+    } catch ( IOException e ) {
+      throw new RuntimeException( "Could not parse due to " + e.getMessage(), e );
     }
   }
 
   @NotNull
-  public <T> CouchDoc<T> deserialize( @NotNull JacksonSerializer<T> wrappedSerializer, @NotNull JsonParser parser ) throws IOException, InvalidTypeException {
+  public <T> CouchDoc<T> deserialize( @NotNull JacksonSerializer<T> wrappedSerializer, @NotNull JsonParser parser ) throws InvalidTypeException, IOException {
     AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
 
     AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_ID );

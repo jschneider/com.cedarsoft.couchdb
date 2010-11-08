@@ -59,7 +59,6 @@ public class ActionFailedExceptionSerializer {
 
   public void serialize( @NotNull ActionFailedException object, @NotNull OutputStream out ) throws IOException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
-
     JsonGenerator generator = jsonFactory.createJsonGenerator( out, JsonEncoding.UTF8 );
 
     generator.writeStartObject();
@@ -71,17 +70,21 @@ public class ActionFailedExceptionSerializer {
   }
 
   @NotNull
-  public ActionFailedException deserialize( int status, @NotNull InputStream in ) throws IOException, VersionException {
-    JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
+  public ActionFailedException deserialize( int status, @NotNull InputStream in ) throws VersionException {
+    try {
+      JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
-    JsonParser parser = jsonFactory.createJsonParser( in );
-    AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
+      JsonParser parser = jsonFactory.createJsonParser( in );
+      AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
 
-    ActionFailedException deserialized = deserialize( status, parser );
+      ActionFailedException deserialized = deserialize( status, parser );
 
-    AbstractJacksonSerializer.ensureParserClosedObject( parser );
+      AbstractJacksonSerializer.ensureParserClosedObject( parser );
 
-    return deserialized;
+      return deserialized;
+    } catch ( IOException e ) {
+      throw new RuntimeException( e );
+    }
   }
 
   public void serialize( @NotNull JsonGenerator serializeTo, @NotNull ActionFailedException object ) throws IOException {
