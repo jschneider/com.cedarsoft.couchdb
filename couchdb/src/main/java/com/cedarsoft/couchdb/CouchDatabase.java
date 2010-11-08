@@ -32,6 +32,7 @@
 package com.cedarsoft.couchdb;
 
 import com.cedarsoft.couchdb.io.CouchDocSerializer;
+import com.cedarsoft.couchdb.io.RawCouchDocSerializer;
 import com.cedarsoft.couchdb.io.RowSerializer;
 import com.cedarsoft.couchdb.io.ViewResponseSerializer;
 import com.cedarsoft.serialization.jackson.InvalidTypeException;
@@ -44,6 +45,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -65,6 +67,8 @@ public class CouchDatabase {
 
   @NotNull
   private final CouchDocSerializer couchDocSerializer = new CouchDocSerializer();
+  @NotNull
+  private final RawCouchDocSerializer rawCouchDocSerializer = new RawCouchDocSerializer();
 
   @Deprecated
   public CouchDatabase( @NotNull @NonNls String host, int port, @NotNull @NonNls String dbName ) throws URISyntaxException {
@@ -96,6 +100,21 @@ public class CouchDatabase {
     doc.setRev( creationResponse.getRev() );
 
     return creationResponse;
+  }
+
+  @NotNull
+  public CreationResponse putAttachment( @NotNull DocId docId, @Nullable Revision revision, @NotNull AttachmentId attachmentId, @NotNull MediaType mediaType, @NotNull InputStream attachment ) throws CreationFailedException, IOException {
+    WebResource resource = dbRoot
+      .path( docId.asString() )
+      .path( attachmentId.asString() );
+
+    //Add the revision is necessary
+    if ( revision != null ) {
+      resource = resource.queryParam( PARAM_REV, revision.asString() );
+    }
+
+    ClientResponse clientResponse = resource.type( mediaType ).put( ClientResponse.class, attachment );
+    return CreationResponse.create( clientResponse );
   }
 
   @Deprecated
