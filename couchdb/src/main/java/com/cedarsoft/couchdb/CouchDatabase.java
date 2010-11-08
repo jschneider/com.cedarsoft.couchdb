@@ -86,24 +86,24 @@ public class CouchDatabase {
   }
 
   @NotNull
-  public <T> CreationResponse put( @NotNull @NonNls DocId id, @NotNull InputStream doc ) throws IOException, CreationFailedException {
+  public <T> ActionResponse put( @NotNull @NonNls DocId id, @NotNull InputStream doc ) throws IOException, ActionFailedException {
     ClientResponse response = dbRoot.path( id.asString() ).put( ClientResponse.class, doc );
-    return CreationResponse.create( response );
+    return ActionResponse.create( response );
   }
 
   @NotNull
-  public <T> CreationResponse put( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws IOException, CreationFailedException {
+  public <T> ActionResponse put( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws IOException, ActionFailedException {
     ClientResponse clientResponse = dbRoot.path( doc.getId().asString() ).put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
-    CreationResponse creationResponse = CreationResponse.create( clientResponse );
+    ActionResponse actionResponse = ActionResponse.create( clientResponse );
 
     //Update the rev
-    doc.setRev( creationResponse.getRev() );
+    doc.setRev( actionResponse.getRev() );
 
-    return creationResponse;
+    return actionResponse;
   }
 
   @NotNull
-  public CreationResponse putAttachment( @NotNull DocId docId, @Nullable Revision revision, @NotNull AttachmentId attachmentId, @NotNull MediaType mediaType, @NotNull InputStream attachment ) throws CreationFailedException, IOException {
+  public ActionResponse putAttachment( @NotNull DocId docId, @Nullable Revision revision, @NotNull AttachmentId attachmentId, @NotNull MediaType mediaType, @NotNull InputStream attachment ) throws ActionFailedException, IOException {
     WebResource resource = dbRoot
       .path( docId.asString() )
       .path( attachmentId.asString() );
@@ -114,12 +114,12 @@ public class CouchDatabase {
     }
 
     ClientResponse clientResponse = resource.type( mediaType ).put( ClientResponse.class, attachment );
-    return CreationResponse.create( clientResponse );
+    return ActionResponse.create( clientResponse );
   }
 
   @Deprecated
   @NotNull
-  public <T> CreationResponse putUpdated( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws CreationFailedException, IOException {
+  public <T> ActionResponse putUpdated( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws ActionFailedException, IOException {
     if ( doc.getRev() == null ) {
       throw new IllegalArgumentException( "Cannot update a doc without REV" );
     }
@@ -246,14 +246,15 @@ public class CouchDatabase {
     return getURI().getPath().substring( 1 );
   }
 
-  public DeletionResponse delete( @NotNull @NonNls DocId id, @NotNull @NonNls Revision revision ) throws DeletionFailedException, IOException {
+  @NotNull
+  public ActionResponse delete( @NotNull @NonNls DocId id, @NotNull @NonNls Revision revision ) throws ActionFailedException, IOException {
     ClientResponse response = dbRoot.path( id.asString() ).queryParam( PARAM_REV, revision.asString() ).delete( ClientResponse.class );
-    return DeletionResponse.create( response );
+    return ActionResponse.create( response );
   }
 
   @NotNull
-  public DeletionResponse delete( @NotNull @NonNls DocId id, @NotNull @NonNls Revision revision, @NotNull AttachmentId attachmentId ) throws DeletionFailedException, IOException {
+  public ActionResponse delete( @NotNull @NonNls DocId id, @NotNull @NonNls Revision revision, @NotNull AttachmentId attachmentId ) throws ActionFailedException, IOException {
     ClientResponse response = dbRoot.path( id.asString() ).path( attachmentId.asString() ).queryParam( PARAM_REV, revision.asString() ).delete( ClientResponse.class );
-    return DeletionResponse.create( response );
+    return ActionResponse.create( response );
   }
 }

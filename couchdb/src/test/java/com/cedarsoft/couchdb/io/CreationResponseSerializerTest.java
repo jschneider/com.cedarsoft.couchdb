@@ -32,7 +32,7 @@
 package com.cedarsoft.couchdb.io;
 
 import com.cedarsoft.JsonUtils;
-import com.cedarsoft.couchdb.CreationResponse;
+import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.serialization.AbstractSerializerTest2;
@@ -46,13 +46,13 @@ import java.io.ByteArrayOutputStream;
 @RunWith( Theories.class )
 public class CreationResponseSerializerTest {
   @DataPoint
-  public static final Entry<? extends CreationResponse> SUCCESS = AbstractSerializerTest2.create(
-    new CreationResponse( new DocId( "daid" ), new Revision( "darev" ) ),
-    CreationResponseSerializerTest.class.getResource( "CreationResponse.json" )
+  public static final Entry<? extends ActionResponse> SUCCESS = AbstractSerializerTest2.create(
+    new ActionResponse( new DocId( "daid" ), new Revision( "darev" ) ),
+    CreationResponseSerializerTest.class.getResource( "ActionResponse.json" )
   );
 
   @Theory
-  public void testName( Entry<? extends CreationResponse> entry ) throws Exception {
+  public void testName( Entry<? extends ActionResponse> entry ) throws Exception {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     new CreationResponseSerializer().serialize( entry.getObject(), out );
 

@@ -32,7 +32,7 @@
 package com.cedarsoft.couchdb.io;
 
 import com.cedarsoft.VersionException;
-import com.cedarsoft.couchdb.CreationResponse;
+import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
@@ -63,7 +63,7 @@ public class CreationResponseSerializer {
   public static final String PROPERTY_OK = "ok";
 
 
-  public void serialize( @NotNull CreationResponse object, @NotNull OutputStream out ) throws IOException {
+  public void serialize( @NotNull ActionResponse object, @NotNull OutputStream out ) throws IOException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
     JsonGenerator generator = jsonFactory.createJsonGenerator( out, JsonEncoding.UTF8 );
@@ -77,20 +77,20 @@ public class CreationResponseSerializer {
   }
 
   @NotNull
-  public CreationResponse deserialize( @NotNull InputStream in ) throws IOException, VersionException {
+  public ActionResponse deserialize( @NotNull InputStream in ) throws IOException, VersionException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
     JsonParser parser = jsonFactory.createJsonParser( in );
     AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
 
-    CreationResponse deserialized = deserialize( parser );
+    ActionResponse deserialized = deserialize( parser );
 
     AbstractJacksonSerializer.ensureParserClosedObject( parser );
 
     return deserialized;
   }
 
-  public void serialize( @NotNull JsonGenerator serializeTo, @NotNull CreationResponse object ) throws IOException, JsonProcessingException {
+  public void serialize( @NotNull JsonGenerator serializeTo, @NotNull ActionResponse object ) throws IOException, JsonProcessingException {
     serializeTo.writeBooleanField( PROPERTY_OK, true );
     serializeTo.writeStringField( PROPERTY_ID, object.getId().asString() );
     serializeTo.writeStringField( PROPERTY_REV, object.getRev().asString() );
@@ -103,14 +103,14 @@ public class CreationResponseSerializer {
   }
 
   @NotNull
-  public CreationResponse deserialize( @NotNull JsonParser deserializeFrom ) throws VersionException, IOException, JsonProcessingException {
+  public ActionResponse deserialize( @NotNull JsonParser deserializeFrom ) throws VersionException, IOException, JsonProcessingException {
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_OK );
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_ID );
     String id = deserializeFrom.getText();
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_REV );
     String rev = deserializeFrom.getText();
     AbstractJacksonSerializer.closeObject( deserializeFrom );
-    return new CreationResponse( new DocId( id ), new Revision( rev ) );
+    return new ActionResponse( new DocId( id ), new Revision( rev ) );
 
     //    AbstractJacksonSerializer.nextToken( deserializeFrom, JsonToken.FIELD_NAME );
     //    if ( deserializeFrom.getCurrentName().equals( PROPERTY_OK ) ) {
@@ -120,7 +120,7 @@ public class CreationResponseSerializer {
     //      AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_REASON );
     //      String reason = deserializeFrom.getText();
     //      AbstractJacksonSerializer.closeObject( deserializeFrom );
-    //      return new CreationResponse( new CreationResponse.Error( error, reason ) );
+    //      return new ActionResponse( new ActionResponse.Error( error, reason ) );
     //    }
   }
 }

@@ -2,11 +2,10 @@ package com.cedarsoft.couchdb.test;
 
 import com.cedarsoft.AssertUtils;
 import com.cedarsoft.JsonUtils;
+import com.cedarsoft.couchdb.ActionFailedException;
+import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.AttachmentId;
 import com.cedarsoft.couchdb.CouchDbTest;
-import com.cedarsoft.couchdb.CreationResponse;
-import com.cedarsoft.couchdb.DeletionFailedException;
-import com.cedarsoft.couchdb.DeletionResponse;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.couchdb.io.RawCouchDocSerializer;
@@ -71,14 +70,14 @@ public class AttachmentsTest extends CouchDbTest {
   @Test
   public void testDoc2() throws Exception {
     {
-      CreationResponse response = db.putAttachment( DOC_ID, null, new AttachmentId( "test_data.xml" ), MediaType.APPLICATION_XML_TYPE, getClass().getResourceAsStream( "test_data.xml" ) );
+      ActionResponse response = db.putAttachment( DOC_ID, null, new AttachmentId( "test_data.xml" ), MediaType.APPLICATION_XML_TYPE, getClass().getResourceAsStream( "test_data.xml" ) );
       assertEquals( "daDocId", response.getId().asString() );
       assertEquals( REV_1, response.getRev().asString() );
     }
 
     //Add a second attachment
     {
-      CreationResponse response = db.putAttachment( DOC_ID, new Revision( REV_1 ), new AttachmentId( "test_data2.xml" ), MediaType.APPLICATION_XML_TYPE, getClass().getResourceAsStream( "test_data2.xml" ) );
+      ActionResponse response = db.putAttachment( DOC_ID, new Revision( REV_1 ), new AttachmentId( "test_data2.xml" ), MediaType.APPLICATION_XML_TYPE, getClass().getResourceAsStream( "test_data2.xml" ) );
       assertEquals( "daDocId", response.getId().asString() );
       assertEquals( REV_2, response.getRev().asString() );
     }
@@ -104,7 +103,7 @@ public class AttachmentsTest extends CouchDbTest {
 
     //Update the attachment
     {
-      CreationResponse response = db.putAttachment( DOC_ID, new Revision( REV_2 ), new AttachmentId( "test_data2.xml" ), MediaType.TEXT_PLAIN_TYPE, new ByteArrayInputStream( "newContent".getBytes() ) );
+      ActionResponse response = db.putAttachment( DOC_ID, new Revision( REV_2 ), new AttachmentId( "test_data2.xml" ), MediaType.TEXT_PLAIN_TYPE, new ByteArrayInputStream( "newContent".getBytes() ) );
       assertEquals( "daDocId", response.getId().asString() );
       assertEquals( REV_3, response.getRev().asString() );
 
@@ -114,7 +113,7 @@ public class AttachmentsTest extends CouchDbTest {
 
     //Delete the attachment
     {
-      DeletionResponse response = db.delete( DOC_ID, new Revision( REV_3 ), new AttachmentId( "test_data.xml" ) );
+      ActionResponse response = db.delete( DOC_ID, new Revision( REV_3 ), new AttachmentId( "test_data.xml" ) );
       assertEquals( DOC_ID, response.getId() );
       assertEquals( REV_4, response.getRev().asString() );
     }
@@ -130,7 +129,7 @@ public class AttachmentsTest extends CouchDbTest {
       try {
         db.delete( DOC_ID, new Revision( REV_1 ), new AttachmentId( "test_data2.xml" ) );
         fail( "Where is the Exception" );
-      } catch ( DeletionFailedException e ) {
+      } catch ( ActionFailedException e ) {
         assertEquals( "conflict", e.getError() );
         assertEquals( "Document update conflict.", e.getReason() );
       }
@@ -138,3 +137,4 @@ public class AttachmentsTest extends CouchDbTest {
 
   }
 }
+ 

@@ -37,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  *
  */
-public class DeletionFailedException extends CouchDbException {
+public class ActionFailedException extends CouchDbException {
   @NotNull
   @NonNls
   private final String error;
@@ -45,7 +45,7 @@ public class DeletionFailedException extends CouchDbException {
   @NonNls
   private final String reason;
 
-  public DeletionFailedException( @NotNull String error, @NotNull String reason ) {
+  public ActionFailedException( @NotNull String error, @NotNull String reason ) {
     super( error + ": " + reason );
     this.error = error;
     this.reason = reason;

@@ -31,7 +31,7 @@
 
 package com.cedarsoft.couchdb;
 
-import com.cedarsoft.couchdb.io.CreationFailedExceptionSerializer;
+import com.cedarsoft.couchdb.io.ActionFailedExceptionSerializer;
 import com.cedarsoft.couchdb.io.CreationResponseSerializer;
 import com.sun.jersey.api.client.ClientResponse;
 import org.jetbrains.annotations.NonNls;
@@ -40,9 +40,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 
 /**
- *
+ * A response for an action like put/delete
  */
-public class CreationResponse {
+public class ActionResponse {
   @NotNull
   @NonNls
   private final DocId id;
@@ -50,7 +50,7 @@ public class CreationResponse {
   @NonNls
   private final Revision rev;
 
-  public CreationResponse( @NotNull DocId id, @NotNull Revision rev ) {
+  public ActionResponse( @NotNull DocId id, @NotNull Revision rev ) {
     this.id = id;
     this.rev = rev;
   }
@@ -78,9 +78,9 @@ public class CreationResponse {
   @Override
   public boolean equals( Object o ) {
     if ( this == o ) return true;
-    if ( !( o instanceof CreationResponse ) ) return false;
+    if ( !( o instanceof ActionResponse ) ) return false;
 
-    CreationResponse success = ( CreationResponse ) o;
+    ActionResponse success = ( ActionResponse ) o;
 
     if ( !id.equals( success.id ) ) return false;
     if ( !rev.equals( success.rev ) ) return false;
@@ -96,9 +96,9 @@ public class CreationResponse {
   }
 
   @NotNull
-  public static CreationResponse create( @NotNull ClientResponse response ) throws IOException, CreationFailedException {
-    if ( response.getStatus() != 201 ) {
-      throw new CreationFailedExceptionSerializer().deserialize( response.getEntityInputStream() );
+  public static ActionResponse create( @NotNull ClientResponse response ) throws IOException, ActionFailedException {
+    if ( response.getStatus() < 200 || response.getStatus() > 299 ) {
+      throw new ActionFailedExceptionSerializer().deserialize( response.getEntityInputStream() );
     }
 
     return new CreationResponseSerializer().deserialize( response.getEntityInputStream() );

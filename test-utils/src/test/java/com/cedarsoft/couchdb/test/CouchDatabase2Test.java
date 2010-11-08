@@ -32,12 +32,11 @@
 package com.cedarsoft.couchdb.test;
 
 import com.cedarsoft.JsonUtils;
+import com.cedarsoft.couchdb.ActionFailedException;
+import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.Bar;
 import com.cedarsoft.couchdb.CouchDbTest;
 import com.cedarsoft.couchdb.CouchDoc;
-import com.cedarsoft.couchdb.CreationFailedException;
-import com.cedarsoft.couchdb.CreationResponse;
-import com.cedarsoft.couchdb.DeletionFailedException;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.couchdb.io.CouchDocSerializer;
@@ -69,7 +68,7 @@ public class CouchDatabase2Test extends CouchDbTest {
 
   @Test
   public void testManually() throws Exception {
-    CreationResponse response = db.put( new CouchDoc<Bar>( new DocId( "daId" ), new Bar( 7, "hey" ) ), serializer );
+    ActionResponse response = db.put( new CouchDoc<Bar>( new DocId( "daId" ), new Bar( 7, "hey" ) ), serializer );
     assertEquals( "daId", response.getId().asString() );
     assertEquals( REV, response.getRev() );
 
@@ -89,7 +88,7 @@ public class CouchDatabase2Test extends CouchDbTest {
   public void testDocRevUpdated() throws Exception {
     CouchDoc<Bar> doc = new CouchDoc<Bar>( new DocId( "daId" ), new Bar( 7, "hey" ) );
     assertNull( doc.getRev() );
-    CreationResponse response = db.put( doc, serializer );
+    ActionResponse response = db.put( doc, serializer );
     assertNotNull( doc.getRev() );
     assertEquals( REV, doc.getRev() );
   }
@@ -97,7 +96,7 @@ public class CouchDatabase2Test extends CouchDbTest {
   @Test
   public void testCreateGetDelete() throws Exception {
     {
-      CreationResponse response = db.put( new CouchDoc<Bar>( new DocId( "daId" ), new Bar( 7, "hey" ) ), serializer );
+      ActionResponse response = db.put( new CouchDoc<Bar>( new DocId( "daId" ), new Bar( 7, "hey" ) ), serializer );
 
       assertEquals( "daId", response.getId().asString() );
       assertEquals( REV, response.getRev() );
@@ -126,7 +125,7 @@ public class CouchDatabase2Test extends CouchDbTest {
     try {
       db.delete( id, REV );
       fail( "Where is the Exception" );
-    } catch ( DeletionFailedException e ) {
+    } catch ( ActionFailedException e ) {
       assertEquals( "not_found", e.getError() );
       assertEquals( "deleted", e.getReason() );
     }
@@ -179,7 +178,7 @@ public class CouchDatabase2Test extends CouchDbTest {
     }
 
     //Invalid updated without ref
-    expectedException.expect( CreationFailedException.class );
+    expectedException.expect( ActionFailedException.class );
     expectedException.expectMessage( "conflict: Document update conflict." );
 
     db.put( new CouchDoc<Bar>( id, new Bar( 1, "should not work!" ) ), serializer );

@@ -32,15 +32,13 @@
 package com.cedarsoft.couchdb.io;
 
 import com.cedarsoft.VersionException;
-import com.cedarsoft.couchdb.CreationFailedException;
-import com.cedarsoft.couchdb.DeletionFailedException;
+import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.JsonToken;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -52,14 +50,14 @@ import java.io.OutputStream;
 /**
  *
  */
-public class DeletionFailedExceptionSerializer {
+public class ActionFailedExceptionSerializer {
   @NonNls
   public static final String PROPERTY_ERROR = "error";
   @NonNls
   public static final String PROPERTY_REASON = "reason";
 
 
-  public void serialize( @NotNull DeletionFailedException object, @NotNull OutputStream out ) throws IOException {
+  public void serialize( @NotNull ActionFailedException object, @NotNull OutputStream out ) throws IOException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
     JsonGenerator generator = jsonFactory.createJsonGenerator( out, JsonEncoding.UTF8 );
@@ -73,31 +71,31 @@ public class DeletionFailedExceptionSerializer {
   }
 
   @NotNull
-  public DeletionFailedException deserialize( @NotNull InputStream in ) throws IOException, VersionException {
+  public ActionFailedException deserialize( @NotNull InputStream in ) throws IOException, VersionException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
     JsonParser parser = jsonFactory.createJsonParser( in );
     AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
 
-    DeletionFailedException deserialized = deserialize( parser );
+    ActionFailedException deserialized = deserialize( parser );
 
     AbstractJacksonSerializer.ensureParserClosedObject( parser );
 
     return deserialized;
   }
 
-  public void serialize( @NotNull JsonGenerator serializeTo, @NotNull DeletionFailedException object ) throws IOException, JsonProcessingException {
+  public void serialize( @NotNull JsonGenerator serializeTo, @NotNull ActionFailedException object ) throws IOException {
     serializeTo.writeStringField( PROPERTY_ERROR, object.getError() );
     serializeTo.writeStringField( PROPERTY_REASON, object.getReason() );
   }
 
   @NotNull
-  public DeletionFailedException deserialize( @NotNull JsonParser deserializeFrom ) throws VersionException, IOException, JsonProcessingException {
+  public ActionFailedException deserialize( @NotNull JsonParser deserializeFrom ) throws VersionException, IOException {
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_ERROR );
     String error = deserializeFrom.getText();
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_REASON );
     String reason = deserializeFrom.getText();
     AbstractJacksonSerializer.closeObject( deserializeFrom );
-    return new DeletionFailedException( error, reason );
+    return new ActionFailedException( error, reason );
   }
 }
