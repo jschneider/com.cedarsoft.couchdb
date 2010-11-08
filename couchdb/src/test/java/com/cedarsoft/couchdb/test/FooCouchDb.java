@@ -135,7 +135,7 @@ public class FooCouchDb {
       assertEquals( deserialized.getId(), actionResponse.getId() );
 
       Response response3 = server.put( uri, responseContent1.getBytes(), MediaType.APPLICATION_JSON );
-      ActionFailedException actionFailedResponse1 = new ActionFailedExceptionSerializer().deserialize( response3.getInputStream() );
+      ActionFailedException actionFailedResponse1 = new ActionFailedExceptionSerializer().deserialize( response3.getCode(), response3.getInputStream() );
       assertEquals( "conflict", actionFailedResponse1.getError() );
       assertEquals( "Document update conflict.", actionFailedResponse1.getReason() );
       assertEquals( 409, response3.getCode() );

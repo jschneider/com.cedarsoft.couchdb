@@ -45,10 +45,17 @@ public class ActionFailedException extends CouchDbException {
   @NonNls
   private final String reason;
 
-  public ActionFailedException( @NotNull String error, @NotNull String reason ) {
-    super( error + ": " + reason );
+  private final int status;
+
+  public ActionFailedException( int status, @NotNull String error, @NotNull String reason ) {
+    super( status + " " + error + ": " + reason );
+    this.status = status;
     this.error = error;
     this.reason = reason;
+  }
+
+  public int getStatus() {
+    return status;
   }
 
   @NotNull

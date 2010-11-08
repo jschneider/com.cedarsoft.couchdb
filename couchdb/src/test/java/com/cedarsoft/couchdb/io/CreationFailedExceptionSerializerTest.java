@@ -45,7 +45,7 @@ import java.io.ByteArrayOutputStream;
 public class CreationFailedExceptionSerializerTest {
   @DataPoint
   public static final Entry<? extends ActionFailedException> SUCCESS = AbstractSerializerTest2.create(
-    new ActionFailedException( "conflict", "Document update conflict." ),
+    new ActionFailedException( 409, "conflict", "Document update conflict." ),
     CreationFailedExceptionSerializerTest.class.getResource( "ActionFailedException.json" )
   );
 

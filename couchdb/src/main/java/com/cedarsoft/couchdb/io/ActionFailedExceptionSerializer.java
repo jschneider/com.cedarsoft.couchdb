@@ -71,13 +71,13 @@ public class ActionFailedExceptionSerializer {
   }
 
   @NotNull
-  public ActionFailedException deserialize( @NotNull InputStream in ) throws IOException, VersionException {
+  public ActionFailedException deserialize( int status, @NotNull InputStream in ) throws IOException, VersionException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
     JsonParser parser = jsonFactory.createJsonParser( in );
     AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
 
-    ActionFailedException deserialized = deserialize( parser );
+    ActionFailedException deserialized = deserialize( status, parser );
 
     AbstractJacksonSerializer.ensureParserClosedObject( parser );
 
@@ -90,12 +90,12 @@ public class ActionFailedExceptionSerializer {
   }
 
   @NotNull
-  public ActionFailedException deserialize( @NotNull JsonParser deserializeFrom ) throws VersionException, IOException {
+  public ActionFailedException deserialize( int status, @NotNull JsonParser deserializeFrom ) throws VersionException, IOException {
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_ERROR );
     String error = deserializeFrom.getText();
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_REASON );
     String reason = deserializeFrom.getText();
     AbstractJacksonSerializer.closeObject( deserializeFrom );
-    return new ActionFailedException( error, reason );
+    return new ActionFailedException( status, error, reason );
   }
 }

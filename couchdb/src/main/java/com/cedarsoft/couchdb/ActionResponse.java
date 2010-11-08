@@ -122,10 +122,10 @@ public class ActionResponse {
     }
 
     if ( !response.hasEntity() ) {
-      throw new ActionFailedException( "unknown", "unknown" );
+      throw new ActionFailedException( response.getStatus(), "unknown", "unknown" );
     }
 
-    throw new ActionFailedExceptionSerializer().deserialize( response.getEntityInputStream() );
+    throw new ActionFailedExceptionSerializer().deserialize( response.getStatus(), response.getEntityInputStream() );
   }
 
   public static boolean isNotSuccessful( @NotNull ClientResponse response ) {
