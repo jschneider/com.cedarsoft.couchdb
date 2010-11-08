@@ -87,7 +87,7 @@ public class CouchDatabase {
   }
 
   @NotNull
-  public <T> ActionResponse put( @NotNull @NonNls DocId id, @NotNull InputStream doc ) throws IOException, ActionFailedException {
+  public ActionResponse put( @NotNull @NonNls DocId id, @NotNull InputStream doc ) throws IOException, ActionFailedException {
     ClientResponse response = dbRoot.path( id.asString() ).put( ClientResponse.class, doc );
     return ActionResponse.create( response );
   }
@@ -130,7 +130,7 @@ public class CouchDatabase {
 
   @NotNull
   @NonNls
-  public <K, V> ViewResponse<K, V, Void> query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer ) throws IOException, InvalidTypeException {
+  public <K, V> ViewResponse<K, V, Void> query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer ) throws IOException, InvalidTypeException, ActionFailedException {
     InputStream stream = query( designDocumentId, viewId );
 
     return viewResponseSerializer.deserialize( keySerializer, valueSerializer, stream );
@@ -138,7 +138,7 @@ public class CouchDatabase {
 
   @NotNull
   @NonNls
-  public <K, V, D> ViewResponse<K, V, D> query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @NotNull JacksonSerializer<? extends D> docSerializer ) throws InvalidTypeException, IOException {
+  public <K, V, D> ViewResponse<K, V, D> query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @NotNull JacksonSerializer<? extends D> docSerializer ) throws InvalidTypeException, IOException, ActionFailedException {
     String type = docSerializer.getType();
     String startKey = "[\"" + type + "\"]";
     String endKey = "[\"" + type + "Z\"]"; //the "Z" is used as high key
@@ -157,17 +157,17 @@ public class CouchDatabase {
    */
   @NotNull
   @NonNls
-  public InputStream query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId ) {
+  public InputStream query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId ) throws IOException, ActionFailedException {
     return query( designDocumentId, viewId, false );
   }
 
   @NotNull
-  public InputStream query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, boolean includeDocs ) {
+  public InputStream query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, boolean includeDocs ) throws IOException, ActionFailedException {
     return query( designDocumentId, viewId, includeDocs, null, null );
   }
 
   @NotNull
-  public InputStream query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, boolean includeDocs, @Nullable String startKey, @Nullable String endKey ) {
+  public InputStream query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, boolean includeDocs, @Nullable String startKey, @Nullable String endKey ) throws IOException, ActionFailedException {
     WebResource viewPath = dbRoot.path( "_design" ).path( designDocumentId ).path( "_view" ).path( viewId );
 
     if ( startKey != null ) {
@@ -181,7 +181,7 @@ public class CouchDatabase {
       viewPath = viewPath.queryParam( "include_docs", "true" );
     }
 
-    return viewPath.get( InputStream.class );
+    return get( viewPath );
   }
 
   /**
@@ -191,8 +191,15 @@ public class CouchDatabase {
    * @return the view as stream
    */
   @NotNull
-  public InputStream get( @NotNull @NonNls DocId id ) {
-    return dbRoot.path( id.asString() ).get( InputStream.class );
+  public InputStream get( @NotNull @NonNls DocId id ) throws IOException, ActionFailedException {
+    return get( dbRoot.path( id.asString() ) );
+  }
+
+  @NotNull
+  protected InputStream get( @NotNull WebResource resource ) throws ActionFailedException, IOException {
+    ClientResponse response = resource.get( ClientResponse.class );
+    ActionResponse.verifyNoError( response );
+    return response.getEntityInputStream();
   }
 
   /**
@@ -206,13 +213,13 @@ public class CouchDatabase {
    * @throws IOException
    */
   @NotNull
-  public <T> CouchDoc<T> get( @NotNull @NonNls DocId id, @NotNull JacksonSerializer<T> serializer ) throws IOException {
+  public <T> CouchDoc<T> get( @NotNull @NonNls DocId id, @NotNull JacksonSerializer<T> serializer ) throws IOException, ActionFailedException {
     return couchDocSerializer.deserialize( serializer, get( id ) );
   }
 
   @NotNull
-  public InputStream get( @NotNull DocId docId, @NotNull AttachmentId attachmentId ) {
-    return dbRoot.path( docId.asString() ).path( attachmentId.asString() ).get( InputStream.class );
+  public InputStream get( @NotNull DocId docId, @NotNull AttachmentId attachmentId ) throws IOException, ActionFailedException {
+    return get( dbRoot.path( docId.asString() ).path( attachmentId.asString() ) );
   }
 
   /**

@@ -41,7 +41,6 @@ import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.couchdb.io.CouchDocSerializer;
 import com.google.common.io.ByteStreams;
-import com.sun.jersey.api.client.UniformInterfaceException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.junit.*;
@@ -118,9 +117,10 @@ public class CouchDatabase2Test extends CouchDbTest {
     //Check deleted
     try {
       db.get( id, serializer );
-    } catch ( UniformInterfaceException e ) {
-      assertEquals( 404, e.getResponse().getStatus() );
-      assertEquals( "{\"error\":\"not_found\",\"reason\":\"deleted\"}", e.getResponse().getEntity( String.class ).trim() );
+    } catch ( ActionFailedException e ) {
+      assertEquals( 404, e.getStatus() );
+      assertEquals( "not_found", e.getError().trim() );
+      assertEquals( "deleted", e.getReason().trim() );
     }
 
 
