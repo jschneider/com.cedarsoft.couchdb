@@ -112,7 +112,15 @@ public abstract class CouchDbTest {
     }
   }
 
+  /**
+   * Returns one view resource that is used to find the base dir for all views
+   *
+   * @return one view resource
+   *
+   * @throws CanceledException if no views shall be uploaded for the test
+   */
   @NotNull
-  protected abstract URL getViewResource() throws CanceledException;
-
+  protected URL getViewResource() throws CanceledException {
+    throw new CanceledException();
+  }
 }

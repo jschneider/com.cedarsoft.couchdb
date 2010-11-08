@@ -180,10 +180,4 @@ public class CouchDatabase2Test extends CouchDbTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
-
-  @NotNull
-  @Override
-  protected URL getViewResource() {
-    throw new CanceledException();
-  }
 }
