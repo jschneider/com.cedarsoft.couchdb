@@ -106,8 +106,6 @@ public abstract class CouchDbTest {
 
       assertTrue( viewsDir.isDirectory() );
       updater.setDesignDocumentDir( viewsDir );
-
-      assertEquals( 2, updater.updateDesignDocuments().size() );
     } catch ( CanceledException ignore ) {
     }
   }
