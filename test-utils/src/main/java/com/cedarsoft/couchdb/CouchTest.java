@@ -52,11 +52,11 @@ import static org.junit.Assert.*;
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public abstract class CouchDbTest {
+public abstract class CouchTest {
   @NotNull
   protected final URI serverURI;
 
-  protected CouchDbTest() {
+  protected CouchTest() {
     try {
       serverURI = new URI( "http://localhost:5984" );
     } catch ( URISyntaxException e ) {

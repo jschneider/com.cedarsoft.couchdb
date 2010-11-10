@@ -36,7 +36,7 @@ import com.cedarsoft.JsonUtils;
 import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.AttachmentId;
-import com.cedarsoft.couchdb.CouchDbTest;
+import com.cedarsoft.couchdb.CouchTest;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.couchdb.io.RawCouchDocSerializer;
@@ -56,7 +56,7 @@ import static org.junit.Assert.*;
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class AttachmentsTest extends CouchDbTest {
+public class AttachmentsTest extends CouchTest {
   @NonNls
   public static final String REV_1 = "1-4b8635c26c5b91bd2bc658ed866c727a";
   @NonNls

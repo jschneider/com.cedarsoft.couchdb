@@ -35,7 +35,7 @@ import com.cedarsoft.JsonUtils;
 import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.Bar;
-import com.cedarsoft.couchdb.CouchDbTest;
+import com.cedarsoft.couchdb.CouchTest;
 import com.cedarsoft.couchdb.CouchDoc;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
@@ -54,7 +54,7 @@ import static org.junit.Assert.*;
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class CouchDatabase2Test extends CouchDbTest {
+public class CouchDatabase2Test extends CouchTest {
   @NonNls
   private static final Revision REV = new Revision( "1-8908180fecd9b17657889f91973f89eb" );
 
