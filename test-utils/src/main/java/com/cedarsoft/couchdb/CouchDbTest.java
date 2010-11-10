@@ -71,9 +71,6 @@ public abstract class CouchDbTest {
   public void setupDb() throws IOException, URISyntaxException {
     server = new ServerImpl( serverURI.getHost(), serverURI.getPort() );
     db = createDb( getTestDbName() );
-
-    //publish views
-    publishViews();
   }
 
   @NotNull
@@ -83,20 +80,22 @@ public abstract class CouchDbTest {
   }
 
   @NotNull
-  protected CouchDatabase createDb( @NotNull @NonNls String dbName ) {
+  protected CouchDatabase createDb( @NotNull @NonNls String dbName ) throws IOException, URISyntaxException {
     try {
       server.deleteDatabase( dbName );
     } catch ( CouchDBException ignore ) {
     }
     assertTrue( server.createDatabase( dbName ) );
 
+    publishViews( dbName );
+
     return new CouchDatabase( serverURI, dbName );
   }
 
-  protected void publishViews() throws URISyntaxException, IOException {
+  protected void publishViews( @NotNull @NonNls String dbName ) throws URISyntaxException, IOException {
     CouchDBUpdater updater = new CouchDBUpdater();
     updater.setCreateDatabase( false );
-    updater.setDatabase( new Database( server, db.getDbName() ) );
+    updater.setDatabase( new Database( server, dbName ) );
 
     try {
       URL resource = getViewResource();
