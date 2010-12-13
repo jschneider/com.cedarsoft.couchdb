@@ -41,8 +41,7 @@ import org.jetbrains.annotations.Nullable;
  * @param <T> the type of the object object
  */
 public class CouchDoc<T> extends RawCouchDoc {
-
-  @Nullable
+  @NotNull
   private final T object;
 
   /**
