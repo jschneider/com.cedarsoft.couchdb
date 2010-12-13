@@ -83,12 +83,31 @@ public class CouchDatabase {
     viewResponseSerializer = new ViewResponseSerializer( new RowSerializer( couchDocSerializer ) );
   }
 
+  /**
+   * Puts the document
+   *
+   * @param id      the document id
+   * @param content the content
+   * @return the response
+   *
+   * @throws ActionFailedException
+   */
   @NotNull
-  public ActionResponse put( @NotNull @NonNls DocId id, @NotNull InputStream doc ) throws ActionFailedException {
-    ClientResponse response = dbRoot.path( id.asString() ).put( ClientResponse.class, doc );
+  public ActionResponse put( @NotNull @NonNls DocId id, @NotNull InputStream content ) throws ActionFailedException {
+    ClientResponse response = dbRoot.path( id.asString() ).put( ClientResponse.class, content );
     return ActionResponse.create( response );
   }
 
+  /**
+   * Puts the document
+   *
+   * @param doc        the couch document (contains the object)
+   * @param serializer the serializer that is used to serialize the object contained within the document
+   * @param <T>        the type
+   * @return the response
+   *
+   * @throws ActionFailedException
+   */
   @NotNull
   public <T> ActionResponse put( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws ActionFailedException {
     ClientResponse clientResponse = dbRoot.path( doc.getId().asString() ).put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
@@ -100,25 +119,48 @@ public class CouchDatabase {
     return actionResponse;
   }
 
+  /**
+   * Puts a document
+   *
+   * @param docId     the doc id
+   * @param revision  the (optional) revision
+   * @param mediaType the media type
+   * @param content   the content
+   * @return the response
+   *
+   * @throws ActionFailedException
+   */
   @NotNull
-  public ActionResponse put( @NotNull DocId docId, @Nullable Revision revision, @NotNull AttachmentId attachmentId, @NotNull MediaType mediaType, @NotNull InputStream attachment ) throws ActionFailedException {
+  public ActionResponse put( @NotNull DocId docId, @Nullable Revision revision, @NotNull MediaType mediaType, @NotNull InputStream content ) throws ActionFailedException {
     WebResource resource = dbRoot
-      .path( docId.asString() )
-      .path( attachmentId.asString() );
+      .path( docId.asString() );
 
     //Add the revision is necessary
     if ( revision != null ) {
       resource = resource.queryParam( PARAM_REV, revision.asString() );
     }
 
-    ClientResponse clientResponse = resource.type( mediaType ).put( ClientResponse.class, attachment );
+    ClientResponse clientResponse = resource.type( mediaType ).put( ClientResponse.class, content );
     return ActionResponse.create( clientResponse );
   }
 
+  /**
+   * Puts an attachment
+   *
+   * @param docId        the doc id
+   * @param revision     the (optional) revision
+   * @param attachmentId the attachment id
+   * @param mediaType    the media type
+   * @param attachment   the attachment
+   * @return the response
+   *
+   * @throws ActionFailedException
+   */
   @NotNull
-  public ActionResponse put( @NotNull DocId docId, @Nullable Revision revision, @NotNull MediaType mediaType, @NotNull InputStream attachment ) throws ActionFailedException {
+  public ActionResponse put( @NotNull DocId docId, @Nullable Revision revision, @NotNull AttachmentId attachmentId, @NotNull MediaType mediaType, @NotNull InputStream attachment ) throws ActionFailedException {
     WebResource resource = dbRoot
-      .path( docId.asString() );
+      .path( docId.asString() )
+      .path( attachmentId.asString() );
 
     //Add the revision is necessary
     if ( revision != null ) {
