@@ -115,6 +115,20 @@ public class CouchDatabase {
     return ActionResponse.create( clientResponse );
   }
 
+  @NotNull
+  public ActionResponse put( @NotNull DocId docId, @Nullable Revision revision, @NotNull MediaType mediaType, @NotNull InputStream attachment ) throws ActionFailedException {
+    WebResource resource = dbRoot
+      .path( docId.asString() );
+
+    //Add the revision is necessary
+    if ( revision != null ) {
+      resource = resource.queryParam( PARAM_REV, revision.asString() );
+    }
+
+    ClientResponse clientResponse = resource.type( mediaType ).put( ClientResponse.class, attachment );
+    return ActionResponse.create( clientResponse );
+  }
+
   @Deprecated
   @NotNull
   public <T> ActionResponse putUpdated( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws ActionFailedException {
