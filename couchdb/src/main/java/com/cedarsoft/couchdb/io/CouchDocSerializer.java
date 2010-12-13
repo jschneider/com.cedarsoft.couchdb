@@ -32,6 +32,7 @@
 package com.cedarsoft.couchdb.io;
 
 import com.cedarsoft.Version;
+import com.cedarsoft.couchdb.AttachmentId;
 import com.cedarsoft.couchdb.CouchDoc;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
@@ -109,7 +110,7 @@ public class CouchDocSerializer {
       if ( !attachment.isInline() ) {
         throw new IllegalStateException( "Cannot serialize non-inline attachments: " + attachment );
       }
-      generator.writeObjectFieldStart( attachment.getId() );
+      generator.writeObjectFieldStart( attachment.getId().asString() );
 
       generator.writeStringField( "content_type", attachment.getContentType().toString() );
       generator.writeStringField( "data", new String( Base64.encode( attachment.getData() ) ) );
@@ -182,7 +183,7 @@ public class CouchDocSerializer {
         long length = parser.getNumberValue().longValue();
         nextFieldValue( parser, "stub" );
 
-        attachments.add( new CouchDoc.StubbedAttachment( attachmentId, MediaType.valueOf( contentType ), length ) );
+        attachments.add( new CouchDoc.StubbedAttachment( new AttachmentId( attachmentId ), MediaType.valueOf( contentType ), length ) );
 
         nextToken( parser, JsonToken.END_OBJECT );
       }

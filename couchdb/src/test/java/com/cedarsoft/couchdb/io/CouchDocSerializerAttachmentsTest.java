@@ -32,6 +32,7 @@
 package com.cedarsoft.couchdb.io;
 
 import com.cedarsoft.JsonUtils;
+import com.cedarsoft.couchdb.AttachmentId;
 import com.cedarsoft.couchdb.CouchDoc;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
@@ -54,8 +55,8 @@ public class CouchDocSerializerAttachmentsTest {
     CouchDocSerializer serializer = new CouchDocSerializer();
 
     CouchDoc<Foo> doc = new CouchDoc<Foo>( new DocId( "asdf" ), new Foo( 13, "asdf" ) );
-    doc.addAttachment( new CouchDoc.InlineAttachment( "inline", MediaType.TEXT_PLAIN_TYPE, "content".getBytes() ) );
-    doc.addAttachment( new CouchDoc.InlineAttachment( "inline2", MediaType.TEXT_PLAIN_TYPE, "contentasdf".getBytes() ) );
+    doc.addAttachment( new CouchDoc.InlineAttachment( new AttachmentId( "inline" ), MediaType.TEXT_PLAIN_TYPE, "content".getBytes() ) );
+    doc.addAttachment( new CouchDoc.InlineAttachment( new AttachmentId( "inline2" ), MediaType.TEXT_PLAIN_TYPE, "contentasdf".getBytes() ) );
 
     byte[] serialized = serializer.serialize( doc, fooSerializer );
 

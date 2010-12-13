@@ -87,8 +87,8 @@ public class AttachmentsTest extends CouchTest {
   @Test
   public void testInlined() throws Exception {
     CouchDoc<String> doc = new CouchDoc<String>( new DocId( "asdf" ), "the object" );
-    doc.addAttachment( new CouchDoc.InlineAttachment( "daid", MediaType.TEXT_XML_TYPE, "<x/>".getBytes() ) );
-    doc.addAttachment( new CouchDoc.InlineAttachment( "hehe", MediaType.APPLICATION_XML_TYPE, "<x2/>".getBytes() ) );
+    doc.addAttachment( new CouchDoc.InlineAttachment( new AttachmentId( "daid" ), MediaType.TEXT_XML_TYPE, "<x/>".getBytes() ) );
+    doc.addAttachment( new CouchDoc.InlineAttachment( new AttachmentId( "hehe" ), MediaType.APPLICATION_XML_TYPE, "<x2/>".getBytes() ) );
 
     AbstractJacksonSerializer<String> serializer = new AbstractJacksonSerializer<String>( "daString", VersionRange.single( 1, 0, 0 ) ) {
       @Override

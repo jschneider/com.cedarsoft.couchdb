@@ -31,12 +31,14 @@
 
 package com.cedarsoft.couchdb;
 
-import com.sun.jersey.core.util.Base64;
+import com.google.common.io.ByteStreams;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -119,17 +121,15 @@ public class CouchDoc<T> extends RawCouchDoc {
     private final MediaType contentType;
 
     @NotNull
-    @NonNls
-    private final String id;
+    private final AttachmentId id;
 
-    private Attachment( @NonNls @NotNull String id, @NotNull MediaType contentType ) {
+    private Attachment( @NotNull AttachmentId id, @NotNull MediaType contentType ) {
       this.id = id;
       this.contentType = contentType;
     }
 
     @NotNull
-    @NonNls
-    public String getId() {
+    public AttachmentId getId() {
       return id;
     }
 
@@ -151,11 +151,12 @@ public class CouchDoc<T> extends RawCouchDoc {
   public static class StubbedAttachment extends Attachment {
     private final long length;
 
-    public StubbedAttachment( @NonNls @NotNull String id, @NotNull MediaType contentType, long length ) {
+    public StubbedAttachment( @NotNull AttachmentId id, @NotNull MediaType contentType, long length ) {
       super( id, contentType );
       this.length = length;
     }
 
+    @Override
     public long getLength() {
       return length;
     }
@@ -172,11 +173,16 @@ public class CouchDoc<T> extends RawCouchDoc {
     @NonNls
     private final byte[] data;
 
-    public InlineAttachment( @NonNls @NotNull String id, @NotNull MediaType contentType, @NotNull @NonNls byte[] data ) {
+    public InlineAttachment( @NotNull AttachmentId id, @NotNull MediaType mediaType, @NotNull InputStream content ) throws IOException {
+      this( id, mediaType, ByteStreams.toByteArray( content ) );
+    }
+
+    public InlineAttachment( @NonNls @NotNull AttachmentId id, @NotNull MediaType contentType, @NotNull @NonNls byte[] data ) {
       super( id, contentType );
       this.data = data.clone();
     }
 
+    @Override
     @NotNull
     @NonNls
     public byte[] getData() {
