@@ -183,15 +183,20 @@ public class CouchDatabase {
 
   @NotNull
   @NonNls
-  public <K, V> ViewResponse<K, V, Void> query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer ) throws InvalidTypeException, ActionFailedException, IOException {
-    InputStream stream = query( designDocumentId, viewId );
+  public <K, V> ViewResponse<K, V, Void> query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer ) throws InvalidTypeException, ActionFailedException, IOException {
+    return query( designDocumentId, viewId, keySerializer, valueSerializer, null, null );
+  }
 
+  @NotNull
+  @NonNls
+  public <K, V> ViewResponse<K, V, Void> query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @Nullable String startKey, @Nullable String endKey ) throws InvalidTypeException, ActionFailedException, IOException {
+    InputStream stream = query( designDocumentId, viewId, false, startKey, endKey );
     return viewResponseSerializer.deserialize( keySerializer, valueSerializer, stream );
   }
 
   @NotNull
   @NonNls
-  public <K, V, D> ViewResponse<K, V, D> query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @NotNull JacksonSerializer<? extends D> docSerializer ) throws InvalidTypeException, ActionFailedException, IOException {
+  public <K, V, D> ViewResponse<K, V, D> query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @NotNull JacksonSerializer<? extends D> docSerializer ) throws InvalidTypeException, ActionFailedException, IOException {
     String type = docSerializer.getType();
     String startKey = "[\"" + type + "\"]";
     String endKey = "[\"" + type + "Z\"]"; //the "Z" is used as high key
