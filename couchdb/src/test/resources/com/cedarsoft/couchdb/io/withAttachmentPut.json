@@ -1,5 +1,9 @@
 {
   "_id" : "asdf",
+  "@type" : "foo",
+  "@version" : "1.0.0",
+  "aValue" : 13,
+  "description" : "asdf",
   "_attachments" : {
     "inline" : {
       "content_type" : "text/plain",
@@ -9,9 +13,5 @@
       "content_type" : "text/plain",
       "data" : "Y29udGVudGFzZGY="
     }
-  },
-  "@type" : "foo",
-  "@version" : "1.0.0",
-  "aValue" : 13,
-  "description" : "asdf"
+  }
 }

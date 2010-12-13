@@ -102,7 +102,8 @@ public class Foo {
       nextFieldValue( deserializeFrom, "description" );
       String description = deserializeFrom.getText();
 
-      closeObject( deserializeFrom );
+      //Close it
+      deserializeFrom.nextToken();
       return new Foo( value, description );
     }
   }

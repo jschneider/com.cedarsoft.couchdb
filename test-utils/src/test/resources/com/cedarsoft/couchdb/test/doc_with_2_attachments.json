@@ -1,0 +1,21 @@
+{
+  "_id" : "asdf",
+  "_rev" : "1-7a11f1968753e5accc7961a8da3d7e32",
+  "@type" : "daString",
+  "@version" : "1.0.0",
+  "daString" : "the object",
+  "_attachments" : {
+    "daid" : {
+      "content_type" : "text/xml",
+      "revpos" : 1,
+      "length" : 4,
+      "stub" : true
+    },
+    "hehe" : {
+      "content_type" : "application/xml",
+      "revpos" : 1,
+      "length" : 5,
+      "stub" : true
+    }
+  }
+}

@@ -84,8 +84,6 @@ public class CouchDocSerializer {
     generator.writeStartObject();
     RawCouchDocSerializer.serializeIdAndRev( generator, doc );
 
-    serializeInlineAttachments( doc, generator );
-
     //Type
     generator.writeStringField( AbstractJacksonSerializer.PROPERTY_TYPE, wrappedSerializer.getType() );
     //Version
@@ -93,6 +91,9 @@ public class CouchDocSerializer {
 
     //The wrapped object
     wrappedSerializer.serialize( generator, doc.getObject(), wrappedSerializer.getFormatVersion() );
+
+    //The attachments - placed at the end
+    serializeInlineAttachments( doc, generator );
 
     generator.writeEndObject();
   }
@@ -144,13 +145,17 @@ public class CouchDocSerializer {
     nextFieldValue( parser, PROPERTY_REV );
     String rev = parser.getText();
 
-    List<? extends CouchDoc.Attachment> attachments = deserializeAttachments( parser );
-
+    //Type and Version
+    nextFieldValue( parser, AbstractJacksonSerializer.PROPERTY_TYPE );
     wrappedSerializer.verifyType( parser.getText() );
     nextFieldValue( parser, AbstractJacksonSerializer.PROPERTY_VERSION );
     Version version = Version.parse( parser.getText() );
 
+    //The wrapped object
     T wrapped = wrappedSerializer.deserialize( parser, version );
+
+    //the attachments - if there are any....
+    List<? extends CouchDoc.Attachment> attachments = deserializeAttachments( parser );
 
     AbstractJacksonSerializer.ensureObjectClosed( parser );
     CouchDoc<T> doc = new CouchDoc<T>( new DocId( id ), rev == null ? null : new Revision( rev ), wrapped );
@@ -163,9 +168,7 @@ public class CouchDocSerializer {
     List<CouchDoc.Attachment> attachments = new ArrayList<CouchDoc.Attachment>();
 
     //check for attachments
-    nextToken( parser, JsonToken.FIELD_NAME );
-    if ( parser.getCurrentName().equals( "_attachments" ) ) {
-      //todo parse attachments
+    if ( parser.getCurrentToken() == JsonToken.FIELD_NAME && parser.getCurrentName().equals( "_attachments" ) ) {
       nextToken( parser, JsonToken.START_OBJECT );
 
       while ( parser.nextToken() != JsonToken.END_OBJECT ) {
@@ -183,13 +186,7 @@ public class CouchDocSerializer {
 
         nextToken( parser, JsonToken.END_OBJECT );
       }
-
-      nextFieldValue( parser, AbstractJacksonSerializer.PROPERTY_TYPE );
-    } else {
-      if ( !parser.getCurrentName().equals( AbstractJacksonSerializer.PROPERTY_TYPE ) ) {
-        throw new IllegalStateException( "Invalid token name: " + parser.getCurrentName() );
-      }
-      parser.nextToken();
+      nextToken( parser, JsonToken.END_OBJECT );
     }
 
     return attachments;

@@ -87,10 +87,10 @@ public class AttachmentsTest extends CouchTest {
   @Test
   public void testInlined() throws Exception {
     CouchDoc<String> doc = new CouchDoc<String>( new DocId( "asdf" ), "the object" );
-    doc.addAttachment( new CouchDoc.Attachment( "daid", MediaType.TEXT_XML_TYPE ) );
-    doc.addAttachment( new CouchDoc.Attachment( "hehe", MediaType.APPLICATION_XML_TYPE ) );
+    doc.addAttachment( new CouchDoc.InlineAttachment( "daid", MediaType.TEXT_XML_TYPE, "<x/>".getBytes() ) );
+    doc.addAttachment( new CouchDoc.InlineAttachment( "hehe", MediaType.APPLICATION_XML_TYPE, "<x2/>".getBytes() ) );
 
-    assertEquals( 201, db.put( doc, new AbstractJacksonSerializer<String>( "daString", VersionRange.single( 1, 0, 0 ) ) {
+    AbstractJacksonSerializer<String> serializer = new AbstractJacksonSerializer<String>( "daString", VersionRange.single( 1, 0, 0 ) ) {
       @Override
       public void serialize( @NotNull JsonGenerator serializeTo, @NotNull String object, @NotNull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
         serializeTo.writeStringField( "daString", object );
@@ -108,13 +108,18 @@ public class AttachmentsTest extends CouchTest {
           deserializeFrom.nextToken();
         }
       }
-    } ).getStatus() );
+    };
+    assertEquals( 201, db.put( doc, serializer ).getStatus() );
 
-    JsonUtils.assertJsonEquals( "{  \"_id\" : \"asdf\",\n" +
-                                  "  \"_rev\" : \"1-235d1aa28150f756141530fc9ac76d54\",\n" +
-                                  "  \"@type\" : \"daString\",\n" +
-                                  "  \"@version\" : \"1.0.0\"," +
-                                  "  \"daString\" : \"the object\"}", new String( ByteStreams.toByteArray( db.get( doc.getId() ) ) ) );
+    JsonUtils.assertJsonEquals( getClass().getResource( "doc_with_2_attachments.json" ), new String( ByteStreams.toByteArray( db.get( doc.getId() ) ) ) );
+
+    CouchDoc<String> resolvedDoc = db.get( doc.getId(), serializer );
+    assertEquals( "the object", resolvedDoc.getObject() );
+    assertEquals( 2, resolvedDoc.getAttachments().size() );
+    assertEquals( "daid", resolvedDoc.getAttachments().get( 0 ).getId() );
+    assertEquals( "text/xml", resolvedDoc.getAttachments().get( 0 ).getContentType().toString() );
+    assertEquals( "hehe", resolvedDoc.getAttachments().get( 1 ).getId() );
+    assertEquals( "application/xml", resolvedDoc.getAttachments().get( 1 ).getContentType().toString() );
   }
 
   @Test

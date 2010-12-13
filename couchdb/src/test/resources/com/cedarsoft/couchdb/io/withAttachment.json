@@ -1,6 +1,10 @@
 {
   "_id": "daDocId",
   "_rev": "2-929f2959f8e81ed6b6c7784bee926065",
+  "@type" : "foo",
+  "@version" : "1.0.0",
+  "aValue" : 7,
+  "description" : "asdf",
   "_attachments": {
     "test_data2.xml": {
       "content_type": "application/xml",
@@ -14,9 +18,5 @@
       "length": 188,
       "stub": true
     }
-  },
-  "@type" : "foo",
-  "@version" : "1.0.0",
-  "aValue" : 7,
-  "description" : "asdf"
+  }
 }
