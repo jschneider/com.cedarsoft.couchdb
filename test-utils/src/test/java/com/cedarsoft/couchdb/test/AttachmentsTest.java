@@ -33,22 +33,31 @@ package com.cedarsoft.couchdb.test;
 
 import com.cedarsoft.AssertUtils;
 import com.cedarsoft.JsonUtils;
+import com.cedarsoft.Version;
+import com.cedarsoft.VersionException;
+import com.cedarsoft.VersionRange;
 import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.AttachmentId;
+import com.cedarsoft.couchdb.CouchDoc;
 import com.cedarsoft.couchdb.CouchTest;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.couchdb.io.RawCouchDocSerializer;
+import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.google.common.io.ByteStreams;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonProcessingException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.junit.*;
 
 import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 import static org.junit.Assert.*;
@@ -73,6 +82,57 @@ public class AttachmentsTest extends CouchTest {
   @Before
   public void setup() throws URISyntaxException {
     serializer = new RawCouchDocSerializer();
+  }
+
+  @Test
+  public void testInlined() throws Exception {
+    CouchDoc<String> doc = new CouchDoc<String>( new DocId( "asdf" ), "the object" );
+    doc.addAttachment( new CouchDoc.Attachment( "daid", MediaType.TEXT_XML_TYPE ) );
+    doc.addAttachment( new CouchDoc.Attachment( "hehe", MediaType.APPLICATION_XML_TYPE ) );
+
+    assertEquals( 201, db.put( doc, new AbstractJacksonSerializer<String>( "daString", VersionRange.single( 1, 0, 0 ) ) {
+      @Override
+      public void serialize( @NotNull JsonGenerator serializeTo, @NotNull String object, @NotNull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
+        serializeTo.writeStringField( "daString", object );
+      }
+
+      @NotNull
+      @Override
+      public String deserialize( @NotNull JsonParser deserializeFrom, @NotNull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
+        deserializeFrom.nextToken();
+        deserializeFrom.nextValue();
+
+        try {
+          return deserializeFrom.getText();
+        } finally {
+          deserializeFrom.nextToken();
+        }
+      }
+    } ).getStatus() );
+
+    JsonUtils.assertJsonEquals( "{  \"_id\" : \"asdf\",\n" +
+                                  "  \"_rev\" : \"1-235d1aa28150f756141530fc9ac76d54\",\n" +
+                                  "  \"@type\" : \"daString\",\n" +
+                                  "  \"@version\" : \"1.0.0\"," +
+                                  "  \"daString\" : \"the object\"}", new String( ByteStreams.toByteArray( db.get( doc.getId() ) ) ) );
+  }
+
+  @Test
+  public void testManuallyInline() throws Exception {
+    WebResource dbRoot = db.getDbRoot();
+
+    {
+      ClientResponse response = dbRoot
+        .path( DOC_ID.asString() )
+        .type( MediaType.APPLICATION_JSON_TYPE )
+        .put( ClientResponse.class,
+              getClass().getResourceAsStream( "doc_with_inlined_attachment_put.json" ) );
+
+      assertEquals( 201, response.getStatus() );
+
+      String doc = dbRoot.path( DOC_ID.asString() ).get( String.class );
+      JsonUtils.assertJsonEquals( getClass().getResource( "doc_with_inlined_attachment_get.json" ), doc );
+    }
   }
 
   @Test

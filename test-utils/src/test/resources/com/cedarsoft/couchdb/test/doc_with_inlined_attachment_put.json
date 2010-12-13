@@ -1,0 +1,9 @@
+{
+  "_id" : "daDocId",
+  "_attachments" : {
+    "test_data.xml" : {
+      "content_type" : "application/xml",
+      "data" : "VGhpcyBpcyBhIGJhc2U2NCBlbmNvZGVkIHRleHQ="
+    }
+  }
+}

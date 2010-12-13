@@ -1,0 +1,17 @@
+{
+  "_id" : "asdf",
+  "_attachments" : {
+    "inline" : {
+      "content_type" : "text/plain",
+      "data" : "Y29udGVudA=="
+    },
+    "inline2" : {
+      "content_type" : "text/plain",
+      "data" : "Y29udGVudGFzZGY="
+    }
+  },
+  "@type" : "foo",
+  "@version" : "1.0.0",
+  "aValue" : 13,
+  "description" : "asdf"
+}

@@ -38,16 +38,23 @@ import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.InvalidTypeException;
 import com.cedarsoft.serialization.jackson.JacksonSerializer;
+import com.sun.jersey.core.util.Base64;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
+import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.cedarsoft.serialization.jackson.AbstractJacksonSerializer.nextFieldValue;
+import static com.cedarsoft.serialization.jackson.AbstractJacksonSerializer.nextToken;
 
 public class CouchDocSerializer {
   @NonNls
@@ -77,6 +84,8 @@ public class CouchDocSerializer {
     generator.writeStartObject();
     RawCouchDocSerializer.serializeIdAndRev( generator, doc );
 
+    serializeInlineAttachments( doc, generator );
+
     //Type
     generator.writeStringField( AbstractJacksonSerializer.PROPERTY_TYPE, wrappedSerializer.getType() );
     //Version
@@ -84,6 +93,28 @@ public class CouchDocSerializer {
 
     //The wrapped object
     wrappedSerializer.serialize( generator, doc.getObject(), wrappedSerializer.getFormatVersion() );
+
+    generator.writeEndObject();
+  }
+
+  private <T> void serializeInlineAttachments( @NotNull CouchDoc<T> doc, @NotNull JsonGenerator generator ) throws IOException {
+    if ( !doc.hasInlineAttachments() ) {
+      return;
+    }
+
+    generator.writeObjectFieldStart( "_attachments" );
+
+    for ( CouchDoc.Attachment attachment : doc.getAttachments() ) {
+      if ( !attachment.isInline() ) {
+        throw new IllegalStateException( "Cannot serialize non-inline attachments: " + attachment );
+      }
+      generator.writeObjectFieldStart( attachment.getId() );
+
+      generator.writeStringField( "content_type", attachment.getContentType().toString() );
+      generator.writeStringField( "data", new String( Base64.encode( attachment.getData() ) ) );
+
+      generator.writeEndObject();
+    }
 
     generator.writeEndObject();
   }
@@ -105,23 +136,62 @@ public class CouchDocSerializer {
 
   @NotNull
   public <T> CouchDoc<T> deserialize( @NotNull JacksonSerializer<T> wrappedSerializer, @NotNull JsonParser parser ) throws InvalidTypeException, IOException {
-    AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
+    nextToken( parser, JsonToken.START_OBJECT );
 
-    AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_ID );
+    nextFieldValue( parser, PROPERTY_ID );
     String id = parser.getText();
 
-    AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_REV );
+    nextFieldValue( parser, PROPERTY_REV );
     String rev = parser.getText();
 
+    List<? extends CouchDoc.Attachment> attachments = deserializeAttachments( parser );
 
-    AbstractJacksonSerializer.nextFieldValue( parser, AbstractJacksonSerializer.PROPERTY_TYPE );
     wrappedSerializer.verifyType( parser.getText() );
-    AbstractJacksonSerializer.nextFieldValue( parser, AbstractJacksonSerializer.PROPERTY_VERSION );
+    nextFieldValue( parser, AbstractJacksonSerializer.PROPERTY_VERSION );
     Version version = Version.parse( parser.getText() );
 
     T wrapped = wrappedSerializer.deserialize( parser, version );
 
     AbstractJacksonSerializer.ensureObjectClosed( parser );
-    return new CouchDoc<T>( new DocId( id ), rev == null ? null : new Revision( rev ), wrapped );
+    CouchDoc<T> doc = new CouchDoc<T>( new DocId( id ), rev == null ? null : new Revision( rev ), wrapped );
+    doc.addAttachments( attachments );
+    return doc;
+  }
+
+  @NotNull
+  private List<? extends CouchDoc.Attachment> deserializeAttachments( JsonParser parser ) throws IOException {
+    List<CouchDoc.Attachment> attachments = new ArrayList<CouchDoc.Attachment>();
+
+    //check for attachments
+    nextToken( parser, JsonToken.FIELD_NAME );
+    if ( parser.getCurrentName().equals( "_attachments" ) ) {
+      //todo parse attachments
+      nextToken( parser, JsonToken.START_OBJECT );
+
+      while ( parser.nextToken() != JsonToken.END_OBJECT ) {
+        String attachmentId = parser.getCurrentName();
+
+        nextToken( parser, JsonToken.START_OBJECT );
+        nextFieldValue( parser, "content_type" );
+        String contentType = parser.getText();
+        nextFieldValue( parser, "revpos" );
+        nextFieldValue( parser, "length" );
+        long length = parser.getNumberValue().longValue();
+        nextFieldValue( parser, "stub" );
+
+        attachments.add( new CouchDoc.StubbedAttachment( attachmentId, MediaType.valueOf( contentType ), length ) );
+
+        nextToken( parser, JsonToken.END_OBJECT );
+      }
+
+      nextFieldValue( parser, AbstractJacksonSerializer.PROPERTY_TYPE );
+    } else {
+      if ( !parser.getCurrentName().equals( AbstractJacksonSerializer.PROPERTY_TYPE ) ) {
+        throw new IllegalStateException( "Invalid token name: " + parser.getCurrentName() );
+      }
+      parser.nextToken();
+    }
+
+    return attachments;
   }
 }
