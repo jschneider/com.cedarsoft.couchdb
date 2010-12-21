@@ -48,11 +48,11 @@ public abstract class CouchTest {
 
 
   protected CouchDatabase db() {
-    return couchDbRule.getDb();
+    return couchDbRule.getCurrentDb();
   }
 
   protected Server server() {
-    return couchDbRule.getServer();
+    return couchDbRule.getCurrentServer();
   }
 
   /**

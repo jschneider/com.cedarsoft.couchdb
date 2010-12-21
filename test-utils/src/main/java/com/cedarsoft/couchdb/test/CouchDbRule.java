@@ -41,6 +41,10 @@ public class CouchDbRule implements MethodRule {
   @Nullable
   private final URL viewResource;
 
+  @Nullable
+  @NonNls
+  private final String dbBaseName;
+
   public CouchDbRule() {
     this( null );
   }
@@ -51,7 +55,12 @@ public class CouchDbRule implements MethodRule {
    * @param viewResource the optional view resource
    */
   public CouchDbRule( @Nullable URL viewResource ) {
+    this( viewResource, null );
+  }
+
+  public CouchDbRule( @Nullable URL viewResource, @Nullable @NonNls String dbBaseName ) {
     this.viewResource = viewResource;
+    this.dbBaseName = dbBaseName;
   }
 
   public void before() throws IOException, URISyntaxException {
@@ -144,9 +153,13 @@ public class CouchDbRule implements MethodRule {
     return getTestDbBaseName() + System.currentTimeMillis();
   }
 
+
   @NotNull
   @NonNls
   public String getTestDbBaseName() {
+    if ( dbBaseName != null ) {
+      return dbBaseName;
+    }
     return System.getProperty( KEY_DB_NAME, "couch_unit_test" );
   }
 
@@ -156,7 +169,7 @@ public class CouchDbRule implements MethodRule {
   }
 
   @NotNull
-  public CouchDatabase getDb() {
+  public CouchDatabase getCurrentDb() {
     if ( db == null ) {
       throw new IllegalStateException( "Not db" );
     }
@@ -164,7 +177,7 @@ public class CouchDbRule implements MethodRule {
   }
 
   @NotNull
-  public URI getServerURI() {
+  public URI getCurrentServerURI() {
     if ( serverURI == null ) {
       throw new IllegalStateException( "No server uri" );
     }
@@ -172,7 +185,7 @@ public class CouchDbRule implements MethodRule {
   }
 
   @NotNull
-  public Server getServer() {
+  public Server getCurrentServer() {
     if ( server == null ) {
       throw new IllegalStateException( "No server " );
     }
