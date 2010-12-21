@@ -29,6 +29,8 @@ public class CouchDbRule implements MethodRule {
   public static final String KEY_DB_NAME = "couchdb.unittests.db.name";
   @NonNls
   public static final String KEY_SERVER_URI = "couchdb.unittests.server.uri";
+  @NonNls
+  public static final String KEY_SKIP_DELETE_DB = "couchdb.unittests.skip.deletion";
 
   @Nullable
   protected CouchDatabase db;
@@ -63,6 +65,13 @@ public class CouchDbRule implements MethodRule {
   }
 
   private void deleteDatabase() {
+    if ( Boolean.parseBoolean( System.getProperty( KEY_SKIP_DELETE_DB ) ) ) {
+      System.out.println( "----------------------------" );
+      System.out.println( "Skipping deletion of " + db.getDbName() );
+      System.out.println( "----------------------------" );
+      return;
+    }
+
     Server currentServer = server;
     if ( currentServer != null ) {
       currentServer.deleteDatabase( db.getDbName() );
