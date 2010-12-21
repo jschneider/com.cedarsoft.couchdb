@@ -55,7 +55,7 @@ public class CouchDbRule implements MethodRule {
   public void before() throws IOException, URISyntaxException {
     serverURI = getServerUri();
     server = new ServerImpl( serverURI.getHost(), serverURI.getPort() );
-    db = createDb( getTestDbName() );
+    db = createDb( createNewTestDbName() );
   }
 
   public void after() {
@@ -65,7 +65,7 @@ public class CouchDbRule implements MethodRule {
   private void deleteDatabase() {
     Server currentServer = server;
     if ( currentServer != null ) {
-      currentServer.deleteDatabase( getTestDbName() );
+      currentServer.deleteDatabase( db.getDbName() );
     }
     db = null;
   }
@@ -131,7 +131,7 @@ public class CouchDbRule implements MethodRule {
 
   @NotNull
   @NonNls
-  public String getTestDbName() {
+  public String createNewTestDbName() {
     return getTestDbBaseName() + System.currentTimeMillis();
   }
 
