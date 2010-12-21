@@ -2,6 +2,9 @@ package com.cedarsoft.couchdb.test;
 
 import com.cedarsoft.CanceledException;
 import com.cedarsoft.couchdb.CouchDatabase;
+import com.sun.security.auth.UserPrincipal;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
 import org.jcouchdb.db.Database;
 import org.jcouchdb.db.Server;
 import org.jcouchdb.db.ServerImpl;
@@ -18,6 +21,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.Principal;
 
 import static org.junit.Assert.*;
 
@@ -31,6 +35,11 @@ public class CouchDbRule implements MethodRule {
   public static final String KEY_SERVER_URI = "couchdb.unittests.server.uri";
   @NonNls
   public static final String KEY_SKIP_DELETE_DB = "couchdb.unittests.skip.deletion";
+
+  @NonNls
+  public static final String KEY_USER = "couchdb.unittests.username";
+  @NonNls
+  public static final String KEY_PASS = "couchdb.unittests.password";
 
   @Nullable
   protected CouchDatabase db;
@@ -66,7 +75,36 @@ public class CouchDbRule implements MethodRule {
   public void before() throws IOException, URISyntaxException {
     serverURI = getServerUri();
     server = new ServerImpl( serverURI.getHost(), serverURI.getPort() );
+
+    final String username = getUsername();
+    final String password = getPassword();
+
+    if ( username != null && password != null ) {
+      server.setCredentials( AuthScope.ANY, new Credentials() {
+        @Override
+        public Principal getUserPrincipal() {
+          return new UserPrincipal( username );
+        }
+
+        @Override
+        public String getPassword() {
+          return password;
+        }
+      } );
+    }
     db = createDb( createNewTestDbName() );
+  }
+
+  @Nullable
+  @NonNls
+  private String getUsername() {
+    return System.getProperty( KEY_USER );
+  }
+
+  @Nullable
+  @NonNls
+  private String getPassword() {
+    return System.getProperty( KEY_PASS );
   }
 
   public void after() {
