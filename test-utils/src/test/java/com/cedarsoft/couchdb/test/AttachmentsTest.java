@@ -109,22 +109,22 @@ public class AttachmentsTest extends CouchTest {
         }
       }
     };
-    assertEquals( 201, db.put( doc, serializer ).getStatus() );
+    assertEquals( 201, db().put( doc, serializer ).getStatus() );
 
-    JsonUtils.assertJsonEquals( getClass().getResource( "doc_with_2_attachments.json" ), new String( ByteStreams.toByteArray( db.get( doc.getId() ) ) ) );
+    JsonUtils.assertJsonEquals( getClass().getResource( "doc_with_2_attachments.json" ), new String( ByteStreams.toByteArray( db().get( doc.getId() ) ) ) );
 
-    CouchDoc<String> resolvedDoc = db.get( doc.getId(), serializer );
+    CouchDoc<String> resolvedDoc = db().get( doc.getId(), serializer );
     assertEquals( "the object", resolvedDoc.getObject() );
     assertEquals( 2, resolvedDoc.getAttachments().size() );
-    assertEquals( "daid", resolvedDoc.getAttachments().get( 0 ).getId() );
+    assertEquals( "daid", resolvedDoc.getAttachments().get( 0 ).getId().asString() );
     assertEquals( "text/xml", resolvedDoc.getAttachments().get( 0 ).getContentType().toString() );
-    assertEquals( "hehe", resolvedDoc.getAttachments().get( 1 ).getId() );
+    assertEquals( "hehe", resolvedDoc.getAttachments().get( 1 ).getId().asString() );
     assertEquals( "application/xml", resolvedDoc.getAttachments().get( 1 ).getContentType().toString() );
   }
 
   @Test
   public void testManuallyInline() throws Exception {
-    WebResource dbRoot = db.getDbRoot();
+    WebResource dbRoot = db().getDbRoot();
 
     {
       ClientResponse response = dbRoot
@@ -142,7 +142,7 @@ public class AttachmentsTest extends CouchTest {
 
   @Test
   public void testManually() throws Exception {
-    WebResource dbRoot = db.getDbRoot();
+    WebResource dbRoot = db().getDbRoot();
 
     {
       ClientResponse response = dbRoot.path( DOC_ID.asString() ).path( "test_data.xml" ).type( MediaType.APPLICATION_XML_TYPE ).put( ClientResponse.class, getClass().getResourceAsStream( "test_data.xml" ) );
@@ -166,56 +166,56 @@ public class AttachmentsTest extends CouchTest {
   @Test
   public void testDoc2() throws Exception {
     {
-      ActionResponse response = db.put( DOC_ID, null, new AttachmentId( "test_data.xml" ), MediaType.APPLICATION_XML_TYPE, getClass().getResourceAsStream( "test_data.xml" ) );
+      ActionResponse response = db().put( DOC_ID, null, new AttachmentId( "test_data.xml" ), MediaType.APPLICATION_XML_TYPE, getClass().getResourceAsStream( "test_data.xml" ) );
       assertEquals( "daDocId", response.getId().asString() );
       assertEquals( REV_1, response.getRev().asString() );
     }
 
     //Add a second attachment
     {
-      ActionResponse response = db.put( DOC_ID, new Revision( REV_1 ), new AttachmentId( "test_data2.xml" ), MediaType.APPLICATION_XML_TYPE, getClass().getResourceAsStream( "test_data2.xml" ) );
+      ActionResponse response = db().put( DOC_ID, new Revision( REV_1 ), new AttachmentId( "test_data2.xml" ), MediaType.APPLICATION_XML_TYPE, getClass().getResourceAsStream( "test_data2.xml" ) );
       assertEquals( "daDocId", response.getId().asString() );
       assertEquals( REV_2, response.getRev().asString() );
     }
 
     //Get the doc
     {
-      byte[] read = ByteStreams.toByteArray( db.get( DOC_ID ) );
+      byte[] read = ByteStreams.toByteArray( db().get( DOC_ID ) );
       JsonUtils.assertJsonEquals( getClass().getResource( "doc_with_attachment2.json" ), new String( read ) );
     }
 
     //Get the attachment1
     {
-      byte[] read = ByteStreams.toByteArray( db.get( DOC_ID, new AttachmentId( "test_data.xml" ) ) );
+      byte[] read = ByteStreams.toByteArray( db().get( DOC_ID, new AttachmentId( "test_data.xml" ) ) );
       AssertUtils.assertXMLEquals( getClass().getResource( "test_data.xml" ), new String( read ) );
       assertEquals( new String( ByteStreams.toByteArray( getClass().getResourceAsStream( "test_data.xml" ) ) ), new String( read ) );
     }
     //Get the attachment2
     {
-      byte[] read = ByteStreams.toByteArray( db.get( DOC_ID, new AttachmentId( "test_data2.xml" ) ) );
+      byte[] read = ByteStreams.toByteArray( db().get( DOC_ID, new AttachmentId( "test_data2.xml" ) ) );
       AssertUtils.assertXMLEquals( getClass().getResource( "test_data2.xml" ), new String( read ) );
       assertEquals( new String( ByteStreams.toByteArray( getClass().getResourceAsStream( "test_data2.xml" ) ) ), new String( read ) );
     }
 
     //Update the attachment
     {
-      ActionResponse response = db.put( DOC_ID, new Revision( REV_2 ), new AttachmentId( "test_data2.xml" ), MediaType.TEXT_PLAIN_TYPE, new ByteArrayInputStream( "newContent".getBytes() ) );
+      ActionResponse response = db().put( DOC_ID, new Revision( REV_2 ), new AttachmentId( "test_data2.xml" ), MediaType.TEXT_PLAIN_TYPE, new ByteArrayInputStream( "newContent".getBytes() ) );
       assertEquals( "daDocId", response.getId().asString() );
       assertEquals( REV_3, response.getRev().asString() );
 
-      byte[] read = ByteStreams.toByteArray( db.get( DOC_ID, new AttachmentId( "test_data2.xml" ) ) );
+      byte[] read = ByteStreams.toByteArray( db().get( DOC_ID, new AttachmentId( "test_data2.xml" ) ) );
       assertEquals( "newContent", new String( read ) );
     }
 
     //Delete the attachment
     {
-      ActionResponse response = db.delete( DOC_ID, new Revision( REV_3 ), new AttachmentId( "test_data.xml" ) );
+      ActionResponse response = db().delete( DOC_ID, new Revision( REV_3 ), new AttachmentId( "test_data.xml" ) );
       assertEquals( DOC_ID, response.getId() );
       assertEquals( REV_4, response.getRev().asString() );
     }
 
     {
-      byte[] read = ByteStreams.toByteArray( db.get( DOC_ID ) );
+      byte[] read = ByteStreams.toByteArray( db().get( DOC_ID ) );
       JsonUtils.assertJsonEquals( getClass().getResource( "doc_with_attachment_deleted.json" ), new String( read ) );
     }
 
@@ -223,7 +223,7 @@ public class AttachmentsTest extends CouchTest {
     //Delete attachment with invalid rev
     {
       try {
-        db.delete( DOC_ID, new Revision( REV_1 ), new AttachmentId( "test_data2.xml" ) );
+        db().delete( DOC_ID, new Revision( REV_1 ), new AttachmentId( "test_data2.xml" ) );
         fail( "Where is the Exception" );
       } catch ( ActionFailedException e ) {
         assertEquals( "conflict", e.getError() );
