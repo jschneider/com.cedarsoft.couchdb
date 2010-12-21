@@ -35,6 +35,7 @@ import com.cedarsoft.JsonUtils;
 import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.CouchDoc;
+import com.cedarsoft.couchdb.CouchTest;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.io.ActionFailedExceptionSerializer;
 import com.cedarsoft.couchdb.io.CouchDocSerializer;
@@ -42,12 +43,7 @@ import com.cedarsoft.couchdb.io.CreationResponseSerializer;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import org.jcouchdb.db.Database;
 import org.jcouchdb.db.Response;
-import org.jcouchdb.db.Server;
-import org.jcouchdb.db.ServerImpl;
-import org.jcouchdb.exception.CouchDBException;
-import org.jetbrains.annotations.NonNls;
 import org.junit.*;
 
 import javax.ws.rs.core.MediaType;
@@ -60,30 +56,7 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class FooCouchDb {
-  @NonNls
-  public static final String HOST = "localhost";
-  @NonNls
-  public static final int PORT = 5984;
-  @NonNls
-  public static final String DB_NAME = "collustra_test3";
-
-  private Server server;
-  private Database database;
-
-  @Before
-  public void setUp() throws Exception {
-    server = new ServerImpl( HOST, PORT );
-
-    try {
-      server.deleteDatabase( DB_NAME );
-    } catch ( CouchDBException ignore ) {
-    }
-
-    assertTrue( server.createDatabase( DB_NAME ) );
-    database = new Database( server, DB_NAME );
-  }
-
+public class FooCouchDb extends CouchTest {
   @Test
   public void testMVCC() throws Exception {
     Foo foo = new Foo( 42, "asdf" );
@@ -95,31 +68,31 @@ public class FooCouchDb {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     serializer.serialize( info, fooSerializer, out );
     JsonUtils.assertJsonEquals( "{\n" +
-      "  \"_id\" : \"daId\",\n" +
-      "  \"@type\" : \"foo\",\n" +
-      "  \"@version\" : \"1.0.0\"," +
-      "  \"aValue\" : 42,\n" +
-      "  \"description\" : \"asdf\"\n" +
-      "}", out.toString() );
+                                  "  \"_id\" : \"daId\",\n" +
+                                  "  \"@type\" : \"foo\",\n" +
+                                  "  \"@version\" : \"1.0.0\"," +
+                                  "  \"aValue\" : 42,\n" +
+                                  "  \"description\" : \"asdf\"\n" +
+                                  "}", out.toString() );
 
-    String uri = "/" + database.getName() + "/" + info.getId();
+    String uri = "/" + db().getDbName() + "/" + info.getId();
     {
-      Response response0 = server.put( uri, out.toByteArray(), MediaType.APPLICATION_JSON );
+      Response response0 = server().put( uri, out.toByteArray(), MediaType.APPLICATION_JSON );
       JsonUtils.assertJsonEquals( "{\"ok\":true,\"id\":\"daId\",\"rev\":\"1-a61702329aa7cc6b870f7cfcc24aacac\"}", response0.getContentAsString() );
       assertEquals( 201, response0.getCode() );
     }
 
     {
-      Response response1 = server.get( uri );
+      Response response1 = server().get( uri );
       String responseContent1 = response1.getContentAsString();
       JsonUtils.assertJsonEquals( "{\n" +
-        "  \"_id\" : \"daId\",\n" +
-        "  \"_rev\" : \"1-a61702329aa7cc6b870f7cfcc24aacac\",\n" +
-        "  \"@type\" : \"foo\"," +
-        "  \"@version\" : \"1.0.0\",\n" +
-        "  \"aValue\" : 42,\n" +
-        "  \"description\" : \"asdf\"\n" +
-        "}", responseContent1 );
+                                    "  \"_id\" : \"daId\",\n" +
+                                    "  \"_rev\" : \"1-a61702329aa7cc6b870f7cfcc24aacac\",\n" +
+                                    "  \"@type\" : \"foo\"," +
+                                    "  \"@version\" : \"1.0.0\",\n" +
+                                    "  \"aValue\" : 42,\n" +
+                                    "  \"description\" : \"asdf\"\n" +
+                                    "}", responseContent1 );
       assertEquals( 200, response1.getCode() );
 
       CouchDoc<Foo> deserialized = serializer.deserialize( fooSerializer, new ByteArrayInputStream( responseContent1.getBytes() ) );
@@ -128,13 +101,13 @@ public class FooCouchDb {
       assertEquals( 42, deserialized.getObject().getaValue() );
       assertEquals( "asdf", deserialized.getObject().getDescription() );
 
-      Response response2 = server.put( uri, responseContent1.getBytes(), MediaType.APPLICATION_JSON );
+      Response response2 = server().put( uri, responseContent1.getBytes(), MediaType.APPLICATION_JSON );
       ActionResponse actionResponse = new CreationResponseSerializer().deserialize( 201, response2.getInputStream() );
       assertEquals( "2-4ffec4730eec590d07f82789cbe991c6", actionResponse.getRev().asString() );
       assertEquals( 201, response2.getCode() );
       assertEquals( deserialized.getId(), actionResponse.getId() );
 
-      Response response3 = server.put( uri, responseContent1.getBytes(), MediaType.APPLICATION_JSON );
+      Response response3 = server().put( uri, responseContent1.getBytes(), MediaType.APPLICATION_JSON );
       ActionFailedException actionFailedResponse1 = new ActionFailedExceptionSerializer().deserialize( response3.getCode(), response3.getInputStream() );
       assertEquals( "conflict", actionFailedResponse1.getError() );
       assertEquals( "Document update conflict.", actionFailedResponse1.getReason() );
@@ -149,16 +122,16 @@ public class FooCouchDb {
 
     byte[] serialized = serializer.serializeToByteArray( foo );
     JsonUtils.assertJsonEquals( "{\n" +
-      "  \"@type\" : \"foo\",\n" +
-      "\"@version\" : \"1.0.0\"," +
-      "  \"aValue\" : 42,\n" +
-      "  \"description\" : \"asdf\"\n" +
-      "}", new String( serialized ) );
+                                  "  \"@type\" : \"foo\",\n" +
+                                  "\"@version\" : \"1.0.0\"," +
+                                  "  \"aValue\" : 42,\n" +
+                                  "  \"description\" : \"asdf\"\n" +
+                                  "}", new String( serialized ) );
 
     Client client = new Client();
-    WebResource server = client.resource( "http://" + HOST + ":" + PORT );
-    WebResource db = server.path( DB_NAME );
 
+    WebResource server = client.resource( db().getURI() );
+    WebResource db = server;
     {
       ClientResponse response = db.path( "daDoc" ).put( ClientResponse.class, serialized );
       String responseAsString = response.getEntity( String.class );
@@ -184,9 +157,9 @@ public class FooCouchDb {
 
     assertEquals( 409, response.getStatus() );
     JsonUtils.assertJsonEquals( "{\n" +
-      "  \"error\" : \"conflict\",\n" +
-      "  \"reason\" : \"Document update conflict.\"\n" +
-      "}", responseAsString );
+                                  "  \"error\" : \"conflict\",\n" +
+                                  "  \"reason\" : \"Document update conflict.\"\n" +
+                                  "}", responseAsString );
   }
 
   @Test
@@ -196,15 +169,15 @@ public class FooCouchDb {
 
     byte[] serialized = serializer.serializeToByteArray( foo );
     JsonUtils.assertJsonEquals( "{\n" +
-      "  \"@type\" : \"foo\"," +
-      "\"@version\" : \"1.0.0\",\n" +
-      "  \"aValue\" : 42,\n" +
-      "  \"description\" : \"asdf\"\n" +
-      "}", new String( serialized ) );
+                                  "  \"@type\" : \"foo\"," +
+                                  "\"@version\" : \"1.0.0\",\n" +
+                                  "  \"aValue\" : 42,\n" +
+                                  "  \"description\" : \"asdf\"\n" +
+                                  "}", new String( serialized ) );
 
     Client client = new Client();
-    WebResource server = client.resource( "http://" + HOST + ":" + PORT );
-    WebResource db = server.path( DB_NAME );
+    WebResource server = client.resource( db().getURI() );
+    WebResource db = server;
 
     {
       ClientResponse response = db.path( "daDoc" ).put( ClientResponse.class, serialized );
