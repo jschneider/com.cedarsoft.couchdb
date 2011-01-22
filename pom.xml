@@ -13,6 +13,7 @@
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>CouchDB Parent</name>
+  <description>Parent for CouchDB integration</description>
 
   <scm>
     <connection>scm:git:git://git.cedarsoft.com/com.cedarsoft.couchdb</connection>
