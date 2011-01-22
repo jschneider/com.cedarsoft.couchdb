@@ -2,6 +2,7 @@ package com.cedarsoft.couchdb.test;
 
 import com.cedarsoft.CanceledException;
 import com.cedarsoft.couchdb.CouchDatabase;
+import com.cedarsoft.couchdb.CouchDbException;
 import com.sun.security.auth.UserPrincipal;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
@@ -22,6 +23,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.Principal;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -43,16 +47,22 @@ public class CouchDbRule implements MethodRule {
 
   @Nullable
   protected CouchDatabase db;
+
+  /**
+   * Contains all dbs that are currently active
+   */
+  private final Set<CouchDatabase> dbs = new HashSet<CouchDatabase>();
+
   @Nullable
   protected URI serverURI;
   @Nullable
   private Server server;
   @Nullable
   private final URL viewResource;
-
   @Nullable
   @NonNls
   private final String dbBaseName;
+
 
   public CouchDbRule() {
     this( null );
@@ -72,15 +82,16 @@ public class CouchDbRule implements MethodRule {
     this.dbBaseName = dbBaseName;
   }
 
-  public void before() throws IOException, URISyntaxException {
-    serverURI = getServerUri();
-    server = new ServerImpl( serverURI.getHost(), serverURI.getPort() );
+  public void before() throws IOException, URISyntaxException, CouchDbException {
+    URI currentUri = getServerUri();
+    serverURI = currentUri;
+    Server currentServer = new ServerImpl( serverURI.getHost(), currentUri.getPort() );
 
     final String username = getUsername();
     final String password = getPassword();
 
     if ( username != null && password != null ) {
-      server.setCredentials( AuthScope.ANY, new Credentials() {
+      currentServer.setCredentials( AuthScope.ANY, new Credentials() {
         @Override
         public Principal getUserPrincipal() {
           return new UserPrincipal( username );
@@ -92,18 +103,20 @@ public class CouchDbRule implements MethodRule {
         }
       } );
     }
+
+    this.server = currentServer;
     db = createDb( createNewTestDbName() );
   }
 
   @Nullable
   @NonNls
-  private String getUsername() {
+  protected String getUsername() {
     return System.getProperty( KEY_USER );
   }
 
   @Nullable
   @NonNls
-  private String getPassword() {
+  protected String getPassword() {
     return System.getProperty( KEY_PASS );
   }
 
@@ -121,22 +134,29 @@ public class CouchDbRule implements MethodRule {
 
     Server currentServer = server;
     if ( currentServer != null ) {
-      currentServer.deleteDatabase( db.getDbName() );
+      for ( Iterator<CouchDatabase> iterator = dbs.iterator(); iterator.hasNext(); ) {
+        CouchDatabase couchDatabase = iterator.next();
+        currentServer.deleteDatabase( couchDatabase.getDbName() );
+        iterator.remove();
+      }
     }
     db = null;
   }
 
   @NotNull
-  public CouchDatabase createDb( @NotNull @NonNls String dbName ) throws IOException, URISyntaxException {
+  public CouchDatabase createDb( @NotNull @NonNls String dbName ) throws IOException, URISyntaxException, CouchDbException {
     try {
       server.deleteDatabase( dbName );
     } catch ( CouchDBException ignore ) {
     }
-    assertTrue( server.createDatabase( dbName ) );
 
+    assertTrue( server.createDatabase( dbName ) );
     publishViews( dbName );
 
-    return new CouchDatabase( serverURI, dbName );
+    CouchDatabase couchDatabase = new CouchDatabase( serverURI, dbName );
+
+    this.dbs.add( couchDatabase );
+    return couchDatabase;
   }
 
   public void publishViews( @NotNull @NonNls String dbName ) throws URISyntaxException, IOException {
@@ -209,7 +229,7 @@ public class CouchDbRule implements MethodRule {
   @NotNull
   public CouchDatabase getCurrentDb() {
     if ( db == null ) {
-      throw new IllegalStateException( "Not db" );
+      throw new IllegalStateException( "No db available" );
     }
     return db;
   }

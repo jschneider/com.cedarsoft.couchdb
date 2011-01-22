@@ -34,9 +34,13 @@ package com.cedarsoft.couchdb;
 import com.cedarsoft.CanceledException;
 import com.cedarsoft.couchdb.test.CouchDbRule;
 import org.jcouchdb.db.Server;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.*;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
@@ -46,11 +50,22 @@ public abstract class CouchTest {
   @Rule
   public CouchDbRule couchDbRule = new CouchDbRule( getViewResource() );
 
-
+  @NotNull
   protected CouchDatabase db() {
     return couchDbRule.getCurrentDb();
   }
 
+  @NotNull
+  public CouchDatabase createDb( @NotNull @NonNls String name ) throws IOException, URISyntaxException, CouchDbException {
+    return couchDbRule.createDb( name );
+  }
+
+  @NotNull
+  public CouchDbRule getCouchDbRule() {
+    return couchDbRule;
+  }
+
+  @NotNull
   protected Server server() {
     return couchDbRule.getCurrentServer();
   }
