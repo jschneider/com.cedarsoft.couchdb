@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.cedarsoft</groupId>
     <artifactId>open</artifactId>
-    <version>6</version>
+    <version>10</version>
   </parent>
 
   <groupId>com.cedarsoft.couchdb</groupId>
@@ -49,7 +49,7 @@
       <dependency>
         <groupId>com.cedarsoft.serialization</groupId>
         <artifactId>jackson</artifactId>
-        <version>2.1.0</version>
+        <version>3.0.0</version>
       </dependency>
 
       <dependency>
@@ -62,13 +62,13 @@
       <dependency>
         <groupId>com.cedarsoft.commons</groupId>
         <artifactId>test-utils</artifactId>
-        <version>3.0.2</version>
+        <version>4.0.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>com.cedarsoft.serialization</groupId>
         <artifactId>test-utils</artifactId>
-        <version>2.1.0</version>
+        <version>3.0.0</version>
         <scope>test</scope>
       </dependency>
     </dependencies>

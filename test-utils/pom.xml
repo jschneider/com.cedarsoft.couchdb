@@ -19,20 +19,20 @@
     <dependency>
       <groupId>com.cedarsoft.commons</groupId>
       <artifactId>exceptions</artifactId>
-      <version>3.0.2</version>
+      <version>4.0.0</version>
     </dependency>
 
     <dependency>
       <groupId>com.cedarsoft.commons</groupId>
       <artifactId>test-utils</artifactId>
-      <version>3.0.2</version>
+      <version>4.0.0</version>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>com.cedarsoft.serialization</groupId>
       <artifactId>test-utils</artifactId>
-      <version>2.1.0</version>
+      <version>3.0.0</version>
       <scope>compile</scope>
     </dependency>
 
