@@ -50,8 +50,8 @@ public class FooSerializerTest extends AbstractJsonSerializerTest2<Foo> {
 
   @DataPoint
   public static final Entry<?> ENTRY1 = AbstractJsonSerializerTest2.create( new Foo( 42, "daDescr" ),
-                                                "{\n" +
-                                                  "  \"aValue\" : 42,\n" +
-                                                  "  \"description\" : \"daDescr\"\n" +
-                                                  "}" );
+                                                                            "{\n" +
+                                                                              "  \"aValue\" : 42,\n" +
+                                                                              "  \"description\" : \"daDescr\"\n" +
+                                                                              "}" );
 }

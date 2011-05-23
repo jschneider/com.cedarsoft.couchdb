@@ -60,13 +60,13 @@ public class CouchDocSerializerTest {
     serializer.serialize( info, fooSerializer, out );
 
     JsonUtils.assertJsonEquals( "{\n" +
-      "  \"_id\" : \"daId\",\n" +
-      "  \"_rev\" : \"daRev\",\n" +
-      "  \"@type\" : \"foo\",\n" +
-      "  \"@version\" : \"1.0.0\"," +
-      "  \"aValue\" : 7,\n" +
-      "  \"description\" : \"asdf\"\n" +
-      "}", out.toString() );
+                                  "  \"_id\" : \"daId\",\n" +
+                                  "  \"_rev\" : \"daRev\",\n" +
+                                  "  \"@type\" : \"foo\",\n" +
+                                  "  \"@version\" : \"1.0.0\"," +
+                                  "  \"aValue\" : 7,\n" +
+                                  "  \"description\" : \"asdf\"\n" +
+                                  "}", out.toString() );
 
     CouchDoc<Foo> deserialized = serializer.deserialize( fooSerializer, new ByteArrayInputStream( out.toByteArray() ) );
     assertEquals( "daId", deserialized.getId().asString() );
@@ -88,12 +88,12 @@ public class CouchDocSerializerTest {
     serializer.serialize( info, fooSerializer, out );
 
     JsonUtils.assertJsonEquals( "{\n" +
-      "  \"_id\" : \"daId\",\n" +
-      "  \"@type\" : \"foo\",\n" +
-      "  \"@version\" : \"1.0.0\"," +
-      "  \"aValue\" : 7,\n" +
-      "  \"description\" : \"asdf\"\n" +
-      "}", out.toString() );
+                                  "  \"_id\" : \"daId\",\n" +
+                                  "  \"@type\" : \"foo\",\n" +
+                                  "  \"@version\" : \"1.0.0\"," +
+                                  "  \"aValue\" : 7,\n" +
+                                  "  \"description\" : \"asdf\"\n" +
+                                  "}", out.toString() );
 
     //Deserialization is not necessary, since the rev is always set when fetching from CouchDB
   }

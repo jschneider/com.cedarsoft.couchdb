@@ -74,13 +74,13 @@ public abstract class AbstractViewTest {
     scriptable = context.initStandardObjects();
   }
 
-  protected void assertViewForEmptyDoc( @Nonnull  URL view ) throws Exception {
+  protected void assertViewForEmptyDoc( @Nonnull URL view ) throws Exception {
     assertEquals( "undefined", executeView( view, EMPTY_JSON ) );
   }
 
   @Nonnull
 
-  protected String executeView( @Nonnull  URL view, @Nonnull  URL doc ) throws Exception {
+  protected String executeView( @Nonnull URL view, @Nonnull URL doc ) throws Exception {
     setUpJs();
 
     //Prepare the emit function
@@ -100,7 +100,7 @@ public abstract class AbstractViewTest {
   }
 
   @Nonnull
-  protected Object evaluateJson( @Nonnull  String objectName, @Nonnull  URL resource ) throws IOException {
+  protected Object evaluateJson( @Nonnull String objectName, @Nonnull URL resource ) throws IOException {
     return evaluate( "var " + objectName + " = " + getContent( resource ) + ";" );
   }
 
@@ -117,7 +117,7 @@ public abstract class AbstractViewTest {
    * @return the result
    */
   @Nonnull
-  protected Object evaluate( @Nonnull  String script ) {
+  protected Object evaluate( @Nonnull String script ) {
     return context.evaluateString( scriptable, script, "<unknown>", 1, null );
   }
 }

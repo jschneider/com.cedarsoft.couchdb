@@ -34,7 +34,7 @@ package com.cedarsoft.couchdb;
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class CouchDbException extends Exception{
+public class CouchDbException extends Exception {
   public CouchDbException() {
   }
 

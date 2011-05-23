@@ -107,7 +107,7 @@ public class CouchDbRule implements MethodRule {
     this( viewResource, null );
   }
 
-  public CouchDbRule( @Nullable URL viewResource, @Nullable  String dbBaseName ) {
+  public CouchDbRule( @Nullable URL viewResource, @Nullable String dbBaseName ) {
     this.viewResource = viewResource;
     this.dbBaseName = dbBaseName;
   }
@@ -174,7 +174,7 @@ public class CouchDbRule implements MethodRule {
   }
 
   @Nonnull
-  public CouchDatabase createDb( @Nonnull  String dbName ) throws IOException, URISyntaxException, CouchDbException {
+  public CouchDatabase createDb( @Nonnull String dbName ) throws IOException, URISyntaxException, CouchDbException {
     try {
       server.deleteDatabase( dbName );
     } catch ( CouchDBException ignore ) {
@@ -189,7 +189,7 @@ public class CouchDbRule implements MethodRule {
     return couchDatabase;
   }
 
-  public void publishViews( @Nonnull  String dbName ) throws URISyntaxException, IOException {
+  public void publishViews( @Nonnull String dbName ) throws URISyntaxException, IOException {
     CouchDBUpdater updater = new CouchDBUpdater();
     updater.setCreateDatabase( false );
     updater.setDatabase( new Database( server, dbName ) );

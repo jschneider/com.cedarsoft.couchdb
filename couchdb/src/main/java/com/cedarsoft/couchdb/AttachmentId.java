@@ -42,7 +42,7 @@ public class AttachmentId {
 
   private final String id;
 
-  public AttachmentId( @Nonnull  String id ) {
+  public AttachmentId( @Nonnull String id ) {
     this.id = id;
   }
 

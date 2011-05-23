@@ -60,7 +60,7 @@ public class CouchDoc<T> extends RawCouchDoc {
    * @param id     the id
    * @param object the object
    */
-  public CouchDoc( @Nonnull  DocId id, @Nonnull T object ) {
+  public CouchDoc( @Nonnull DocId id, @Nonnull T object ) {
     this( id, null, object );
   }
 
@@ -71,7 +71,7 @@ public class CouchDoc<T> extends RawCouchDoc {
    * @param rev    the revision
    * @param object the object
    */
-  public CouchDoc( @Nonnull  DocId id, @Nullable Revision rev, @Nonnull T object ) {
+  public CouchDoc( @Nonnull DocId id, @Nullable Revision rev, @Nonnull T object ) {
     super( id, rev );
     this.object = object;
   }
@@ -176,7 +176,7 @@ public class CouchDoc<T> extends RawCouchDoc {
       this( id, mediaType, ByteStreams.toByteArray( content ) );
     }
 
-    public InlineAttachment(  @Nonnull AttachmentId id, @Nonnull MediaType contentType, @Nonnull  byte[] data ) {
+    public InlineAttachment( @Nonnull AttachmentId id, @Nonnull MediaType contentType, @Nonnull byte[] data ) {
       super( id, contentType );
       this.data = data.clone();
     }

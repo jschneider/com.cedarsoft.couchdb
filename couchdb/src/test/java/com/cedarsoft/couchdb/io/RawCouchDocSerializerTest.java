@@ -56,9 +56,9 @@ public class RawCouchDocSerializerTest {
     serializer.serialize( doc, out );
 
     JsonUtils.assertJsonEquals( "{\n" +
-      "  \"_id\" : \"daId\",\n" +
-      "  \"_rev\" : \"daRev\"\n" +
-      "}", out.toString() );
+                                  "  \"_id\" : \"daId\",\n" +
+                                  "  \"_rev\" : \"daRev\"\n" +
+                                  "}", out.toString() );
 
     RawCouchDoc deserialized = serializer.deserialize( new ByteArrayInputStream( out.toByteArray() ) );
     assertEquals( "daId", deserialized.getId().asString() );
@@ -75,8 +75,8 @@ public class RawCouchDocSerializerTest {
     serializer.serialize( doc, out );
 
     JsonUtils.assertJsonEquals( "{\n" +
-      "  \"_id\" : \"daId\"\n" +
-      "}", out.toString() );
+                                  "  \"_id\" : \"daId\"\n" +
+                                  "}", out.toString() );
 
     //Deserialization is not necessary, since the rev is always set when fetching from CouchDB
   }

@@ -42,7 +42,7 @@ public class DocId {
 
   private final String id;
 
-  public DocId( @Nonnull  String id ) {
+  public DocId( @Nonnull String id ) {
     this.id = id;
   }
 

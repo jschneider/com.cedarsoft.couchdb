@@ -43,7 +43,7 @@ public class Revision {
 
   private final String rev;
 
-  public Revision(  @Nonnull String rev ) {
+  public Revision( @Nonnull String rev ) {
     this.rev = rev;
   }
 

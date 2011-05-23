@@ -69,10 +69,10 @@ public class RowSerializerTest {
     new RowSerializer().serialize( row, new StringSerializer(), NullSerializer.INSTANCE, out );
 
     JsonUtils.assertJsonEquals( "{\n" +
-      "  \"id\":\"daId\",\n" +
-      "  \"key\":\"daKey\",\n" +
-      "  \"value\":null\n" +
-      "}", out.toString() );
+                                  "  \"id\":\"daId\",\n" +
+                                  "  \"key\":\"daKey\",\n" +
+                                  "  \"value\":null\n" +
+                                  "}", out.toString() );
 
     Row<String, Void, ?> deserialized = new RowSerializer().deserialize( new StringSerializer(), NullSerializer.INSTANCE, new ByteArrayInputStream( out.toByteArray() ) );
     assertNotNull( deserialized );
@@ -91,10 +91,10 @@ public class RowSerializerTest {
     new RowSerializer().serialize( row, new StringSerializer(), new StringSerializer(), out );
 
     JsonUtils.assertJsonEquals( "{\n" +
-      "  \"id\":\"daId\",\n" +
-      "  \"key\":\"daKey\",\n" +
-      "  \"value\":\"daValue\"\n" +
-      "}", out.toString() );
+                                  "  \"id\":\"daId\",\n" +
+                                  "  \"key\":\"daKey\",\n" +
+                                  "  \"value\":\"daValue\"\n" +
+                                  "}", out.toString() );
 
 
     Row<String, String, ?> deserialized = new RowSerializer().deserialize( new StringSerializer(), new StringSerializer(), new ByteArrayInputStream( out.toByteArray() ) );

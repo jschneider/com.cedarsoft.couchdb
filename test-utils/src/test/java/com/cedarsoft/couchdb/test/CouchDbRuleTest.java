@@ -59,19 +59,19 @@ public class CouchDbRuleTest {
     final String[] dbName = {null};
     final boolean[] called = {false};
     rule.apply( new Statement() {
-      @Override
-      public void evaluate() throws Throwable {
-        called[0] = true;
-        assertThat( rule.getCurrentDb() ).isNotNull();
-        assertThat( rule.getCurrentServer().isShutdown() ).isFalse();
+                  @Override
+                  public void evaluate() throws Throwable {
+                    called[0] = true;
+                    assertThat( rule.getCurrentDb() ).isNotNull();
+                    assertThat( rule.getCurrentServer().isShutdown() ).isFalse();
 
-        dbName[0] = rule.getCurrentDb().getDbName();
-        assertThat( rule.getCurrentServer().listDatabases().contains( dbName[0] ) );
+                    dbName[0] = rule.getCurrentDb().getDbName();
+                    assertThat( rule.getCurrentServer().listDatabases().contains( dbName[0] ) );
 
-        assertThat( rule.createDb( COUCH_DB_RULE_TEST_SECOND ).getDbName() ).isEqualTo( COUCH_DB_RULE_TEST_SECOND );
-        assertThat( rule.createDb( COUCH_DB_RULE_TEST_THIRD ).getDbName() ).isEqualTo( COUCH_DB_RULE_TEST_THIRD );
-      }
-    }, frameworkMethod, this ).evaluate();
+                    assertThat( rule.createDb( COUCH_DB_RULE_TEST_SECOND ).getDbName() ).isEqualTo( COUCH_DB_RULE_TEST_SECOND );
+                    assertThat( rule.createDb( COUCH_DB_RULE_TEST_THIRD ).getDbName() ).isEqualTo( COUCH_DB_RULE_TEST_THIRD );
+                  }
+                }, frameworkMethod, this ).evaluate();
     assertThat( called[0] ).isTrue();
 
     assertRuleValuesAreNull( rule );
@@ -85,15 +85,15 @@ public class CouchDbRuleTest {
     final CouchDbRule rule = new CouchDbRule();
 
     rule.apply( new Statement() {
-      @Override
-      public void evaluate() throws Throwable {
-        try {
-          rule.createDb( "INVALID_NAme/" );
-          fail( "Where is the Exception" );
-        } catch ( CouchDBException ignore ) {
-        }
-      }
-    }, frameworkMethod, this ).evaluate();
+                  @Override
+                  public void evaluate() throws Throwable {
+                    try {
+                      rule.createDb( "INVALID_NAme/" );
+                      fail( "Where is the Exception" );
+                    } catch ( CouchDBException ignore ) {
+                    }
+                  }
+                }, frameworkMethod, this ).evaluate();
   }
 
   private void assertRuleValuesAreNull( CouchDbRule rule ) {

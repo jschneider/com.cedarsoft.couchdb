@@ -55,7 +55,7 @@ public abstract class CouchTest {
   }
 
   @Nonnull
-  public CouchDatabase createDb( @Nonnull  String name ) throws IOException, URISyntaxException, CouchDbException {
+  public CouchDatabase createDb( @Nonnull String name ) throws IOException, URISyntaxException, CouchDbException {
     return couchDbRule.createDb( name );
   }
 
