@@ -42,13 +42,11 @@ import org.jcouchdb.db.Server;
 import org.jcouchdb.db.ServerImpl;
 import org.jcouchdb.exception.CouchDBException;
 import org.jcouchdb.util.CouchDBUpdater;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import org.junit.rules.*;
 import org.junit.runners.model.*;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;

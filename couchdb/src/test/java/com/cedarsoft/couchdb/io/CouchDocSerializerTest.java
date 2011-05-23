@@ -35,7 +35,6 @@ import com.cedarsoft.JsonUtils;
 import com.cedarsoft.couchdb.CouchDoc;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
-import com.cedarsoft.couchdb.io.CouchDocSerializer;
 import com.cedarsoft.couchdb.test.Foo;
 import org.junit.*;
 

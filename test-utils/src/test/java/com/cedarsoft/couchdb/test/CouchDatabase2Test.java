@@ -35,17 +35,16 @@ import com.cedarsoft.JsonUtils;
 import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.Bar;
-import com.cedarsoft.couchdb.CouchTest;
 import com.cedarsoft.couchdb.CouchDoc;
+import com.cedarsoft.couchdb.CouchTest;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.couchdb.io.CouchDocSerializer;
 import com.google.common.io.ByteStreams;
-
-import javax.annotation.Nonnull;
 import org.junit.*;
 import org.junit.rules.*;
 
+import javax.annotation.Nonnull;
 import java.io.ByteArrayInputStream;
 import java.net.URISyntaxException;
 

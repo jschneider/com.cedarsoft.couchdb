@@ -34,8 +34,6 @@ package com.cedarsoft.couchdb;
 import com.google.common.io.ByteStreams;
 
 import javax.annotation.Nonnull;
-
-
 import javax.annotation.Nullable;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;

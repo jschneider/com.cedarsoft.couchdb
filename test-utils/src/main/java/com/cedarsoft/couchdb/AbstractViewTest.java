@@ -32,12 +32,11 @@
 package com.cedarsoft.couchdb;
 
 import org.apache.commons.io.IOUtils;
-
-import javax.annotation.Nonnull;
 import org.junit.*;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.URL;
 

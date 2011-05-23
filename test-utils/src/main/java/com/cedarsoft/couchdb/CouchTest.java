@@ -34,12 +34,10 @@ package com.cedarsoft.couchdb;
 import com.cedarsoft.CanceledException;
 import com.cedarsoft.couchdb.test.CouchDbRule;
 import org.jcouchdb.db.Server;
+import org.junit.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import org.junit.*;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;

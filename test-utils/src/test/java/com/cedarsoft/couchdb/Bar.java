@@ -38,8 +38,8 @@ import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonProcessingException;
-import javax.annotation.Nonnull;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -69,7 +69,7 @@ public class Bar {
   public void setDescription( String description ) {
     this.description = description;
   }
-  
+
   public static class Serializer extends AbstractJacksonSerializer<Bar> {
     public Serializer() {
       super( "bar", VersionRange.single( 1, 0, 0 ) );
@@ -94,5 +94,5 @@ public class Bar {
       return new Bar( value, description );
     }
   }
-  
+
 }
