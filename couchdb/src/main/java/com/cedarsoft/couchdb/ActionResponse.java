@@ -34,23 +34,23 @@ package com.cedarsoft.couchdb;
 import com.cedarsoft.couchdb.io.ActionFailedExceptionSerializer;
 import com.cedarsoft.couchdb.io.CreationResponseSerializer;
 import com.sun.jersey.api.client.ClientResponse;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * A response for an action like put/delete
  */
 public class ActionResponse {
-  @NotNull
-  @NonNls
+  @Nonnull
+
   private final DocId id;
-  @NotNull
-  @NonNls
+  @Nonnull
+
   private final Revision rev;
 
   private final int status;
 
-  public ActionResponse( @NotNull DocId id, @NotNull Revision rev, int status ) {
+  public ActionResponse( @Nonnull DocId id, @Nonnull Revision rev, int status ) {
     this.id = id;
     this.rev = rev;
     this.status = status;
@@ -60,14 +60,14 @@ public class ActionResponse {
     return status;
   }
 
-  @NotNull
-  @NonNls
+  @Nonnull
+
   public DocId getId() {
     return id;
   }
 
-  @NotNull
-  @NonNls
+  @Nonnull
+
   public Revision getRev() {
     return rev;
   }
@@ -101,8 +101,8 @@ public class ActionResponse {
     return result;
   }
 
-  @NotNull
-  public static ActionResponse create( @NotNull ClientResponse response ) throws ActionFailedException {
+  @Nonnull
+  public static ActionResponse create( @Nonnull ClientResponse response ) throws ActionFailedException {
     verifyNoError( response );
     return new CreationResponseSerializer().deserialize( response );
   }
@@ -113,7 +113,7 @@ public class ActionResponse {
    * @param response the response
    * @throws ActionFailedException
    */
-  public static void verifyNoError( @NotNull ClientResponse response ) throws ActionFailedException {
+  public static void verifyNoError( @Nonnull ClientResponse response ) throws ActionFailedException {
     if ( !isNotSuccessful( response ) ) {
       return;
     }
@@ -125,7 +125,7 @@ public class ActionResponse {
     throw new ActionFailedExceptionSerializer().deserialize( response.getStatus(), response.getEntityInputStream() );
   }
 
-  public static boolean isNotSuccessful( @NotNull ClientResponse response ) {
+  public static boolean isNotSuccessful( @Nonnull ClientResponse response ) {
     return response.getStatus() < 200 || response.getStatus() > 299;
   }
 }

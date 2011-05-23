@@ -31,9 +31,10 @@
 
 package com.cedarsoft.couchdb;
 
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 
 /**
  * A raw couch doc - without any further informations
@@ -41,18 +42,16 @@ import org.jetbrains.annotations.Nullable;
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class RawCouchDoc {
-  @NotNull
-  @NonNls
+  @Nonnull
   protected final DocId id;
   @Nullable
-  @NonNls
   protected Revision rev;
 
-  public RawCouchDoc( @NotNull @NonNls DocId id ) {
+  public RawCouchDoc( @Nonnull DocId id ) {
     this( id, null );
   }
 
-  public RawCouchDoc( @NotNull @NonNls DocId id, @Nullable @NonNls Revision rev ) {
+  public RawCouchDoc( @Nonnull DocId id, @Nullable Revision rev ) {
     this.id = id;
     this.rev = rev;
   }
@@ -62,7 +61,7 @@ public class RawCouchDoc {
    *
    * @return the id
    */
-  @NotNull
+  @Nonnull
   public DocId getId() {
     return id;
   }
@@ -82,7 +81,7 @@ public class RawCouchDoc {
    * @return the revision
    */
   @Nullable
-  @NonNls
+
   public Revision getRev() {
     return rev;
   }

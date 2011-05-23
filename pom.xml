@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.cedarsoft</groupId>
     <artifactId>open</artifactId>
-    <version>10</version>
+    <version>11</version>
   </parent>
 
   <groupId>com.cedarsoft.couchdb</groupId>
@@ -26,9 +26,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.intellij</groupId>
-      <artifactId>annotations</artifactId>
-      <scope>provided</scope>
+      <groupId>net.sourceforge.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
     </dependency>
   </dependencies>
 

@@ -43,8 +43,8 @@ import com.sun.jersey.core.util.Base64;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayOutputStream;
@@ -58,19 +58,19 @@ import static com.cedarsoft.serialization.jackson.AbstractJacksonSerializer.next
 import static com.cedarsoft.serialization.jackson.AbstractJacksonSerializer.nextToken;
 
 public class CouchDocSerializer {
-  @NonNls
+
   public static final String PROPERTY_ID = RawCouchDocSerializer.PROPERTY_ID;
-  @NonNls
+
   public static final String PROPERTY_REV = RawCouchDocSerializer.PROPERTY_REV;
 
-  @NotNull
-  public <T> byte[] serialize( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> wrappedSerializer ) {
+  @Nonnull
+  public <T> byte[] serialize( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> wrappedSerializer ) {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     serialize( doc, wrappedSerializer, out );
     return out.toByteArray();
   }
 
-  public <T> void serialize( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> wrappedSerializer, @NotNull OutputStream out ) {
+  public <T> void serialize( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> wrappedSerializer, @Nonnull OutputStream out ) {
     try {
       JsonGenerator generator = RawCouchDocSerializer.createJsonGenerator( out );
 
@@ -81,7 +81,7 @@ public class CouchDocSerializer {
     }
   }
 
-  public <T> void serialize( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> wrappedSerializer, @NotNull JsonGenerator generator ) throws IOException {
+  public <T> void serialize( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> wrappedSerializer, @Nonnull JsonGenerator generator ) throws IOException {
     generator.writeStartObject();
     RawCouchDocSerializer.serializeIdAndRev( generator, doc );
 
@@ -99,7 +99,7 @@ public class CouchDocSerializer {
     generator.writeEndObject();
   }
 
-  private <T> void serializeInlineAttachments( @NotNull CouchDoc<T> doc, @NotNull JsonGenerator generator ) throws IOException {
+  private <T> void serializeInlineAttachments( @Nonnull CouchDoc<T> doc, @Nonnull JsonGenerator generator ) throws IOException {
     if ( !doc.hasInlineAttachments() ) {
       return;
     }
@@ -121,8 +121,8 @@ public class CouchDocSerializer {
     generator.writeEndObject();
   }
 
-  @NotNull
-  public <T> CouchDoc<T> deserialize( @NotNull JacksonSerializer<T> wrappedSerializer, @NotNull InputStream in ) {
+  @Nonnull
+  public <T> CouchDoc<T> deserialize( @Nonnull JacksonSerializer<T> wrappedSerializer, @Nonnull InputStream in ) {
     try {
       JsonParser parser = RawCouchDocSerializer.createJsonParser( in );
       CouchDoc<T> doc = deserialize( wrappedSerializer, parser );
@@ -136,8 +136,8 @@ public class CouchDocSerializer {
     }
   }
 
-  @NotNull
-  public <T> CouchDoc<T> deserialize( @NotNull JacksonSerializer<T> wrappedSerializer, @NotNull JsonParser parser ) throws InvalidTypeException, IOException {
+  @Nonnull
+  public <T> CouchDoc<T> deserialize( @Nonnull JacksonSerializer<T> wrappedSerializer, @Nonnull JsonParser parser ) throws InvalidTypeException, IOException {
     nextToken( parser, JsonToken.START_OBJECT );
 
     nextFieldValue( parser, PROPERTY_ID );
@@ -164,7 +164,7 @@ public class CouchDocSerializer {
     return doc;
   }
 
-  @NotNull
+  @Nonnull
   private List<? extends CouchDoc.Attachment> deserializeAttachments( JsonParser parser ) throws IOException {
     List<CouchDoc.Attachment> attachments = new ArrayList<CouchDoc.Attachment>();
 

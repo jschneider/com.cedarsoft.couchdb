@@ -31,7 +31,7 @@
 
 package com.cedarsoft.couchdb;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,10 +46,10 @@ public class ViewResponse<K, V, D> {
   private final int totalRows;
   private final int offset;
 
-  @NotNull
+  @Nonnull
   private final List<Row<K, V, D>> rows;
 
-  public ViewResponse( int totalRows, int offset, @NotNull List<Row<K, V, D>> rows ) {
+  public ViewResponse( int totalRows, int offset, @Nonnull List<Row<K, V, D>> rows ) {
     this.totalRows = totalRows;
     this.offset = offset;
     this.rows = new ArrayList<Row<K, V, D>>( rows );
@@ -63,12 +63,12 @@ public class ViewResponse<K, V, D> {
     return offset;
   }
 
-  @NotNull
+  @Nonnull
   public List<? extends Row<K, V, D>> getRows() {
     return Collections.unmodifiableList( rows );
   }
 
-  @NotNull
+  @Nonnull
   public List<? extends D> getRowObjects() {
     List<D> objects = new ArrayList<D>();
 

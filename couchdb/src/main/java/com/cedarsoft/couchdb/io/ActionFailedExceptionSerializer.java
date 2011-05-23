@@ -40,8 +40,8 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,13 +51,13 @@ import java.io.OutputStream;
  *
  */
 public class ActionFailedExceptionSerializer {
-  @NonNls
+
   public static final String PROPERTY_ERROR = "error";
-  @NonNls
+
   public static final String PROPERTY_REASON = "reason";
 
 
-  public void serialize( @NotNull ActionFailedException object, @NotNull OutputStream out ) throws IOException {
+  public void serialize( @Nonnull ActionFailedException object, @Nonnull OutputStream out ) throws IOException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
     JsonGenerator generator = jsonFactory.createJsonGenerator( out, JsonEncoding.UTF8 );
 
@@ -69,8 +69,8 @@ public class ActionFailedExceptionSerializer {
     generator.close();
   }
 
-  @NotNull
-  public ActionFailedException deserialize( int status, @NotNull InputStream in ) throws VersionException {
+  @Nonnull
+  public ActionFailedException deserialize( int status, @Nonnull InputStream in ) throws VersionException {
     try {
       JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
@@ -87,13 +87,13 @@ public class ActionFailedExceptionSerializer {
     }
   }
 
-  public void serialize( @NotNull JsonGenerator serializeTo, @NotNull ActionFailedException object ) throws IOException {
+  public void serialize( @Nonnull JsonGenerator serializeTo, @Nonnull ActionFailedException object ) throws IOException {
     serializeTo.writeStringField( PROPERTY_ERROR, object.getError() );
     serializeTo.writeStringField( PROPERTY_REASON, object.getReason() );
   }
 
-  @NotNull
-  public ActionFailedException deserialize( int status, @NotNull JsonParser deserializeFrom ) throws VersionException, IOException {
+  @Nonnull
+  public ActionFailedException deserialize( int status, @Nonnull JsonParser deserializeFrom ) throws VersionException, IOException {
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_ERROR );
     String error = deserializeFrom.getText();
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_REASON );

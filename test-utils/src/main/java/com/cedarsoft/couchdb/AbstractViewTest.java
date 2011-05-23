@@ -32,8 +32,8 @@
 package com.cedarsoft.couchdb;
 
 import org.apache.commons.io.IOUtils;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 import org.junit.*;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
@@ -47,11 +47,11 @@ import static org.junit.Assert.*;
  *
  */
 public abstract class AbstractViewTest {
-  @NotNull
-  @NonNls
+  @Nonnull
+
   public static final URL EMIT_JS = AbstractViewTest.class.getResource( "emit.js" );
-  @NotNull
-  @NonNls
+  @Nonnull
+
   public static final URL EMPTY_JSON = AbstractViewTest.class.getResource( "empty.json" );
 
   protected Context context;
@@ -75,13 +75,13 @@ public abstract class AbstractViewTest {
     scriptable = context.initStandardObjects();
   }
 
-  protected void assertViewForEmptyDoc( @NotNull @NonNls URL view ) throws Exception {
+  protected void assertViewForEmptyDoc( @Nonnull  URL view ) throws Exception {
     assertEquals( "undefined", executeView( view, EMPTY_JSON ) );
   }
 
-  @NotNull
-  @NonNls
-  protected String executeView( @NotNull @NonNls URL view, @NotNull @NonNls URL doc ) throws Exception {
+  @Nonnull
+
+  protected String executeView( @Nonnull  URL view, @Nonnull  URL doc ) throws Exception {
     setUpJs();
 
     //Prepare the emit function
@@ -100,14 +100,14 @@ public abstract class AbstractViewTest {
     return Context.toString( evaluate( "emitted;" ) );
   }
 
-  @NotNull
-  protected Object evaluateJson( @NotNull @NonNls String objectName, @NotNull @NonNls URL resource ) throws IOException {
+  @Nonnull
+  protected Object evaluateJson( @Nonnull  String objectName, @Nonnull  URL resource ) throws IOException {
     return evaluate( "var " + objectName + " = " + getContent( resource ) + ";" );
   }
 
-  @NotNull
-  @NonNls
-  protected String getContent( @NotNull URL resource ) throws IOException {
+  @Nonnull
+
+  protected String getContent( @Nonnull URL resource ) throws IOException {
     return IOUtils.toString( resource.openStream() );
   }
 
@@ -117,8 +117,8 @@ public abstract class AbstractViewTest {
    * @param script the script that is evaluated
    * @return the result
    */
-  @NotNull
-  protected Object evaluate( @NotNull @NonNls String script ) {
+  @Nonnull
+  protected Object evaluate( @Nonnull  String script ) {
     return context.evaluateString( scriptable, script, "<unknown>", 1, null );
   }
 }

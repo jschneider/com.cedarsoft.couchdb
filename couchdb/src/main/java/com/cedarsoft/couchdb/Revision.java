@@ -31,30 +31,30 @@
 
 package com.cedarsoft.couchdb;
 
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
 
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class Revision {
-  @NotNull
-  @NonNls
+  @Nonnull
+
   private final String rev;
 
-  public Revision( @NonNls @NotNull String rev ) {
+  public Revision(  @Nonnull String rev ) {
     this.rev = rev;
   }
 
-  @NotNull
-  @NonNls
+  @Nonnull
+
   public String getRev() {
     return rev;
   }
 
-  @NotNull
-  @NonNls
+  @Nonnull
+
   public String asString() {
     return rev;
   }

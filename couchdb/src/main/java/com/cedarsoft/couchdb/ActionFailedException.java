@@ -31,23 +31,21 @@
 
 package com.cedarsoft.couchdb;
 
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 /**
  *
  */
 public class ActionFailedException extends CouchDbException {
-  @NotNull
-  @NonNls
+  @Nonnull
   private final String error;
-  @NotNull
-  @NonNls
+  @Nonnull
   private final String reason;
 
   private final int status;
 
-  public ActionFailedException( int status, @NotNull String error, @NotNull String reason ) {
+  public ActionFailedException( int status, @Nonnull String error, @Nonnull String reason ) {
     super( status + " " + error + ": " + reason );
     this.status = status;
     this.error = error;
@@ -58,12 +56,12 @@ public class ActionFailedException extends CouchDbException {
     return status;
   }
 
-  @NotNull
+  @Nonnull
   public String getError() {
     return error;
   }
 
-  @NotNull
+  @Nonnull
   public String getReason() {
     return reason;
   }

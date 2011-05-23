@@ -44,27 +44,27 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.JsonToken;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 public class CreationResponseSerializer {
-  @NonNls
+
   public static final String PROPERTY_ID = "id";
-  @NonNls
+
   public static final String PROPERTY_REV = "rev";
-  @NonNls
+
   public static final String PROPERTY_ERROR = "error";
-  @NonNls
+
   public static final String PROPERTY_REASON = "reason";
-  @NonNls
+
   public static final String PROPERTY_OK = "ok";
 
 
-  public void serialize( @NotNull ActionResponse object, @NotNull OutputStream out ) throws IOException {
+  public void serialize( @Nonnull ActionResponse object, @Nonnull OutputStream out ) throws IOException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
     JsonGenerator generator = jsonFactory.createJsonGenerator( out, JsonEncoding.UTF8 );
@@ -77,13 +77,13 @@ public class CreationResponseSerializer {
     generator.close();
   }
 
-  @NotNull
-  public ActionResponse deserialize( @NotNull ClientResponse response ) throws VersionException {
+  @Nonnull
+  public ActionResponse deserialize( @Nonnull ClientResponse response ) throws VersionException {
     return deserialize( response.getStatus(), response.getEntityInputStream() );
   }
 
-  @NotNull
-  public ActionResponse deserialize( int status, @NotNull InputStream in ) throws VersionException {
+  @Nonnull
+  public ActionResponse deserialize( int status, @Nonnull InputStream in ) throws VersionException {
     try {
       JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
@@ -100,7 +100,7 @@ public class CreationResponseSerializer {
     }
   }
 
-  public void serialize( @NotNull JsonGenerator serializeTo, @NotNull ActionResponse object ) throws IOException, JsonProcessingException {
+  public void serialize( @Nonnull JsonGenerator serializeTo, @Nonnull ActionResponse object ) throws IOException, JsonProcessingException {
     serializeTo.writeBooleanField( PROPERTY_OK, true );
     serializeTo.writeStringField( PROPERTY_ID, object.getId().asString() );
     serializeTo.writeStringField( PROPERTY_REV, object.getRev().asString() );
@@ -112,8 +112,8 @@ public class CreationResponseSerializer {
     //    }
   }
 
-  @NotNull
-  public ActionResponse deserialize( int status, @NotNull JsonParser deserializeFrom ) throws VersionException, IOException, JsonProcessingException {
+  @Nonnull
+  public ActionResponse deserialize( int status, @Nonnull JsonParser deserializeFrom ) throws VersionException, IOException, JsonProcessingException {
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_OK );
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_ID );
     String id = deserializeFrom.getText();

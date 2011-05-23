@@ -41,8 +41,8 @@ import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.couchdb.io.CouchDocSerializer;
 import com.google.common.io.ByteStreams;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 import org.junit.*;
 import org.junit.rules.*;
 
@@ -55,11 +55,11 @@ import static org.junit.Assert.*;
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class CouchDatabase2Test extends CouchTest {
-  @NonNls
+
   private static final Revision REV = new Revision( "1-8908180fecd9b17657889f91973f89eb" );
 
   private CouchDocSerializer couchDocSerializer;
-  @NotNull
+  @Nonnull
   private final Bar.Serializer serializer = new Bar.Serializer();
 
   @Before

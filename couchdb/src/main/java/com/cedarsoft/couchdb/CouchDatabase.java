@@ -39,11 +39,9 @@ import com.cedarsoft.serialization.jackson.JacksonSerializer;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.TestOnly;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
@@ -55,29 +53,29 @@ import java.net.URISyntaxException;
  *
  */
 public class CouchDatabase {
-  @NonNls
+
   public static final String PARAM_REV = "rev";
 
-  @NotNull
+  @Nonnull
   private final Client client;
-  @NotNull
+  @Nonnull
   private final WebResource dbRoot;
-  @NotNull
+  @Nonnull
   private final ViewResponseSerializer viewResponseSerializer;
 
-  @NotNull
+  @Nonnull
   private final CouchDocSerializer couchDocSerializer = new CouchDocSerializer();
 
   @Deprecated
-  public CouchDatabase( @NotNull @NonNls String host, int port, @NotNull @NonNls String dbName ) throws URISyntaxException {
+  public CouchDatabase( @Nonnull String host, int port, @Nonnull String dbName ) throws URISyntaxException {
     this( new URI( "http://" + host + ":" + port + "/" + dbName ) );
   }
 
-  public CouchDatabase( @NotNull URI serverUri, @NotNull @NonNls String dbName ) {
+  public CouchDatabase( @Nonnull URI serverUri, @Nonnull String dbName ) {
     this( serverUri.resolve( "/" + dbName ) );
   }
 
-  public CouchDatabase( @NotNull URI uri ) {
+  public CouchDatabase( @Nonnull URI uri ) {
     client = new Client();
     dbRoot = client.resource( uri );
     viewResponseSerializer = new ViewResponseSerializer( new RowSerializer( couchDocSerializer ) );
@@ -92,8 +90,8 @@ public class CouchDatabase {
    *
    * @throws ActionFailedException
    */
-  @NotNull
-  public ActionResponse put( @NotNull @NonNls DocId id, @NotNull InputStream content ) throws ActionFailedException {
+  @Nonnull
+  public ActionResponse put( @Nonnull DocId id, @Nonnull InputStream content ) throws ActionFailedException {
     ClientResponse response = dbRoot.path( id.asString() ).put( ClientResponse.class, content );
     return ActionResponse.create( response );
   }
@@ -108,8 +106,8 @@ public class CouchDatabase {
    *
    * @throws ActionFailedException
    */
-  @NotNull
-  public <T> ActionResponse put( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws ActionFailedException {
+  @Nonnull
+  public <T> ActionResponse put( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> serializer ) throws ActionFailedException {
     ClientResponse clientResponse = dbRoot.path( doc.getId().asString() ).put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
     ActionResponse actionResponse = ActionResponse.create( clientResponse );
 
@@ -130,8 +128,8 @@ public class CouchDatabase {
    *
    * @throws ActionFailedException
    */
-  @NotNull
-  public ActionResponse put( @NotNull DocId docId, @Nullable Revision revision, @NotNull MediaType mediaType, @NotNull InputStream content ) throws ActionFailedException {
+  @Nonnull
+  public ActionResponse put( @Nonnull DocId docId, @Nullable Revision revision, @Nonnull MediaType mediaType, @Nonnull InputStream content ) throws ActionFailedException {
     WebResource resource = dbRoot
       .path( docId.asString() );
 
@@ -156,8 +154,8 @@ public class CouchDatabase {
    *
    * @throws ActionFailedException
    */
-  @NotNull
-  public ActionResponse put( @NotNull DocId docId, @Nullable Revision revision, @NotNull AttachmentId attachmentId, @NotNull MediaType mediaType, @NotNull InputStream attachment ) throws ActionFailedException {
+  @Nonnull
+  public ActionResponse put( @Nonnull DocId docId, @Nullable Revision revision, @Nonnull AttachmentId attachmentId, @Nonnull MediaType mediaType, @Nonnull InputStream attachment ) throws ActionFailedException {
     WebResource resource = dbRoot
       .path( docId.asString() )
       .path( attachmentId.asString() );
@@ -172,8 +170,8 @@ public class CouchDatabase {
   }
 
   @Deprecated
-  @NotNull
-  public <T> ActionResponse putUpdated( @NotNull CouchDoc<T> doc, @NotNull JacksonSerializer<? super T> serializer ) throws ActionFailedException {
+  @Nonnull
+  public <T> ActionResponse putUpdated( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> serializer ) throws ActionFailedException {
     if ( doc.getRev() == null ) {
       throw new IllegalArgumentException( "Cannot update a doc without REV" );
     }
@@ -181,22 +179,22 @@ public class CouchDatabase {
     return put( doc, serializer );
   }
 
-  @NotNull
-  @NonNls
-  public <K, V> ViewResponse<K, V, Void> query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer ) throws InvalidTypeException, ActionFailedException, IOException {
+  @Nonnull
+
+  public <K, V> ViewResponse<K, V, Void> query( @Nonnull String designDocumentId, @Nonnull String viewId, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer ) throws InvalidTypeException, ActionFailedException, IOException {
     return query( designDocumentId, viewId, keySerializer, valueSerializer, null, null );
   }
 
-  @NotNull
-  @NonNls
-  public <K, V> ViewResponse<K, V, Void> query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @Nullable String startKey, @Nullable String endKey ) throws InvalidTypeException, ActionFailedException, IOException {
+  @Nonnull
+
+  public <K, V> ViewResponse<K, V, Void> query( @Nonnull String designDocumentId, @Nonnull String viewId, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable String startKey, @Nullable String endKey ) throws InvalidTypeException, ActionFailedException, IOException {
     InputStream stream = query( designDocumentId, viewId, false, startKey, endKey );
     return viewResponseSerializer.deserialize( keySerializer, valueSerializer, stream );
   }
 
-  @NotNull
-  @NonNls
-  public <K, V, D> ViewResponse<K, V, D> query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @NotNull JacksonSerializer<? extends D> docSerializer ) throws InvalidTypeException, ActionFailedException, IOException {
+  @Nonnull
+
+  public <K, V, D> ViewResponse<K, V, D> query( @Nonnull String designDocumentId, @Nonnull String viewId, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull JacksonSerializer<? extends D> docSerializer ) throws InvalidTypeException, ActionFailedException, IOException {
     String type = docSerializer.getType();
     String startKey = "[\"" + type + "\"]";
     String endKey = "[\"" + type + "Z\"]"; //the "Z" is used as high key
@@ -213,19 +211,19 @@ public class CouchDatabase {
    * @param viewId           describes the view id
    * @return the answer
    */
-  @NotNull
-  @NonNls
-  public InputStream query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId ) throws ActionFailedException {
+  @Nonnull
+
+  public InputStream query( @Nonnull String designDocumentId, @Nonnull String viewId ) throws ActionFailedException {
     return query( designDocumentId, viewId, false );
   }
 
-  @NotNull
-  public InputStream query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, boolean includeDocs ) throws ActionFailedException {
+  @Nonnull
+  public InputStream query( @Nonnull String designDocumentId, @Nonnull String viewId, boolean includeDocs ) throws ActionFailedException {
     return query( designDocumentId, viewId, includeDocs, null, null );
   }
 
-  @NotNull
-  public InputStream query( @NotNull @NonNls String designDocumentId, @NotNull @NonNls String viewId, boolean includeDocs, @Nullable String startKey, @Nullable String endKey ) throws ActionFailedException {
+  @Nonnull
+  public InputStream query( @Nonnull String designDocumentId, @Nonnull String viewId, boolean includeDocs, @Nullable String startKey, @Nullable String endKey ) throws ActionFailedException {
     WebResource viewPath = dbRoot.path( "_design" ).path( designDocumentId ).path( "_view" ).path( viewId );
 
     if ( startKey != null ) {
@@ -248,13 +246,13 @@ public class CouchDatabase {
    * @param id the id
    * @return the view as stream
    */
-  @NotNull
-  public InputStream get( @NotNull @NonNls DocId id ) throws ActionFailedException {
+  @Nonnull
+  public InputStream get( @Nonnull DocId id ) throws ActionFailedException {
     return get( dbRoot.path( id.asString() ) );
   }
 
-  @NotNull
-  protected InputStream get( @NotNull WebResource resource ) throws ActionFailedException {
+  @Nonnull
+  protected InputStream get( @Nonnull WebResource resource ) throws ActionFailedException {
     ClientResponse response = resource.get( ClientResponse.class );
     ActionResponse.verifyNoError( response );
     return response.getEntityInputStream();
@@ -268,13 +266,13 @@ public class CouchDatabase {
    * @param <T>        the object type
    * @return the doc
    */
-  @NotNull
-  public <T> CouchDoc<T> get( @NotNull @NonNls DocId id, @NotNull JacksonSerializer<T> serializer ) throws ActionFailedException {
+  @Nonnull
+  public <T> CouchDoc<T> get( @Nonnull DocId id, @Nonnull JacksonSerializer<T> serializer ) throws ActionFailedException {
     return couchDocSerializer.deserialize( serializer, get( id ) );
   }
 
-  @NotNull
-  public InputStream get( @NotNull DocId docId, @NotNull AttachmentId attachmentId ) throws ActionFailedException {
+  @Nonnull
+  public InputStream get( @Nonnull DocId docId, @Nonnull AttachmentId attachmentId ) throws ActionFailedException {
     return get( dbRoot.path( docId.asString() ).path( attachmentId.asString() ) );
   }
 
@@ -283,17 +281,17 @@ public class CouchDatabase {
    *
    * @return the URI
    */
-  @NotNull
+  @Nonnull
   public URI getURI() {
     return dbRoot.getURI();
   }
 
-  @NotNull
+  @Nonnull
   public WebResource getDbRoot() {
     return dbRoot;
   }
 
-  @NotNull
+  @Nonnull
   protected Client getClient() {
     return client;
   }
@@ -303,21 +301,19 @@ public class CouchDatabase {
    *
    * @return the db name
    */
-  @TestOnly
-  @NotNull
-  @NonNls
+  @Nonnull
   public String getDbName() {
     return getURI().getPath().substring( 1 );
   }
 
-  @NotNull
-  public ActionResponse delete( @NotNull @NonNls DocId id, @NotNull @NonNls Revision revision ) throws ActionFailedException {
+  @Nonnull
+  public ActionResponse delete( @Nonnull DocId id, @Nonnull Revision revision ) throws ActionFailedException {
     ClientResponse response = dbRoot.path( id.asString() ).queryParam( PARAM_REV, revision.asString() ).delete( ClientResponse.class );
     return ActionResponse.create( response );
   }
 
-  @NotNull
-  public ActionResponse delete( @NotNull @NonNls DocId id, @NotNull @NonNls Revision revision, @NotNull AttachmentId attachmentId ) throws ActionFailedException {
+  @Nonnull
+  public ActionResponse delete( @Nonnull DocId id, @Nonnull Revision revision, @Nonnull AttachmentId attachmentId ) throws ActionFailedException {
     ClientResponse response = dbRoot.path( id.asString() ).path( attachmentId.asString() ).queryParam( PARAM_REV, revision.asString() ).delete( ClientResponse.class );
     return ActionResponse.create( response );
   }
@@ -330,8 +326,8 @@ public class CouchDatabase {
    *
    * @throws ActionFailedException
    */
-  @NotNull
-  public Revision getRev( @NotNull DocId docId ) throws ActionFailedException {
+  @Nonnull
+  public Revision getRev( @Nonnull DocId docId ) throws ActionFailedException {
     ClientResponse response = dbRoot.path( docId.asString() ).head();
     ActionResponse.verifyNoError( response );
 
@@ -342,13 +338,13 @@ public class CouchDatabase {
     return new Revision( entityTag.getValue() );
   }
 
-  @NotNull
-  public ClientResponse getHead( @NotNull DocId docId ) {
+  @Nonnull
+  public ClientResponse getHead( @Nonnull DocId docId ) {
     return dbRoot.path( docId.asString() ).head();
   }
 
-  @NotNull
-  public ClientResponse getHead( @NotNull DocId docId, @NotNull AttachmentId attachmentId ) {
+  @Nonnull
+  public ClientResponse getHead( @Nonnull DocId docId, @Nonnull AttachmentId attachmentId ) {
     return dbRoot.path( docId.asString() ).path( attachmentId.asString() ).head();
   }
 }

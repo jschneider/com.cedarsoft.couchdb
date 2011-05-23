@@ -51,8 +51,8 @@ import com.sun.jersey.api.client.WebResource;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonProcessingException;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 import org.junit.*;
 
 import javax.ws.rs.core.MediaType;
@@ -66,15 +66,15 @@ import static org.junit.Assert.*;
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class AttachmentsTest extends CouchTest {
-  @NonNls
+
   public static final String REV_1 = "1-4b8635c26c5b91bd2bc658ed866c727a";
-  @NonNls
+
   public static final String REV_2 = "2-929f2959f8e81ed6b6c7784bee926065";
-  @NotNull
+  @Nonnull
   public static final String REV_3 = "3-46baf5940bdf721b5a1c590de66bfd94";
-  @NotNull
+  @Nonnull
   public static final String REV_4 = "4-0686197065ccc1e0a310e894da9c8dd7";
-  @NotNull
+  @Nonnull
   public static final DocId DOC_ID = new DocId( "daDocId" );
 
   private RawCouchDocSerializer serializer;
@@ -92,13 +92,13 @@ public class AttachmentsTest extends CouchTest {
 
     AbstractJacksonSerializer<String> serializer = new AbstractJacksonSerializer<String>( "daString", VersionRange.single( 1, 0, 0 ) ) {
       @Override
-      public void serialize( @NotNull JsonGenerator serializeTo, @NotNull String object, @NotNull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
+      public void serialize( @Nonnull JsonGenerator serializeTo, @Nonnull String object, @Nonnull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
         serializeTo.writeStringField( "daString", object );
       }
 
-      @NotNull
+      @Nonnull
       @Override
-      public String deserialize( @NotNull JsonParser deserializeFrom, @NotNull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
+      public String deserialize( @Nonnull JsonParser deserializeFrom, @Nonnull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
         deserializeFrom.nextToken();
         deserializeFrom.nextValue();
 

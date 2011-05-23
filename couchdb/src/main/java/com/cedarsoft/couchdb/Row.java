@@ -31,9 +31,10 @@
 
 package com.cedarsoft.couchdb;
 
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 
 /**
  * @param <K> the type of the key
@@ -42,10 +43,10 @@ import org.jetbrains.annotations.Nullable;
  * @noinspection ClassNamingConvention
  */
 public class Row<K, V, D> {
-  @NotNull
-  @NonNls
+  @Nonnull
+
   private final DocId id;
-  @NotNull
+  @Nonnull
   private final K key;
   @Nullable
   private final V value;
@@ -53,23 +54,23 @@ public class Row<K, V, D> {
   @Nullable
   private final CouchDoc<? extends D> doc;
 
-  public Row( @NotNull DocId id, @NotNull K key, @Nullable V value ) {
+  public Row( @Nonnull DocId id, @Nonnull K key, @Nullable V value ) {
     this( id, key, value, null );
   }
 
-  public Row( @NotNull DocId id, @NotNull K key, @Nullable V value, @Nullable CouchDoc<? extends D> doc ) {
+  public Row( @Nonnull DocId id, @Nonnull K key, @Nullable V value, @Nullable CouchDoc<? extends D> doc ) {
     this.id = id;
     this.key = key;
     this.value = value;
     this.doc = doc;
   }
 
-  @NotNull
+  @Nonnull
   public DocId getId() {
     return id;
   }
 
-  @NotNull
+  @Nonnull
   public K getKey() {
     return key;
   }

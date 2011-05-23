@@ -42,9 +42,10 @@ import org.jcouchdb.db.Server;
 import org.jcouchdb.db.ServerImpl;
 import org.jcouchdb.exception.CouchDBException;
 import org.jcouchdb.util.CouchDBUpdater;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.junit.rules.*;
 import org.junit.runners.model.*;
 
@@ -64,16 +65,16 @@ import static org.junit.Assert.*;
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class CouchDbRule implements MethodRule {
-  @NonNls
+
   public static final String KEY_DB_NAME = "couchdb.unittests.db.name";
-  @NonNls
+
   public static final String KEY_SERVER_URI = "couchdb.unittests.server.uri";
-  @NonNls
+
   public static final String KEY_SKIP_DELETE_DB = "couchdb.unittests.skip.deletion";
 
-  @NonNls
+
   public static final String KEY_USER = "couchdb.unittests.username";
-  @NonNls
+
   public static final String KEY_PASS = "couchdb.unittests.password";
 
   @Nullable
@@ -91,7 +92,7 @@ public class CouchDbRule implements MethodRule {
   @Nullable
   private final URL viewResource;
   @Nullable
-  @NonNls
+
   private final String dbBaseName;
 
 
@@ -108,7 +109,7 @@ public class CouchDbRule implements MethodRule {
     this( viewResource, null );
   }
 
-  public CouchDbRule( @Nullable URL viewResource, @Nullable @NonNls String dbBaseName ) {
+  public CouchDbRule( @Nullable URL viewResource, @Nullable  String dbBaseName ) {
     this.viewResource = viewResource;
     this.dbBaseName = dbBaseName;
   }
@@ -140,13 +141,13 @@ public class CouchDbRule implements MethodRule {
   }
 
   @Nullable
-  @NonNls
+
   protected String getUsername() {
     return System.getProperty( KEY_USER );
   }
 
   @Nullable
-  @NonNls
+
   protected String getPassword() {
     return System.getProperty( KEY_PASS );
   }
@@ -174,8 +175,8 @@ public class CouchDbRule implements MethodRule {
     db = null;
   }
 
-  @NotNull
-  public CouchDatabase createDb( @NotNull @NonNls String dbName ) throws IOException, URISyntaxException, CouchDbException {
+  @Nonnull
+  public CouchDatabase createDb( @Nonnull  String dbName ) throws IOException, URISyntaxException, CouchDbException {
     try {
       server.deleteDatabase( dbName );
     } catch ( CouchDBException ignore ) {
@@ -190,7 +191,7 @@ public class CouchDbRule implements MethodRule {
     return couchDatabase;
   }
 
-  public void publishViews( @NotNull @NonNls String dbName ) throws URISyntaxException, IOException {
+  public void publishViews( @Nonnull  String dbName ) throws URISyntaxException, IOException {
     CouchDBUpdater updater = new CouchDBUpdater();
     updater.setCreateDatabase( false );
     updater.setDatabase( new Database( server, dbName ) );
@@ -236,15 +237,15 @@ public class CouchDbRule implements MethodRule {
     };
   }
 
-  @NotNull
-  @NonNls
+  @Nonnull
+
   public String createNewTestDbName() {
     return getTestDbBaseName() + System.currentTimeMillis();
   }
 
 
-  @NotNull
-  @NonNls
+  @Nonnull
+
   public String getTestDbBaseName() {
     if ( dbBaseName != null ) {
       return dbBaseName;
@@ -252,12 +253,12 @@ public class CouchDbRule implements MethodRule {
     return System.getProperty( KEY_DB_NAME, "couch_unit_test" );
   }
 
-  @NotNull
+  @Nonnull
   public URI getServerUri() throws URISyntaxException {
     return new URI( System.getProperty( KEY_SERVER_URI, "http://localhost:5984" ) );
   }
 
-  @NotNull
+  @Nonnull
   public CouchDatabase getCurrentDb() {
     if ( db == null ) {
       throw new IllegalStateException( "No db available" );
@@ -265,7 +266,7 @@ public class CouchDbRule implements MethodRule {
     return db;
   }
 
-  @NotNull
+  @Nonnull
   public URI getCurrentServerURI() {
     if ( serverURI == null ) {
       throw new IllegalStateException( "No server uri" );
@@ -273,7 +274,7 @@ public class CouchDbRule implements MethodRule {
     return serverURI;
   }
 
-  @NotNull
+  @Nonnull
   public Server getCurrentServer() {
     if ( server == null ) {
       throw new IllegalStateException( "No server " );

@@ -32,10 +32,11 @@
 package com.cedarsoft.couchdb;
 
 import com.google.common.io.ByteStreams;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
+
+
+import javax.annotation.Nullable;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,10 +50,10 @@ import java.util.List;
  * @param <T> the type of the object object
  */
 public class CouchDoc<T> extends RawCouchDoc {
-  @NotNull
+  @Nonnull
   private final T object;
 
-  @NotNull
+  @Nonnull
   private final List<Attachment> attachments = new ArrayList<Attachment>();
 
   /**
@@ -61,7 +62,7 @@ public class CouchDoc<T> extends RawCouchDoc {
    * @param id     the id
    * @param object the object
    */
-  public CouchDoc( @NotNull @NonNls DocId id, @NotNull T object ) {
+  public CouchDoc( @Nonnull  DocId id, @Nonnull T object ) {
     this( id, null, object );
   }
 
@@ -72,7 +73,7 @@ public class CouchDoc<T> extends RawCouchDoc {
    * @param rev    the revision
    * @param object the object
    */
-  public CouchDoc( @NotNull @NonNls DocId id, @Nullable @NonNls Revision rev, @NotNull T object ) {
+  public CouchDoc( @Nonnull  DocId id, @Nullable Revision rev, @Nonnull T object ) {
     super( id, rev );
     this.object = object;
   }
@@ -82,16 +83,16 @@ public class CouchDoc<T> extends RawCouchDoc {
    *
    * @return the object
    */
-  @NotNull
+  @Nonnull
   public T getObject() {
     return object;
   }
 
-  public void addAttachment( @NotNull Attachment attachment ) {
+  public void addAttachment( @Nonnull Attachment attachment ) {
     this.attachments.add( attachment );
   }
 
-  @NotNull
+  @Nonnull
   public List<? extends Attachment> getAttachments() {
     return Collections.unmodifiableList( attachments );
   }
@@ -109,7 +110,7 @@ public class CouchDoc<T> extends RawCouchDoc {
     return false;
   }
 
-  public void addAttachments( @NotNull List<? extends Attachment> attachments ) {
+  public void addAttachments( @Nonnull List<? extends Attachment> attachments ) {
     this.attachments.addAll( attachments );
   }
 
@@ -117,23 +118,23 @@ public class CouchDoc<T> extends RawCouchDoc {
    * Do not instantiate this class directly. Instead use one of its sub classes
    */
   public abstract static class Attachment {
-    @NotNull
+    @Nonnull
     private final MediaType contentType;
 
-    @NotNull
+    @Nonnull
     private final AttachmentId id;
 
-    private Attachment( @NotNull AttachmentId id, @NotNull MediaType contentType ) {
+    private Attachment( @Nonnull AttachmentId id, @Nonnull MediaType contentType ) {
       this.id = id;
       this.contentType = contentType;
     }
 
-    @NotNull
+    @Nonnull
     public AttachmentId getId() {
       return id;
     }
 
-    @NotNull
+    @Nonnull
     public MediaType getContentType() {
       return contentType;
     }
@@ -144,14 +145,14 @@ public class CouchDoc<T> extends RawCouchDoc {
 
     public abstract long getLength();
 
-    @NotNull
+    @Nonnull
     public abstract byte[] getData();
   }
 
   public static class StubbedAttachment extends Attachment {
     private final long length;
 
-    public StubbedAttachment( @NotNull AttachmentId id, @NotNull MediaType contentType, long length ) {
+    public StubbedAttachment( @Nonnull AttachmentId id, @Nonnull MediaType contentType, long length ) {
       super( id, contentType );
       this.length = length;
     }
@@ -161,7 +162,7 @@ public class CouchDoc<T> extends RawCouchDoc {
       return length;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public byte[] getData() {
       throw new UnsupportedOperationException( "Cannot get data for stub attachment" );
@@ -169,28 +170,28 @@ public class CouchDoc<T> extends RawCouchDoc {
   }
 
   public static class InlineAttachment extends Attachment {
-    @NotNull
-    @NonNls
+    @Nonnull
+
     private final byte[] data;
 
-    public InlineAttachment( @NotNull AttachmentId id, @NotNull MediaType mediaType, @NotNull InputStream content ) throws IOException {
+    public InlineAttachment( @Nonnull AttachmentId id, @Nonnull MediaType mediaType, @Nonnull InputStream content ) throws IOException {
       this( id, mediaType, ByteStreams.toByteArray( content ) );
     }
 
-    public InlineAttachment( @NonNls @NotNull AttachmentId id, @NotNull MediaType contentType, @NotNull @NonNls byte[] data ) {
+    public InlineAttachment(  @Nonnull AttachmentId id, @Nonnull MediaType contentType, @Nonnull  byte[] data ) {
       super( id, contentType );
       this.data = data.clone();
     }
 
     @Override
-    @NotNull
-    @NonNls
+    @Nonnull
+
     public byte[] getData() {
       return data.clone();
     }
 
-    @NotNull
-    @NonNls
+    @Nonnull
+
     public byte[] getDataEncoded() {
       return data;
     }

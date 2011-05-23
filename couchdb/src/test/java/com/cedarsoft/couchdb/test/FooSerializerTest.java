@@ -34,14 +34,14 @@ package com.cedarsoft.couchdb.test;
 import com.cedarsoft.serialization.AbstractJsonSerializerTest2;
 import com.cedarsoft.serialization.Entry;
 import com.cedarsoft.serialization.Serializer;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.junit.experimental.theories.*;
 
 /**
  *
  */
 public class FooSerializerTest extends AbstractJsonSerializerTest2<Foo> {
-  @NotNull
+  @Nonnull
   @Override
   protected Serializer<Foo> getSerializer() throws Exception {
     return new Foo.Serializer();

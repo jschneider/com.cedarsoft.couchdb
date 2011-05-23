@@ -31,23 +31,23 @@
 
 package com.cedarsoft.couchdb;
 
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class DocId {
-  @NotNull
-  @NonNls
+  @Nonnull
+
   private final String id;
 
-  public DocId( @NotNull @NonNls String id ) {
+  public DocId( @Nonnull  String id ) {
     this.id = id;
   }
 
-  @NotNull
-  @NonNls
+  @Nonnull
+
   public String asString() {
     return id;
   }

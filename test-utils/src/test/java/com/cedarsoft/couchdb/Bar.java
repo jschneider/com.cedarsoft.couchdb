@@ -38,7 +38,7 @@ import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonProcessingException;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.io.IOException;
 
@@ -76,14 +76,14 @@ public class Bar {
     }
 
     @Override
-    public void serialize( @NotNull JsonGenerator serializeTo, @NotNull Bar object, @NotNull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
+    public void serialize( @Nonnull JsonGenerator serializeTo, @Nonnull Bar object, @Nonnull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
       serializeTo.writeNumberField( "value", object.getValue() );
       serializeTo.writeStringField( "description", object.getDescription() );
     }
 
-    @NotNull
+    @Nonnull
     @Override
-    public Bar deserialize( @NotNull JsonParser deserializeFrom, @NotNull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
+    public Bar deserialize( @Nonnull JsonParser deserializeFrom, @Nonnull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
       nextFieldValue( deserializeFrom, "value" );
       int value = deserializeFrom.getIntValue();
 

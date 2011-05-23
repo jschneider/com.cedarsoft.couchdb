@@ -34,9 +34,10 @@ package com.cedarsoft.couchdb;
 import com.cedarsoft.CanceledException;
 import com.cedarsoft.couchdb.test.CouchDbRule;
 import org.jcouchdb.db.Server;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.junit.*;
 
 import java.io.IOException;
@@ -50,22 +51,22 @@ public abstract class CouchTest {
   @Rule
   public CouchDbRule couchDbRule = new CouchDbRule( getViewResource() );
 
-  @NotNull
+  @Nonnull
   protected CouchDatabase db() {
     return couchDbRule.getCurrentDb();
   }
 
-  @NotNull
-  public CouchDatabase createDb( @NotNull @NonNls String name ) throws IOException, URISyntaxException, CouchDbException {
+  @Nonnull
+  public CouchDatabase createDb( @Nonnull  String name ) throws IOException, URISyntaxException, CouchDbException {
     return couchDbRule.createDb( name );
   }
 
-  @NotNull
+  @Nonnull
   public CouchDbRule getCouchDbRule() {
     return couchDbRule;
   }
 
-  @NotNull
+  @Nonnull
   protected Server server() {
     return couchDbRule.getCurrentServer();
   }

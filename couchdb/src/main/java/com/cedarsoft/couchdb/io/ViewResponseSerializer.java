@@ -42,9 +42,10 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,21 +54,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ViewResponseSerializer {
-  @NonNls
+
   public static final String PROPERTY_TOTAL_ROWS = "total_rows";
-  @NonNls
+
   public static final String PROPERTY_OFFSET = "offset";
-  @NonNls
+
   public static final String PROPERTY_ROWS = "rows";
 
-  @NotNull
+  @Nonnull
   private final RowSerializer rowSerializer;
 
-  public ViewResponseSerializer( @NotNull RowSerializer rowSerializer ) {
+  public ViewResponseSerializer( @Nonnull RowSerializer rowSerializer ) {
     this.rowSerializer = rowSerializer;
   }
 
-  public <K, V> void serialize( @NotNull ViewResponse<K, V, ?> viewResponse, @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @NotNull OutputStream out ) throws IOException {
+  public <K, V> void serialize( @Nonnull ViewResponse<K, V, ?> viewResponse, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull OutputStream out ) throws IOException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
     JsonGenerator generator = jsonFactory.createJsonGenerator( out, JsonEncoding.UTF8 );
 
@@ -91,12 +92,12 @@ public class ViewResponseSerializer {
     generator.close();
   }
 
-  @NotNull
-  public <K, V> ViewResponse<K, V, Void> deserialize( @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @NotNull InputStream in ) throws IOException, InvalidTypeException {
+  @Nonnull
+  public <K, V> ViewResponse<K, V, Void> deserialize( @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull InputStream in ) throws IOException, InvalidTypeException {
     return deserialize( keySerializer, valueSerializer, null, in );
   }
 
-  public <K, V, D> ViewResponse<K, V, D> deserialize( @NotNull JacksonSerializer<? super K> keySerializer, @NotNull JacksonSerializer<? super V> valueSerializer, @Nullable JacksonSerializer<? extends D> documentSerializer, @NotNull InputStream in ) throws IOException, InvalidTypeException {
+  public <K, V, D> ViewResponse<K, V, D> deserialize( @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable JacksonSerializer<? extends D> documentSerializer, @Nonnull InputStream in ) throws IOException, InvalidTypeException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
     JsonParser parser = jsonFactory.createJsonParser( in );
 
