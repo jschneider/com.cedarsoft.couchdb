@@ -180,7 +180,6 @@ public class CouchDatabase {
   }
 
   @Nonnull
-
   public <K, V> ViewResponse<K, V, Void> query( @Nonnull String designDocumentId, @Nonnull String viewId, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer ) throws InvalidTypeException, ActionFailedException, IOException {
     return query( designDocumentId, viewId, keySerializer, valueSerializer, null, null );
   }
@@ -193,7 +192,6 @@ public class CouchDatabase {
   }
 
   @Nonnull
-
   public <K, V, D> ViewResponse<K, V, D> query( @Nonnull String designDocumentId, @Nonnull String viewId, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull JacksonSerializer<? extends D> docSerializer ) throws InvalidTypeException, ActionFailedException, IOException {
     String type = docSerializer.getType();
     String startKey = "[\"" + type + "\"]";
@@ -212,7 +210,6 @@ public class CouchDatabase {
    * @return the answer
    */
   @Nonnull
-
   public InputStream query( @Nonnull String designDocumentId, @Nonnull String viewId ) throws ActionFailedException {
     return query( designDocumentId, viewId, false );
   }
