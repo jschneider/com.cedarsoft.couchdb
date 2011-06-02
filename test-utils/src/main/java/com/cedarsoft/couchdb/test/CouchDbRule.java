@@ -151,10 +151,10 @@ public class CouchDbRule implements MethodRule {
   }
 
   public void after() {
-    deleteDatabase();
+    deleteDatabases();
   }
 
-  private void deleteDatabase() {
+  protected void deleteDatabases() {
     if ( Boolean.parseBoolean( System.getProperty( KEY_SKIP_DELETE_DB ) ) ) {
       System.out.println( "----------------------------" );
       System.out.println( "Skipping deletion of " + db.getDbName() );
@@ -183,10 +183,30 @@ public class CouchDbRule implements MethodRule {
     assertTrue( server.createDatabase( dbName ) );
     publishViews( dbName );
 
-    CouchDatabase couchDatabase = new CouchDatabase( serverURI, dbName );
+    CouchDatabase couchDatabase = getCouchDatabaseObject( dbName );
 
     this.dbs.add( couchDatabase );
     return couchDatabase;
+  }
+
+  public void deleteDb( @Nonnull String dbName ) {
+    Server currentServer = server;
+    if ( currentServer == null ) {
+      throw new IllegalArgumentException( "Invalid state - server is null" );
+    }
+    currentServer.deleteDatabase( dbName );
+  }
+
+  /**
+   * Creates  a new database object - but does *not* create anything on the server
+   *
+   * @param dbName the db name
+   * @return the couch database object
+   */
+  @Nonnull
+  public CouchDatabase getCouchDatabaseObject( @Nonnull String dbName ) {
+    assert serverURI != null;
+    return new CouchDatabase( serverURI, dbName );
   }
 
   public void publishViews( @Nonnull String dbName ) throws URISyntaxException, IOException {
