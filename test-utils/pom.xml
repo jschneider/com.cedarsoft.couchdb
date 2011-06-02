@@ -48,6 +48,13 @@
       <version>1.7R2</version>
     </dependency>
 
+    <!--temporary - remove later-->
+    <dependency>
+      <groupId>org.easytesting</groupId>
+      <artifactId>fest-util</artifactId>
+      <version>1.1.6</version>
+    </dependency>
+
     <!--Test Dependencies-->
 
   </dependencies>
