@@ -378,4 +378,11 @@ public class CouchDatabase {
   public ClientResponse getHead( @Nonnull DocId docId, @Nonnull AttachmentId attachmentId ) {
     return dbRoot.path( docId.asString() ).path( attachmentId.asString() ).head();
   }
+
+  @Override
+  public String toString() {
+    return "CouchDatabase{" +
+      "dbRoot=" + dbRoot +
+      '}';
+  }
 }
