@@ -29,7 +29,7 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb.test;
+package com.cedarsoft.couchdb.test.utils;
 
 import org.jcouchdb.exception.CouchDBException;
 import org.junit.*;

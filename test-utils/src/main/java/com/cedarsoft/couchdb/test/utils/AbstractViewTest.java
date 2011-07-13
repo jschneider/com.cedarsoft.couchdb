@@ -29,7 +29,7 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.test.utils;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.*;

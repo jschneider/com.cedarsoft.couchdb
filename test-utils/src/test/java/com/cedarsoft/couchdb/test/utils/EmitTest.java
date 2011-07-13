@@ -29,9 +29,8 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb.test;
+package com.cedarsoft.couchdb.test.utils;
 
-import com.cedarsoft.couchdb.AbstractViewTest;
 import org.junit.*;
 import org.mozilla.javascript.Context;
 

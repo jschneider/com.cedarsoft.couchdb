@@ -29,11 +29,11 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb.test;
+package com.cedarsoft.couchdb.test.utils;
 
-import com.cedarsoft.CanceledException;
 import com.cedarsoft.couchdb.CouchDatabase;
 import com.cedarsoft.couchdb.CouchDbException;
+import com.cedarsoft.exceptions.CanceledException;
 import com.sun.security.auth.UserPrincipal;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;

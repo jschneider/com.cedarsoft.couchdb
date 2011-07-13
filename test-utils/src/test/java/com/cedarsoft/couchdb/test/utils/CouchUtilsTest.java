@@ -1,8 +1,7 @@
-package com.cedarsoft.couchdb.test;
+package com.cedarsoft.couchdb.test.utils;
 
 import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.couchdb.CouchDatabase;
-import com.cedarsoft.couchdb.CouchTest;
 import com.cedarsoft.couchdb.CouchUtils;
 import com.cedarsoft.couchdb.DocId;
 import org.jcouchdb.db.Database;
@@ -62,7 +61,7 @@ public class CouchUtilsTest extends CouchTest {
     CouchUtils utils = new CouchUtils( db );
     utils.uploadViews( getClass().getResource( "sampleView.map.js" ) );
 
-    DesignDocument designDocument = utils.createInternalDb().getDesignDocument( "test" );
+    DesignDocument designDocument = utils.createInternalDb().getDesignDocument( "utils" );
     assertThat( designDocument.getViews() ).hasSize( 1 );
   }
 }

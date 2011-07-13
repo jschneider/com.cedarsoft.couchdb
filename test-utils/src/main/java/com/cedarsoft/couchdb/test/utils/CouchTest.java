@@ -29,10 +29,10 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.test.utils;
 
-import com.cedarsoft.CanceledException;
-import com.cedarsoft.couchdb.test.CouchDbRule;
+import com.cedarsoft.couchdb.CouchDatabase;
+import com.cedarsoft.couchdb.CouchDbException;
 import org.jcouchdb.db.Server;
 import org.junit.*;
 

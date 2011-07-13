@@ -29,18 +29,17 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb.test;
+package com.cedarsoft.couchdb.test.utils;
 
-import com.cedarsoft.AssertUtils;
-import com.cedarsoft.JsonUtils;
-import com.cedarsoft.Version;
-import com.cedarsoft.VersionException;
-import com.cedarsoft.VersionRange;
+import com.cedarsoft.test.utils.AssertUtils;
+import com.cedarsoft.test.utils.JsonUtils;
+import com.cedarsoft.version.Version;
+import com.cedarsoft.version.VersionException;
+import com.cedarsoft.version.VersionRange;
 import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.AttachmentId;
 import com.cedarsoft.couchdb.CouchDoc;
-import com.cedarsoft.couchdb.CouchTest;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.couchdb.io.RawCouchDocSerializer;
@@ -110,7 +109,7 @@ public class AttachmentsTest extends CouchTest {
     };
     assertEquals( 201, db().put( doc, serializer ).getStatus() );
 
-    JsonUtils.assertJsonEquals( getClass().getResource( "doc_with_2_attachments.json" ), new String( ByteStreams.toByteArray( db().get( doc.getId() ) ) ) );
+    JsonUtils.assertJsonEquals(getClass().getResource("doc_with_2_attachments.json"), new String(ByteStreams.toByteArray(db().get(doc.getId()))));
 
     CouchDoc<String> resolvedDoc = db().get( doc.getId(), serializer );
     assertEquals( "the object", resolvedDoc.getObject() );
@@ -186,7 +185,7 @@ public class AttachmentsTest extends CouchTest {
     //Get the attachment1
     {
       byte[] read = ByteStreams.toByteArray( db().get( DOC_ID, new AttachmentId( "test_data.xml" ) ) );
-      AssertUtils.assertXMLEquals( getClass().getResource( "test_data.xml" ), new String( read ) );
+      AssertUtils.assertXMLEquals(getClass().getResource("test_data.xml"), new String(read));
       assertEquals( new String( ByteStreams.toByteArray( getClass().getResourceAsStream( "test_data.xml" ) ) ), new String( read ) );
     }
     //Get the attachment2
