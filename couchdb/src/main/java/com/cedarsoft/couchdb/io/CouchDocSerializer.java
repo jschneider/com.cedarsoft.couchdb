@@ -31,7 +31,7 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.Version;
+import com.cedarsoft.version.Version;
 import com.cedarsoft.couchdb.AttachmentId;
 import com.cedarsoft.couchdb.CouchDoc;
 import com.cedarsoft.couchdb.DocId;

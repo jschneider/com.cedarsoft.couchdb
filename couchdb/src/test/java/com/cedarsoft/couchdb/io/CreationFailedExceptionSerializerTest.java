@@ -31,10 +31,10 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.JsonUtils;
 import com.cedarsoft.couchdb.ActionFailedException;
-import com.cedarsoft.serialization.AbstractSerializerTest2;
-import com.cedarsoft.serialization.Entry;
+import com.cedarsoft.serialization.test.utils.AbstractSerializerTest2;
+import com.cedarsoft.serialization.test.utils.Entry;
+import com.cedarsoft.test.utils.JsonUtils;
 import org.junit.experimental.theories.*;
 import org.junit.runner.*;
 
@@ -45,8 +45,8 @@ import java.io.ByteArrayOutputStream;
 public class CreationFailedExceptionSerializerTest {
   @DataPoint
   public static final Entry<? extends ActionFailedException> SUCCESS = AbstractSerializerTest2.create(
-    new ActionFailedException( 409, "conflict", "Document update conflict." ),
-    CreationFailedExceptionSerializerTest.class.getResource( "ActionFailedException.json" )
+    new ActionFailedException(409, "conflict", "Document update conflict."),
+    CreationFailedExceptionSerializerTest.class.getResource("ActionFailedException.json")
   );
 
   @Theory
@@ -54,6 +54,6 @@ public class CreationFailedExceptionSerializerTest {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     new ActionFailedExceptionSerializer().serialize( entry.getObject(), out );
 
-    JsonUtils.assertJsonEquals( new String( entry.getExpected() ), new String( out.toByteArray() ) );
+    JsonUtils.assertJsonEquals(new String(entry.getExpected()), new String(out.toByteArray()));
   }
 }

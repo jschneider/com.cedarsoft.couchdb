@@ -31,11 +31,11 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.JsonUtils;
 import com.cedarsoft.couchdb.CouchDoc;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.couchdb.test.Foo;
+import com.cedarsoft.test.utils.JsonUtils;
 import org.junit.*;
 
 import java.io.ByteArrayInputStream;
@@ -59,14 +59,14 @@ public class CouchDocSerializerTest {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     serializer.serialize( info, fooSerializer, out );
 
-    JsonUtils.assertJsonEquals( "{\n" +
-                                  "  \"_id\" : \"daId\",\n" +
-                                  "  \"_rev\" : \"daRev\",\n" +
-                                  "  \"@type\" : \"foo\",\n" +
-                                  "  \"@version\" : \"1.0.0\"," +
-                                  "  \"aValue\" : 7,\n" +
-                                  "  \"description\" : \"asdf\"\n" +
-                                  "}", out.toString() );
+    JsonUtils.assertJsonEquals("{\n" +
+                                 "  \"_id\" : \"daId\",\n" +
+                                 "  \"_rev\" : \"daRev\",\n" +
+                                 "  \"@type\" : \"foo\",\n" +
+                                 "  \"@version\" : \"1.0.0\"," +
+                                 "  \"aValue\" : 7,\n" +
+                                 "  \"description\" : \"asdf\"\n" +
+                                 "}", out.toString());
 
     CouchDoc<Foo> deserialized = serializer.deserialize( fooSerializer, new ByteArrayInputStream( out.toByteArray() ) );
     assertEquals( "daId", deserialized.getId().asString() );

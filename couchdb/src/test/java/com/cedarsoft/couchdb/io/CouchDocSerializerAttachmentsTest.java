@@ -31,12 +31,12 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.JsonUtils;
 import com.cedarsoft.couchdb.AttachmentId;
 import com.cedarsoft.couchdb.CouchDoc;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.couchdb.test.Foo;
+import com.cedarsoft.test.utils.JsonUtils;
 import org.junit.*;
 
 import javax.ws.rs.core.MediaType;
@@ -60,7 +60,7 @@ public class CouchDocSerializerAttachmentsTest {
 
     byte[] serialized = serializer.serialize( doc, fooSerializer );
 
-    JsonUtils.assertJsonEquals( getClass().getResource( "withAttachmentPut.json" ), new String( serialized ) );
+    JsonUtils.assertJsonEquals(getClass().getResource("withAttachmentPut.json"), new String(serialized));
   }
 
   @Test

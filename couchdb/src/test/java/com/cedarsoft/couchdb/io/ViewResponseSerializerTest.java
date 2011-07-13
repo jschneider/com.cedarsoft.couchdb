@@ -31,7 +31,6 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.JsonUtils;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Row;
 import com.cedarsoft.couchdb.ViewResponse;
@@ -39,6 +38,7 @@ import com.cedarsoft.couchdb.test.Foo;
 import com.cedarsoft.serialization.jackson.ListSerializer;
 import com.cedarsoft.serialization.jackson.NullSerializer;
 import com.cedarsoft.serialization.jackson.StringSerializer;
+import com.cedarsoft.test.utils.JsonUtils;
 import org.junit.*;
 
 import java.io.ByteArrayInputStream;
@@ -109,7 +109,7 @@ public class ViewResponseSerializerTest {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     serializer.serialize( viewResponse, this.fooSerializer, new ListSerializer(), out );
 
-    JsonUtils.assertJsonEquals( getClass().getResource( "ViewResponse.foo.stringList.json" ), out.toString() );
+    JsonUtils.assertJsonEquals(getClass().getResource("ViewResponse.foo.stringList.json"), out.toString());
 
     ViewResponse<Foo, List<? extends String>, ?> deserialized = serializer.deserialize( fooSerializer, new ListSerializer(), new ByteArrayInputStream( out.toByteArray() ) );
     assertNotNull( deserialized );

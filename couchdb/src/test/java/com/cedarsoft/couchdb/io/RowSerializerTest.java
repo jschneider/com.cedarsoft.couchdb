@@ -31,7 +31,6 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.JsonUtils;
 import com.cedarsoft.couchdb.CouchDoc;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
@@ -40,6 +39,7 @@ import com.cedarsoft.couchdb.test.Foo;
 import com.cedarsoft.serialization.jackson.ListSerializer;
 import com.cedarsoft.serialization.jackson.NullSerializer;
 import com.cedarsoft.serialization.jackson.StringSerializer;
+import com.cedarsoft.test.utils.JsonUtils;
 import org.junit.*;
 
 import java.io.ByteArrayInputStream;
@@ -68,11 +68,11 @@ public class RowSerializerTest {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     new RowSerializer().serialize( row, new StringSerializer(), NullSerializer.INSTANCE, out );
 
-    JsonUtils.assertJsonEquals( "{\n" +
-                                  "  \"id\":\"daId\",\n" +
-                                  "  \"key\":\"daKey\",\n" +
-                                  "  \"value\":null\n" +
-                                  "}", out.toString() );
+    JsonUtils.assertJsonEquals("{\n" +
+                                 "  \"id\":\"daId\",\n" +
+                                 "  \"key\":\"daKey\",\n" +
+                                 "  \"value\":null\n" +
+                                 "}", out.toString());
 
     Row<String, Void, ?> deserialized = new RowSerializer().deserialize( new StringSerializer(), NullSerializer.INSTANCE, new ByteArrayInputStream( out.toByteArray() ) );
     assertNotNull( deserialized );

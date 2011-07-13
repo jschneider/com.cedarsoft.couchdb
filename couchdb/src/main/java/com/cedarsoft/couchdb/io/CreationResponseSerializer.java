@@ -31,7 +31,7 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.VersionException;
+import com.cedarsoft.version.VersionException;
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;

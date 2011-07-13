@@ -31,10 +31,10 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.JsonUtils;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.RawCouchDoc;
 import com.cedarsoft.couchdb.Revision;
+import com.cedarsoft.test.utils.JsonUtils;
 import org.junit.*;
 
 import java.io.ByteArrayInputStream;
@@ -55,10 +55,10 @@ public class RawCouchDocSerializerTest {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     serializer.serialize( doc, out );
 
-    JsonUtils.assertJsonEquals( "{\n" +
-                                  "  \"_id\" : \"daId\",\n" +
-                                  "  \"_rev\" : \"daRev\"\n" +
-                                  "}", out.toString() );
+    JsonUtils.assertJsonEquals("{\n" +
+                                 "  \"_id\" : \"daId\",\n" +
+                                 "  \"_rev\" : \"daRev\"\n" +
+                                 "}", out.toString());
 
     RawCouchDoc deserialized = serializer.deserialize( new ByteArrayInputStream( out.toByteArray() ) );
     assertEquals( "daId", deserialized.getId().asString() );
