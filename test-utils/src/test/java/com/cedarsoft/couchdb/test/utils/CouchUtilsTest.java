@@ -4,6 +4,7 @@ import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.couchdb.CouchDatabase;
 import com.cedarsoft.couchdb.CouchUtils;
 import com.cedarsoft.couchdb.DocId;
+import org.fest.reflect.core.Reflection;
 import org.jcouchdb.db.Database;
 import org.jcouchdb.document.DesignDocument;
 import org.junit.*;
@@ -50,8 +51,8 @@ public class CouchUtilsTest extends CouchTest {
 
     assertThat( internalDb.getName() ).isEqualTo( DB_NAME );
 
-    String serverURI = org.fest.reflect.core.Reflection.field( "serverURI" ).ofType( String.class ).in( internalDb.getServer() ).get();
-    assertThat( serverURI ).isEqualTo( "http://localhost:5984" );
+    String serverURI = Reflection.field( "serverURI" ).ofType( String.class ).in( internalDb.getServer() ).get();
+    assertThat( serverURI ).startsWith( "http://" );
   }
 
   @Test
