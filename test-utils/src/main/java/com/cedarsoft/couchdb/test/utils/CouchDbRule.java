@@ -139,13 +139,11 @@ public class CouchDbRule implements MethodRule {
   }
 
   @Nullable
-
   protected String getUsername() {
     return System.getProperty( KEY_USER );
   }
 
   @Nullable
-
   protected String getPassword() {
     return System.getProperty( KEY_PASS );
   }
