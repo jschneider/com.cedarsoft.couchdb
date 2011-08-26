@@ -4,6 +4,8 @@ import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.couchdb.CouchDatabase;
 import com.cedarsoft.couchdb.CouchUtils;
 import com.cedarsoft.couchdb.DocId;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.fest.reflect.core.Reflection;
 import org.jcouchdb.db.Database;
 import org.jcouchdb.document.DesignDocument;
@@ -61,5 +63,14 @@ public class CouchUtilsTest extends CouchTest {
 
     DesignDocument designDocument = utils.createInternalDb().getDesignDocument( "utils" );
     assertThat( designDocument.getViews() ).hasSize( 1 );
+  }
+
+  @Test
+  public void testExtractCredentials() throws Exception {
+    HTTPBasicAuthFilter filter = new HTTPBasicAuthFilter( "daUser", "daPass" );
+    UsernamePasswordCredentials credentials = CouchUtils.extractCredentials( filter );
+
+    assertThat( credentials.getUserName() ).isEqualTo( "daUser" );
+    assertThat( credentials.getPassword() ).isEqualTo( "daPass" );
   }
 }

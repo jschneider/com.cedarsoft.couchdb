@@ -4,6 +4,7 @@ import com.cedarsoft.couchdb.io.ActionFailedExceptionSerializer;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.filter.ClientFilter;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import com.sun.jersey.core.util.Base64;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.jcouchdb.db.Database;
@@ -81,7 +82,7 @@ public class CouchUtils {
   }
 
   @Nullable
-  private static UsernamePasswordCredentials extractCredentials( @Nonnull ClientFilter[] clientFilters ) {
+  public static UsernamePasswordCredentials extractCredentials( @Nonnull ClientFilter[] clientFilters ) {
     for ( ClientFilter clientFilter : clientFilters ) {
       if ( clientFilter instanceof HTTPBasicAuthFilter ) {
         return extractCredentials( ( HTTPBasicAuthFilter ) clientFilter );
@@ -91,13 +92,13 @@ public class CouchUtils {
   }
 
   @Nonnull
-  private static UsernamePasswordCredentials extractCredentials( @Nonnull HTTPBasicAuthFilter clientFilter ) {
+  public static UsernamePasswordCredentials extractCredentials( @Nonnull HTTPBasicAuthFilter clientFilter ) {
     try {
       Field field = HTTPBasicAuthFilter.class.getDeclaredField( "authentication" );
       field.setAccessible( true );
       String value = ( String ) field.get( clientFilter );
 
-      String userPass = value.substring( "Basic ".length() );
+      String userPass = new String( Base64.decode( value.substring( "Basic ".length() ) ) );
       int index = userPass.indexOf( ":" );
 
       String user = userPass.substring( 0, index );
