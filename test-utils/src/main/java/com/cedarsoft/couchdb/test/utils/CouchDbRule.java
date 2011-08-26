@@ -205,7 +205,8 @@ public class CouchDbRule implements MethodRule {
    */
   @Nonnull
   public CouchDatabase getCouchDatabaseObject( @Nonnull String dbName ) {
-    assert serverURI != null;
+    URI uri = serverURI;
+    assert uri != null;
 
     ClientFilter[] filters;
     @Nullable String username = getUsername();
@@ -216,7 +217,7 @@ public class CouchDbRule implements MethodRule {
       filters = new ClientFilter[0];
     }
 
-    return new CouchDatabase( serverURI, dbName, filters );
+    return new CouchDatabase( uri, dbName, filters );
   }
 
   public void publishViews( @Nonnull String dbName ) throws URISyntaxException, IOException {

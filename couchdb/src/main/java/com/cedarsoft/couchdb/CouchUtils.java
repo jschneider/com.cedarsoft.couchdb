@@ -2,12 +2,18 @@ package com.cedarsoft.couchdb;
 
 import com.cedarsoft.couchdb.io.ActionFailedExceptionSerializer;
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.filter.ClientFilter;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.jcouchdb.db.Database;
 import org.jcouchdb.util.CouchDBUpdater;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -65,7 +71,42 @@ public class CouchUtils {
   public Database createInternalDb() {
     //    return new Database( database.getDbRoot().getUriBuilder().replacePath( "" ).build().toString(), database.getDbName() );
     URI uri = database.getDbRoot().getURI();
-    return new Database( uri.getHost(), uri.getPort(), database.getDbName() );
+    Database internalDb = new Database( uri.getHost(), uri.getPort(), database.getDbName() );
+
+    UsernamePasswordCredentials credentials = extractCredentials( database.getClientFilters() );
+    if ( credentials != null ) {
+      internalDb.getServer().setCredentials( AuthScope.ANY, credentials );
+    }
+    return internalDb;
+  }
+
+  @Nullable
+  private static UsernamePasswordCredentials extractCredentials( @Nonnull ClientFilter[] clientFilters ) {
+    for ( ClientFilter clientFilter : clientFilters ) {
+      if ( clientFilter instanceof HTTPBasicAuthFilter ) {
+        return extractCredentials( ( HTTPBasicAuthFilter ) clientFilter );
+      }
+    }
+    return null;
+  }
+
+  @Nonnull
+  private static UsernamePasswordCredentials extractCredentials( @Nonnull HTTPBasicAuthFilter clientFilter ) {
+    try {
+      Field field = HTTPBasicAuthFilter.class.getDeclaredField( "authentication" );
+      field.setAccessible( true );
+      String value = ( String ) field.get( clientFilter );
+
+      String userPass = value.substring( "Basic ".length() );
+      int index = userPass.indexOf( ":" );
+
+      String user = userPass.substring( 0, index );
+      String pass = userPass.substring( index + 1 );
+
+      return new UsernamePasswordCredentials( user, pass );
+    } catch ( Exception e ) {
+      throw new RuntimeException( e );
+    }
   }
 
   @Nonnull

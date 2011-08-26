@@ -61,6 +61,8 @@ public class CouchDatabase {
   @Nonnull
   private final Client client;
   @Nonnull
+  private final ClientFilter[] clientFilters;
+  @Nonnull
   private final WebResource dbRoot;
   @Nonnull
   private final ViewResponseSerializer viewResponseSerializer;
@@ -89,8 +91,14 @@ public class CouchDatabase {
         client.addFilter( filter );
       }
     }
+    this.clientFilters = filters == null ? new ClientFilter[0] : filters.clone();
     dbRoot = client.resource( uri );
     viewResponseSerializer = new ViewResponseSerializer( new RowSerializer( couchDocSerializer ) );
+  }
+
+  @Nonnull
+  public ClientFilter[] getClientFilters() {
+    return clientFilters.clone();
   }
 
   /**
