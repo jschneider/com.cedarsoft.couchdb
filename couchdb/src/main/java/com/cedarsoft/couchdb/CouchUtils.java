@@ -67,4 +67,9 @@ public class CouchUtils {
     URI uri = database.getDbRoot().getURI();
     return new Database( uri.getHost(), uri.getPort(), database.getDbName() );
   }
+
+  @Nonnull
+  public CouchDatabase getDatabase() {
+    return database;
+  }
 }

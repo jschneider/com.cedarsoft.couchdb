@@ -23,8 +23,8 @@ public class CouchUtilsTest extends CouchTest {
   public void testBasic() throws Exception {
     CouchDatabase database = couchDbRule.getCouchDatabaseObject( DB_NAME );
 
-    CouchUtils utils = new CouchUtils( database );
-    assertThat( utils.exists() ).isFalse();
+    CouchUtils couchUtils = new CouchUtils( database );
+    assertThat( couchUtils.exists() ).isFalse();
 
     try {
       database.get( new DocId( "dasdf" ) );
@@ -35,13 +35,10 @@ public class CouchUtilsTest extends CouchTest {
       assertThat( e.getMessage() ).isEqualTo( "404 not_found: no_db_file" );
     }
 
-    assertThat( utils.exists() ).isFalse();
-    try {
-      utils.create();
-      assertThat( utils.exists() ).isTrue();
-    } finally {
-      couchDbRule.deleteDb( database.getDbName() );
-    }
+    assertThat( couchUtils.exists() ).isFalse();
+    couchUtils.create();
+    assertThat( couchUtils.exists() ).isTrue();
+    couchDbRule.deleteDb( database.getDbName() );
   }
 
   @Test
