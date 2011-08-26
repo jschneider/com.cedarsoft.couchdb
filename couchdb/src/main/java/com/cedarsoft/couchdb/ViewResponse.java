@@ -86,14 +86,24 @@ public class ViewResponse<K, V, D> {
 
   @Override
   public boolean equals( Object o ) {
-    if ( this == o ) return true;
-    if ( !( o instanceof ViewResponse ) ) return false;
+    if ( this == o ) {
+      return true;
+    }
+    if ( !( o instanceof ViewResponse ) ) {
+      return false;
+    }
 
-    ViewResponse that = ( ViewResponse ) o;
+    ViewResponse<?,?,?> that = ( ViewResponse<?,?,?> ) o;
 
-    if ( offset != that.offset ) return false;
-    if ( totalRows != that.totalRows ) return false;
-    if ( !rows.equals( that.rows ) ) return false;
+    if ( offset != that.offset ) {
+      return false;
+    }
+    if ( totalRows != that.totalRows ) {
+      return false;
+    }
+    if ( !rows.equals( that.rows ) ) {
+      return false;
+    }
 
     return true;
   }

@@ -44,7 +44,6 @@ import javax.annotation.Nullable;
  */
 public class Row<K, V, D> {
   @Nonnull
-
   private final DocId id;
   @Nonnull
   private final K key;
@@ -87,15 +86,27 @@ public class Row<K, V, D> {
 
   @Override
   public boolean equals( Object o ) {
-    if ( this == o ) return true;
-    if ( !( o instanceof Row ) ) return false;
+    if ( this == o ) {
+      return true;
+    }
+    if ( !( o instanceof Row ) ) {
+      return false;
+    }
 
-    Row row = ( Row ) o;
+    Row<?,?,?> row = ( Row<?,?,?> ) o;
 
-    if ( !id.equals( row.id ) ) return false;
-    if ( !key.equals( row.key ) ) return false;
-    if ( doc != null ? !doc.equals( row.doc ) : row.doc != null ) return false;
-    if ( value != null ? !value.equals( row.value ) : row.value != null ) return false;
+    if ( !id.equals( row.id ) ) {
+      return false;
+    }
+    if ( !key.equals( row.key ) ) {
+      return false;
+    }
+    if ( doc != null ? !doc.equals( row.doc ) : row.doc != null ) {
+      return false;
+    }
+    if ( value != null ? !value.equals( row.value ) : row.value != null ) {
+      return false;
+    }
 
     return true;
   }

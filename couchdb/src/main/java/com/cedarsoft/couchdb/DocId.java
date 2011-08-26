@@ -39,7 +39,6 @@ import javax.annotation.Nonnull;
  */
 public class DocId {
   @Nonnull
-
   private final String id;
 
   public DocId( @Nonnull String id ) {
@@ -47,7 +46,6 @@ public class DocId {
   }
 
   @Nonnull
-
   public String asString() {
     return id;
   }

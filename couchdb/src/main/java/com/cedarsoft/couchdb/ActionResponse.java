@@ -42,10 +42,8 @@ import javax.annotation.Nonnull;
  */
 public class ActionResponse {
   @Nonnull
-
   private final DocId id;
   @Nonnull
-
   private final Revision rev;
 
   private final int status;

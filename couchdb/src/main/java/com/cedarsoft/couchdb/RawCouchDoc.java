@@ -81,7 +81,6 @@ public class RawCouchDoc {
    * @return the revision
    */
   @Nullable
-
   public Revision getRev() {
     return rev;
   }

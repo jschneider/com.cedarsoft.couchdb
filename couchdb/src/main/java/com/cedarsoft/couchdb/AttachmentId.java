@@ -39,7 +39,6 @@ import javax.annotation.Nonnull;
  */
 public class AttachmentId {
   @Nonnull
-
   private final String id;
 
   public AttachmentId( @Nonnull String id ) {
@@ -47,7 +46,6 @@ public class AttachmentId {
   }
 
   @Nonnull
-
   public String asString() {
     return id;
   }

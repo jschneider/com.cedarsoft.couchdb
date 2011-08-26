@@ -53,7 +53,7 @@ import java.net.URISyntaxException;
  *
  */
 public class CouchDatabase {
-
+  @Nonnull
   public static final String PARAM_REV = "rev";
 
   @Nonnull
@@ -62,7 +62,6 @@ public class CouchDatabase {
   private final WebResource dbRoot;
   @Nonnull
   private final ViewResponseSerializer viewResponseSerializer;
-
   @Nonnull
   private final CouchDocSerializer couchDocSerializer = new CouchDocSerializer();
 

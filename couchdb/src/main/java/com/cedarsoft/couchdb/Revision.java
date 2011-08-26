@@ -40,7 +40,6 @@ import javax.annotation.Nonnull;
  */
 public class Revision {
   @Nonnull
-
   private final String rev;
 
   public Revision( @Nonnull String rev ) {
@@ -48,13 +47,11 @@ public class Revision {
   }
 
   @Nonnull
-
   public String getRev() {
     return rev;
   }
 
   @Nonnull
-
   public String asString() {
     return rev;
   }
