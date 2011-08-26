@@ -50,11 +50,10 @@ import java.io.OutputStream;
  *
  */
 public class ActionFailedExceptionSerializer {
-
+  @Nonnull
   public static final String PROPERTY_ERROR = "error";
-
+  @Nonnull
   public static final String PROPERTY_REASON = "reason";
-
 
   public void serialize( @Nonnull ActionFailedException object, @Nonnull OutputStream out ) throws IOException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();

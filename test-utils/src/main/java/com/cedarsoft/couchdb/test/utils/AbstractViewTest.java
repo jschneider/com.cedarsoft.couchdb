@@ -77,7 +77,6 @@ public abstract class AbstractViewTest {
   }
 
   @Nonnull
-
   protected String executeView( @Nonnull URL view, @Nonnull URL doc ) throws Exception {
     setUpJs();
 
