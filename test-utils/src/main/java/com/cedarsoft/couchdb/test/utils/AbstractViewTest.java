@@ -47,10 +47,8 @@ import static org.junit.Assert.*;
  */
 public abstract class AbstractViewTest {
   @Nonnull
-
   public static final URL EMIT_JS = AbstractViewTest.class.getResource( "emit.js" );
   @Nonnull
-
   public static final URL EMPTY_JSON = AbstractViewTest.class.getResource( "empty.json" );
 
   protected Context context;
@@ -105,7 +103,6 @@ public abstract class AbstractViewTest {
   }
 
   @Nonnull
-
   protected String getContent( @Nonnull URL resource ) throws IOException {
     return IOUtils.toString( resource.openStream() );
   }
