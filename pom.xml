@@ -9,7 +9,7 @@
   </parent>
 
   <groupId>com.cedarsoft.couchdb</groupId>
-  <artifactId>parent</artifactId>
+  <artifactId>couchdb-parent</artifactId>
   <version>1.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>CouchDB Parent</name>
