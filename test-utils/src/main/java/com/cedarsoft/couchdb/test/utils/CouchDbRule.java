@@ -34,6 +34,8 @@ package com.cedarsoft.couchdb.test.utils;
 import com.cedarsoft.couchdb.CouchDatabase;
 import com.cedarsoft.couchdb.CouchDbException;
 import com.cedarsoft.exceptions.CanceledException;
+import com.sun.jersey.api.client.filter.ClientFilter;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.security.auth.UserPrincipal;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
@@ -204,7 +206,17 @@ public class CouchDbRule implements MethodRule {
   @Nonnull
   public CouchDatabase getCouchDatabaseObject( @Nonnull String dbName ) {
     assert serverURI != null;
-    return new CouchDatabase( serverURI, dbName );
+
+    ClientFilter[] filters;
+    @Nullable String username = getUsername();
+    @Nullable String password = getPassword();
+    if ( username != null && password != null ) {
+      filters = new ClientFilter[]{new HTTPBasicAuthFilter( username, password )};
+    }else{
+      filters = new ClientFilter[0];
+    }
+
+    return new CouchDatabase( serverURI, dbName, filters );
   }
 
   public void publishViews( @Nonnull String dbName ) throws URISyntaxException, IOException {

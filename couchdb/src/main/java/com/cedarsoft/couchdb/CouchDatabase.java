@@ -39,6 +39,8 @@ import com.cedarsoft.serialization.jackson.JacksonSerializer;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.ClientFilter;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -66,16 +68,27 @@ public class CouchDatabase {
   private final CouchDocSerializer couchDocSerializer = new CouchDocSerializer();
 
   @Deprecated
-  public CouchDatabase( @Nonnull String host, int port, @Nonnull String dbName ) throws URISyntaxException {
-    this( new URI( "http://" + host + ":" + port + "/" + dbName ) );
+  public CouchDatabase( @Nonnull String host, int port, @Nonnull String dbName, @Nullable ClientFilter... filters ) throws URISyntaxException {
+    this( new URI( "http://" + host + ":" + port + "/" + dbName ), filters );
   }
 
-  public CouchDatabase( @Nonnull URI serverUri, @Nonnull String dbName ) {
-    this( serverUri.resolve( "/" + dbName ) );
+  public CouchDatabase( @Nonnull URI serverUri, @Nonnull String dbName, @Nullable ClientFilter... filters ) {
+    this( serverUri.resolve( "/" + dbName ), filters );
   }
 
-  public CouchDatabase( @Nonnull URI uri ) {
+  /**
+   * Creates a new database
+   *
+   * @param uri     the uri
+   * @param filters optional filters (e.g. for authentication)
+   */
+  public CouchDatabase( @Nonnull URI uri, @Nullable ClientFilter... filters ) {
     client = new Client();
+    if ( filters != null ) {
+      for ( ClientFilter filter : filters ) {
+        client.addFilter( filter );
+      }
+    }
     dbRoot = client.resource( uri );
     viewResponseSerializer = new ViewResponseSerializer( new RowSerializer( couchDocSerializer ) );
   }
