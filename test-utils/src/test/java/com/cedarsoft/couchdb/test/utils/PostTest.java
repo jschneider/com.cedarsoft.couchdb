@@ -23,7 +23,6 @@ public class PostTest extends CouchTest {
 
   @Test
   public void testPost() throws Exception {
-
     {
       ActionResponse response = db().put( new DocId( "dadocid" ), new ByteArrayInputStream( CONTENT.getBytes() ) );
       assertThat( response.getId().asString() ).isEqualTo( "dadocid" );
@@ -33,16 +32,5 @@ public class PostTest extends CouchTest {
     assertThat( response.getStatus() ).isEqualTo( 201 );
     assertThat( response.getId().asString() ).hasSize( 32 );
     assertThat( response.getRev().asString() ).startsWith( "1-" );
-  }
-
-  @Test
-  public void testMoreComplex() throws Exception {
-    Foo foot = new Foo( 2, "asdf" );
-    {
-      CouchDoc<Foo> doc = new CouchDoc<Foo>( new DocId( "foo1" ), foot );
-      ActionResponse response = db().put( doc, new Foo.Serializer() );
-
-      assertThat( response.getStatus() ).isEqualTo( 201 );
-    }
   }
 }
