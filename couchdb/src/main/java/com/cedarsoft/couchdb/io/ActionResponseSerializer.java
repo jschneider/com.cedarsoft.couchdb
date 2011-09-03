@@ -31,6 +31,7 @@
 
 package com.cedarsoft.couchdb.io;
 
+import com.cedarsoft.couchdb.UniqueId;
 import com.cedarsoft.version.VersionException;
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.DocId;
@@ -64,6 +65,13 @@ public class ActionResponseSerializer {
   public static final String PROPERTY_OK = "ok";
 
 
+  /**
+   * Only used for tests
+   * @param object
+   * @param out
+   * @throws IOException
+   */
+  @Deprecated
   public void serialize( @Nonnull ActionResponse object, @Nonnull OutputStream out ) throws IOException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
@@ -83,18 +91,20 @@ public class ActionResponseSerializer {
       throw new IllegalStateException( "Invalid media type: " + response.getType() );
     }
 
-    return deserialize( response.getStatus(), response.getEntityInputStream() );
+    UniqueId uniqueId = deserialize( response.getEntityInputStream() );
+
+    return new ActionResponse( uniqueId, response.getStatus(), response.getLocation() );
   }
 
   @Nonnull
-  public ActionResponse deserialize( int status, @Nonnull InputStream in ) throws VersionException {
+  public UniqueId deserialize( @Nonnull InputStream in ) throws VersionException {
     try {
       JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
       JsonParser parser = jsonFactory.createJsonParser( in );
       AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
 
-      ActionResponse deserialized = deserialize( status, parser );
+      UniqueId deserialized = deserialize( parser );
 
       AbstractJacksonSerializer.ensureParserClosedObject( parser );
 
@@ -104,6 +114,14 @@ public class ActionResponseSerializer {
     }
   }
 
+  /**
+   * This is only a helper method used for tests
+   * @param serializeTo
+   * @param object
+   * @throws IOException
+   * @throws JsonProcessingException
+   */
+  @Deprecated
   public void serialize( @Nonnull JsonGenerator serializeTo, @Nonnull ActionResponse object ) throws IOException, JsonProcessingException {
     serializeTo.writeBooleanField( PROPERTY_OK, true );
     serializeTo.writeStringField( PROPERTY_ID, object.getId().asString() );
@@ -117,14 +135,14 @@ public class ActionResponseSerializer {
   }
 
   @Nonnull
-  public ActionResponse deserialize( int status, @Nonnull JsonParser deserializeFrom ) throws VersionException, IOException, JsonProcessingException {
+  public UniqueId deserialize( @Nonnull JsonParser deserializeFrom ) throws VersionException, IOException, JsonProcessingException {
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_OK );
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_ID );
     String id = deserializeFrom.getText();
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_REV );
     String rev = deserializeFrom.getText();
     AbstractJacksonSerializer.closeObject( deserializeFrom );
-    return new ActionResponse( new DocId( id ), new Revision( rev ), status );
+    return new UniqueId( new DocId( id ), new Revision( rev ) );
 
     //    AbstractJacksonSerializer.nextToken( deserializeFrom, JsonToken.FIELD_NAME );
     //    if ( deserializeFrom.getCurrentName().equals( PROPERTY_OK ) ) {

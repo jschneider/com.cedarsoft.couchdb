@@ -35,6 +35,7 @@ import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.CouchDoc;
 import com.cedarsoft.couchdb.DocId;
+import com.cedarsoft.couchdb.UniqueId;
 import com.cedarsoft.couchdb.io.ActionFailedExceptionSerializer;
 import com.cedarsoft.couchdb.io.CouchDocSerializer;
 import com.cedarsoft.couchdb.io.ActionResponseSerializer;
@@ -101,8 +102,8 @@ public class FooCouchDb extends CouchTest {
       assertEquals("asdf", deserialized.getObject().getDescription());
 
       Response response2 = server().put(uri, responseContent1.getBytes(), MediaType.APPLICATION_JSON);
-      ActionResponse actionResponse = new ActionResponseSerializer().deserialize(201, response2.getInputStream());
-      assertEquals("2-4ffec4730eec590d07f82789cbe991c6", actionResponse.getRev().asString());
+      UniqueId actionResponse = new ActionResponseSerializer().deserialize( response2.getInputStream() );
+      assertEquals("2-4ffec4730eec590d07f82789cbe991c6", actionResponse.getRevision().asString());
       assertEquals(201, response2.getCode());
       assertEquals(deserialized.getId(), actionResponse.getId());
 
@@ -140,7 +141,7 @@ public class FooCouchDb extends CouchTest {
       assertEquals(201, response.getStatus());
       JsonUtils.assertJsonEquals("{\"ok\":true,\"id\":\"daDoc\",\"rev\":\"1-a61702329aa7cc6b870f7cfcc24aacac\"}", responseAsString);
 
-      ActionResponse actionResponse = new ActionResponseSerializer().deserialize(201, new ByteArrayInputStream(responseAsString.getBytes()));
+      UniqueId actionResponse = new ActionResponseSerializer().deserialize( new ByteArrayInputStream( responseAsString.getBytes() ) );
       assertNotNull(actionResponse);
       assertEquals("daDoc", actionResponse.getId().asString());
       assertEquals("1-a61702329aa7cc6b870f7cfcc24aacac", actionResponse.getRev().asString());

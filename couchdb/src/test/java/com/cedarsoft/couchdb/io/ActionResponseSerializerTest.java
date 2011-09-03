@@ -41,21 +41,25 @@ import org.junit.experimental.theories.*;
 import org.junit.runner.*;
 
 import java.io.ByteArrayOutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 
 @RunWith( Theories.class )
 public class ActionResponseSerializerTest {
   @DataPoint
-  public static final Entry<? extends ActionResponse> SUCCESS = AbstractSerializerTest2.create(
-    new ActionResponse(new DocId("daid"), new Revision("darev"), 200),
-    ActionResponseSerializerTest.class.getResource("ActionResponse.json")
-  );
+  public static final Entry<? extends ActionResponse> SUCCESS() throws URISyntaxException {
+    return AbstractSerializerTest2.create(
+      new ActionResponse( new DocId( "daid" ), new Revision( "darev" ), 200, new URI( "asdf" ) ),
+      ActionResponseSerializerTest.class.getResource( "ActionResponse.json" )
+    );
+  }
 
   @Theory
   public void testName( Entry<? extends ActionResponse> entry ) throws Exception {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     new ActionResponseSerializer().serialize( entry.getObject(), out );
 
-    JsonUtils.assertJsonEquals(new String(entry.getExpected()), new String(out.toByteArray()));
+    JsonUtils.assertJsonEquals( new String( entry.getExpected() ), new String( out.toByteArray() ) );
   }
 }

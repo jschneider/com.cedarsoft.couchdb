@@ -36,22 +36,28 @@ import com.cedarsoft.couchdb.io.ActionResponseSerializer;
 import com.sun.jersey.api.client.ClientResponse;
 
 import javax.annotation.Nonnull;
+import java.net.URI;
 
 /**
  * A response for an action like put/delete
  */
 public class ActionResponse {
   @Nonnull
-  private final DocId id;
-  @Nonnull
-  private final Revision rev;
+  private final UniqueId uniqueId;
 
   private final int status;
 
-  public ActionResponse( @Nonnull DocId id, @Nonnull Revision rev, int status ) {
-    this.id = id;
-    this.rev = rev;
+  @Nonnull
+  private final URI location;
+
+  public ActionResponse( @Nonnull DocId uniqueId, @Nonnull Revision rev, int status, @Nonnull URI location ) {
+    this( new UniqueId( uniqueId, rev ), status, location );
+  }
+
+  public ActionResponse( @Nonnull UniqueId uniqueId, int status, @Nonnull URI location ) {
+    this.uniqueId = uniqueId;
     this.status = status;
+    this.location = location;
   }
 
   public int getStatus() {
@@ -59,44 +65,27 @@ public class ActionResponse {
   }
 
   @Nonnull
-
   public DocId getId() {
-    return id;
+    return getUniqueId().getId();
   }
 
   @Nonnull
-
   public Revision getRev() {
-    return rev;
+    return getUniqueId().getRevision();
+  }
+
+  @Nonnull
+  public UniqueId getUniqueId() {
+    return uniqueId;
   }
 
   @Override
   public String toString() {
     return "ActionResponse{" +
-      "id=" + id +
-      ", rev=" + rev +
+      "uniqueId=" + uniqueId +
       ", status=" + status +
+      ", location=" + location +
       '}';
-  }
-
-  @Override
-  public boolean equals( Object o ) {
-    if ( this == o ) return true;
-    if ( !( o instanceof ActionResponse ) ) return false;
-
-    ActionResponse success = ( ActionResponse ) o;
-
-    if ( !id.equals( success.id ) ) return false;
-    if ( !rev.equals( success.rev ) ) return false;
-
-    return true;
-  }
-
-  @Override
-  public int hashCode() {
-    int result = id.hashCode();
-    result = 31 * result + rev.hashCode();
-    return result;
   }
 
   @Nonnull
