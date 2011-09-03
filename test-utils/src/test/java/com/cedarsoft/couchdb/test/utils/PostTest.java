@@ -33,4 +33,16 @@ public class PostTest extends CouchTest {
     assertThat( response.getId().asString() ).hasSize( 32 );
     assertThat( response.getRev().asString() ).startsWith( "1-" );
   }
+
+  @Test
+  public void testPostFoo() throws Exception {
+    Foo foo = new Foo( 34, "asdf" );
+
+
+    ActionResponse response = db().post( foo, new Foo.Serializer() );
+    assertThat( response.getStatus() ).isEqualTo( 201 );
+    assertThat( response.getId().asString() ).hasSize( 32 );
+    assertThat( response.getRev().asString() ).startsWith( "1-" );
+    assertThat( response.getLocation().toString() ).startsWith( "http://" );
+  }
 }

@@ -46,6 +46,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -216,6 +218,22 @@ public class CouchDatabase {
       .type( JSON_TYPE ).accept( JSON_TYPE )
       .post( ClientResponse.class, content );
     return ActionResponse.create( response );
+  }
+
+  /**
+   * Pushes the object to the database
+   *
+   * @param object     the object
+   * @param serializer the serializer that is used to serialize the object
+   * @return the response
+   *
+   * @noinspection TypeMayBeWeakened
+   */
+  @Nonnull
+  public <T> ActionResponse post( @Nonnull T object, @Nonnull JacksonSerializer<? super T> serializer ) throws ActionFailedException, IOException {
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    serializer.serialize( object, out );
+    return post( new ByteArrayInputStream( out.toByteArray() ) );
   }
 
   @Deprecated
