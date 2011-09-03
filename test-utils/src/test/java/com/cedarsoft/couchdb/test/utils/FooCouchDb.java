@@ -179,7 +179,7 @@ public class FooCouchDb extends CouchTest {
     WebResource db = server;
 
     {
-      ClientResponse response = db.path("daDoc").put(ClientResponse.class, serialized);
+      ClientResponse response = db.path("daDoc").accept( MediaType.APPLICATION_JSON_TYPE ).put(ClientResponse.class, serialized);
       ActionResponse actionResponse = new ActionResponseSerializer().deserialize(response);
 
       assertEquals("daDoc", actionResponse.getId().asString());
