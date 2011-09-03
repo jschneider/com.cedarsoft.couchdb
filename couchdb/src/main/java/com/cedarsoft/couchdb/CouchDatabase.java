@@ -249,12 +249,12 @@ public class CouchDatabase {
 
   @Deprecated
   @Nonnull
-  public <K, V> ViewResponse<K, V, Void> query( @Nonnull String designDocumentId, @Nonnull String viewId, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable String startKey, @Nullable String endKey ) throws InvalidTypeException, ActionFailedException, IOException {
+  public <K, V> ViewResponse<K, V, Void> query( @Nonnull String designDocumentId, @Nonnull String viewId, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable Key startKey, @Nullable Key endKey ) throws InvalidTypeException, ActionFailedException, IOException {
     return query( new ViewDescriptor( designDocumentId, viewId ), keySerializer, valueSerializer, startKey, endKey );
   }
 
   @Nonnull
-  public <K, V> ViewResponse<K, V, Void> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable String startKey, @Nullable String endKey ) throws InvalidTypeException, ActionFailedException, IOException {
+  public <K, V> ViewResponse<K, V, Void> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable Key startKey, @Nullable Key endKey ) throws InvalidTypeException, ActionFailedException, IOException {
     InputStream stream = query( viewDescriptor, false, startKey, endKey );
     return viewResponseSerializer.deserialize( keySerializer, valueSerializer, stream );
   }
@@ -268,8 +268,8 @@ public class CouchDatabase {
   @Nonnull
   public <K, V, D> ViewResponse<K, V, D> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull JacksonSerializer<? extends D> docSerializer ) throws InvalidTypeException, ActionFailedException, IOException {
     String type = docSerializer.getType();
-    String startKey = "[\"" + type + "\"]";
-    String endKey = "[\"" + type + "Z\"]"; //the "Z" is used as high key
+    Key startKey = new Key( "[\"" + type + "\"]" );
+    Key endKey = new Key( "[\"" + type + "Z\"]" ); //the "Z" is used as high key
 
     InputStream stream = query( viewDescriptor, true, startKey, endKey );
 
@@ -307,18 +307,18 @@ public class CouchDatabase {
 
   @Deprecated
   @Nonnull
-  public InputStream query( @Nonnull String designDocumentId, @Nonnull String viewId, boolean includeDocs, @Nullable String startKey, @Nullable String endKey ) throws ActionFailedException {
+  public InputStream query( @Nonnull String designDocumentId, @Nonnull String viewId, boolean includeDocs, @Nullable Key startKey, @Nullable Key endKey ) throws ActionFailedException {
     return query( new ViewDescriptor( designDocumentId, viewId ), includeDocs, startKey, endKey );
   }
 
-  public InputStream query( @Nonnull ViewDescriptor viewDescriptor, boolean includeDocs, @Nullable String startKey, @Nullable String endKey ) throws ActionFailedException {
+  public InputStream query( @Nonnull ViewDescriptor viewDescriptor, boolean includeDocs, @Nullable Key startKey, @Nullable Key endKey ) throws ActionFailedException {
     WebResource viewPath = dbRoot.path( "_design" ).path( viewDescriptor.getDesignDocumentId() ).path( "_view" ).path( viewDescriptor.getViewId() );
 
     if ( startKey != null ) {
-      viewPath = viewPath.queryParam( "startkey", startKey );
+      viewPath = viewPath.queryParam( "startkey", startKey.getJson() );
     }
     if ( endKey != null ) {
-      viewPath = viewPath.queryParam( "endkey", endKey );
+      viewPath = viewPath.queryParam( "endkey", endKey.getJson() );
     }
 
     if ( includeDocs ) {
