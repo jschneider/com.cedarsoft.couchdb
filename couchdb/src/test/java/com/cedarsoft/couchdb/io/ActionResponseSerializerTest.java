@@ -34,13 +34,21 @@ package com.cedarsoft.couchdb.io;
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
+import com.cedarsoft.serialization.jackson.JacksonSupport;
 import com.cedarsoft.serialization.test.utils.AbstractSerializerTest2;
 import com.cedarsoft.serialization.test.utils.Entry;
 import com.cedarsoft.test.utils.JsonUtils;
+import org.codehaus.jackson.JsonEncoding;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonProcessingException;
 import org.junit.experimental.theories.*;
 import org.junit.runner.*;
 
+import javax.annotation.Nonnull;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -58,8 +66,48 @@ public class ActionResponseSerializerTest {
   @Theory
   public void testName( Entry<? extends ActionResponse> entry ) throws Exception {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    new ActionResponseSerializer().serialize( entry.getObject(), out );
+    serialize( entry.getObject(), out );
 
     JsonUtils.assertJsonEquals( new String( entry.getExpected() ), new String( out.toByteArray() ) );
+  }
+
+  /**
+   * Only used for tests
+   * @param object
+   * @param out
+   * @throws IOException
+   */
+  @Deprecated
+  public static void serialize( @Nonnull ActionResponse object, @Nonnull OutputStream out ) throws IOException {
+    JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
+
+    JsonGenerator generator = jsonFactory.createJsonGenerator( out, JsonEncoding.UTF8 );
+
+    generator.writeStartObject();
+
+    serialize( generator, object );
+    generator.writeEndObject();
+
+    generator.close();
+  }
+
+  /**
+   * This is only a helper method used for tests
+   * @param serializeTo
+   * @param object
+   * @throws IOException
+   * @throws JsonProcessingException
+   */
+  @Deprecated
+  public static void serialize( @Nonnull JsonGenerator serializeTo, @Nonnull ActionResponse object ) throws IOException, JsonProcessingException {
+    serializeTo.writeBooleanField( ActionResponseSerializer.PROPERTY_OK, true );
+    serializeTo.writeStringField( ActionResponseSerializer.PROPERTY_ID, object.getId().asString() );
+    serializeTo.writeStringField( ActionResponseSerializer.PROPERTY_REV, object.getRev().asString() );
+
+    //    if ( object.isSuccess() ) {
+    //    } else {
+    //      serializeTo.writeStringField( PROPERTY_ERROR, object.asError().getError() );
+    //      serializeTo.writeStringField( PROPERTY_REASON, object.asError().getReason() );
+    //    }
   }
 }

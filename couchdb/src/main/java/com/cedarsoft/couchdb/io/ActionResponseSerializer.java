@@ -65,26 +65,6 @@ public class ActionResponseSerializer {
   public static final String PROPERTY_OK = "ok";
 
 
-  /**
-   * Only used for tests
-   * @param object
-   * @param out
-   * @throws IOException
-   */
-  @Deprecated
-  public void serialize( @Nonnull ActionResponse object, @Nonnull OutputStream out ) throws IOException {
-    JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
-
-    JsonGenerator generator = jsonFactory.createJsonGenerator( out, JsonEncoding.UTF8 );
-
-    generator.writeStartObject();
-
-    serialize( generator, object );
-    generator.writeEndObject();
-
-    generator.close();
-  }
-
   @Nonnull
   public ActionResponse deserialize( @Nonnull ClientResponse response ) throws VersionException {
     if ( !MediaType.APPLICATION_JSON_TYPE.equals( response.getType() ) ) {
@@ -112,26 +92,6 @@ public class ActionResponseSerializer {
     } catch ( IOException e ) {
       throw new RuntimeException( e );
     }
-  }
-
-  /**
-   * This is only a helper method used for tests
-   * @param serializeTo
-   * @param object
-   * @throws IOException
-   * @throws JsonProcessingException
-   */
-  @Deprecated
-  public void serialize( @Nonnull JsonGenerator serializeTo, @Nonnull ActionResponse object ) throws IOException, JsonProcessingException {
-    serializeTo.writeBooleanField( PROPERTY_OK, true );
-    serializeTo.writeStringField( PROPERTY_ID, object.getId().asString() );
-    serializeTo.writeStringField( PROPERTY_REV, object.getRev().asString() );
-
-    //    if ( object.isSuccess() ) {
-    //    } else {
-    //      serializeTo.writeStringField( PROPERTY_ERROR, object.asError().getError() );
-    //      serializeTo.writeStringField( PROPERTY_REASON, object.asError().getReason() );
-    //    }
   }
 
   @Nonnull
