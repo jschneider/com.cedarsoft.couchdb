@@ -31,5 +31,8 @@
 
 var emitted;
 function emit( key, value ) {
-  emitted = [key, value]
+  emitted = {
+    "key": key,
+    "value": value
+  }
 }

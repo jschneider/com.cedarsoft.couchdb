@@ -93,7 +93,7 @@ public abstract class AbstractViewTest {
     evaluate( "mapFunction(doc);" );
 
     //Check what has been emmited!
-    return Context.toString( evaluate( "emitted;" ) );
+    return Context.toString( evaluate( "emitted.key+\"--\"+emitted.value;" ) );
   }
 
   @Nonnull

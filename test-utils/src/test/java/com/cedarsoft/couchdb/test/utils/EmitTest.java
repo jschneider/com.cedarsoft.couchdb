@@ -43,6 +43,13 @@ public class EmitTest extends AbstractViewTest {
   @Test
   public void testEmit() throws Exception {
     evaluate( getContent( EMIT_JS ) );
-    assertEquals( "1,2", Context.toString( evaluate( "emit(1,2);emitted;" ) ) );
+    assertEquals( "1--4", Context.toString( evaluate( "emit(1,4);emitted.key+\"--\"+emitted.value;" ) ) );
+  }
+
+  @Test
+  public void testArrayEmity() throws Exception {
+    evaluate( getContent( EMIT_JS ) );
+    assertEquals( "1,2,3--4", Context.toString( evaluate( "emit([1,2,3],4);emitted.key+\"--\"+emitted.value;" ) ) );
+
   }
 }
