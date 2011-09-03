@@ -1,7 +1,5 @@
 package com.cedarsoft.couchdb;
 
-import com.google.common.base.Joiner;
-
 import javax.annotation.Nonnull;
 
 /**
@@ -60,7 +58,7 @@ public class Key {
     StringBuilder builder = new StringBuilder();
     builder.append( "[" );
 
-    builder.append( Joiner.on( "," ).join( parts ) );
+    builder.append( createArrayContent( parts ) );
 
     builder.append( "]" );
     return new Key( builder.toString() );
@@ -81,11 +79,27 @@ public class Key {
     StringBuilder builder = new StringBuilder();
     builder.append( "[" );
 
-    builder.append( Joiner.on( "," ).join( parts ) );
+    builder.append( createArrayContent( parts ) );
 
     builder.append( ",{}" );
     builder.append( "]" );
     return new Key( builder.toString() );
 
+  }
+
+  @Nonnull
+  private static String createArrayContent( @Nonnull String[] parts ) {
+    StringBuilder builder = new StringBuilder();
+
+    for ( int i = 0; i < parts.length; i++ ) {
+      String part = parts[i];
+      builder.append( "\"" ).append( part ).append( "\"" );
+
+      if ( i < parts.length - 1 ) {
+        builder.append( "," );
+      }
+    }
+
+    return builder.toString();
   }
 }

@@ -14,7 +14,7 @@ public class KeyTest extends TestCase {
 
   public void testArray() throws Exception {
     assertThat( Key.array().getJson() ).isEqualTo( "[]" );
-    assertThat( Key.array( "a", "b", "c" ).getJson() ).isEqualTo( "[a,b,c]" );
+    assertThat( Key.array( "a", "b", "c" ).getJson() ).isEqualTo( "[\"a\",\"b\",\"c\"]" );
   }
 
   public void testEndKey() throws Exception {
@@ -25,6 +25,6 @@ public class KeyTest extends TestCase {
       assertThat( e ).hasMessage( "Need at least one element" );
     }
 
-    assertThat( Key.endArray( "a" ).getJson() ).isEqualTo( "[a,{}]" );
+    assertThat( Key.endArray( "a" ).getJson() ).isEqualTo( "[\"a\",{}]" );
   }
 }
