@@ -199,6 +199,12 @@ public class CouchDatabase {
     return put( doc, serializer );
   }
 
+  @Nonnull
+  public ActionResponse post( @Nonnull InputStream content ) throws ActionFailedException {
+    ClientResponse response = dbRoot.type( MediaType.APPLICATION_JSON_TYPE ).post( ClientResponse.class, content );
+    return ActionResponse.create( response );
+  }
+
   @Deprecated
   @Nonnull
   public <K, V> ViewResponse<K, V, Void> query( @Nonnull String designDocumentId, @Nonnull String viewId, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer ) throws InvalidTypeException, ActionFailedException, IOException {
