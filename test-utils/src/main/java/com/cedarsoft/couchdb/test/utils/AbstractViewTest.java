@@ -51,6 +51,9 @@ public abstract class AbstractViewTest {
   @Nonnull
   public static final URL EMPTY_JSON = AbstractViewTest.class.getResource( "empty.json" );
 
+  @Nonnull
+  static final String EMIT_TO_STRING = "if(emitted){emitted.key+\"--\"+emitted.value;}else{undefined}";
+
   protected Context context;
   protected Scriptable scriptable;
 
@@ -93,7 +96,7 @@ public abstract class AbstractViewTest {
     evaluate( "mapFunction(doc);" );
 
     //Check what has been emmited!
-    return Context.toString( evaluate( "emitted.key+\"--\"+emitted.value;" ) );
+    return Context.toString( evaluate( AbstractViewTest.EMIT_TO_STRING ) );
   }
 
   @Nonnull
