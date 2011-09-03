@@ -50,6 +50,14 @@ public class CouchSerializerWrapper<T> extends AbstractJacksonSerializer<T> {
   }
 
   @Override
+  protected void beforeTypeAndVersion( @Nonnull JacksonParserWrapper wrapper ) throws IOException, JsonProcessingException, InvalidTypeException{
+    super.beforeTypeAndVersion( wrapper );
+
+    wrapper.nextFieldValue( "_id" );
+    wrapper.nextFieldValue( "_rev" );
+  }
+
+  @Override
   @Nonnull
   public T deserialize( @Nonnull JsonParser parser ) throws IOException, JsonProcessingException, InvalidTypeException {
     JacksonParserWrapper wrapper = new JacksonParserWrapper( parser );
