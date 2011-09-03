@@ -57,6 +57,8 @@ import java.net.URISyntaxException;
 public class CouchDatabase {
   @Nonnull
   public static final String PARAM_REV = "rev";
+  @Nonnull
+  public static final MediaType JSON_TYPE = MediaType.APPLICATION_JSON_TYPE;
 
   @Nonnull
   private final Client client;
@@ -112,7 +114,9 @@ public class CouchDatabase {
    */
   @Nonnull
   public ActionResponse put( @Nonnull DocId id, @Nonnull InputStream content ) throws ActionFailedException {
-    ClientResponse response = dbRoot.path( id.asString() ).put( ClientResponse.class, content );
+    ClientResponse response = dbRoot.path( id.asString() )
+      .type( JSON_TYPE ).accept( JSON_TYPE )
+      .put( ClientResponse.class, content );
     return ActionResponse.create( response );
   }
 
@@ -128,7 +132,9 @@ public class CouchDatabase {
    */
   @Nonnull
   public <T> ActionResponse put( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> serializer ) throws ActionFailedException {
-    ClientResponse clientResponse = dbRoot.path( doc.getId().asString() ).put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
+    ClientResponse clientResponse = dbRoot.path( doc.getId().asString() )
+      .type( JSON_TYPE ).accept( JSON_TYPE )
+      .put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
     ActionResponse actionResponse = ActionResponse.create( clientResponse );
 
     //Update the rev
@@ -158,7 +164,9 @@ public class CouchDatabase {
       resource = resource.queryParam( PARAM_REV, revision.asString() );
     }
 
-    ClientResponse clientResponse = resource.type( mediaType ).put( ClientResponse.class, content );
+    ClientResponse clientResponse = resource
+      .type( mediaType ).accept( JSON_TYPE )
+      .put( ClientResponse.class, content );
     return ActionResponse.create( clientResponse );
   }
 
@@ -185,7 +193,10 @@ public class CouchDatabase {
       resource = resource.queryParam( PARAM_REV, revision.asString() );
     }
 
-    ClientResponse clientResponse = resource.type( mediaType ).put( ClientResponse.class, attachment );
+    ClientResponse clientResponse = resource
+      .type( mediaType )
+      .accept( JSON_TYPE )
+      .put( ClientResponse.class, attachment );
     return ActionResponse.create( clientResponse );
   }
 
@@ -201,7 +212,9 @@ public class CouchDatabase {
 
   @Nonnull
   public ActionResponse post( @Nonnull InputStream content ) throws ActionFailedException {
-    ClientResponse response = dbRoot.type( MediaType.APPLICATION_JSON_TYPE ).post( ClientResponse.class, content );
+    ClientResponse response = dbRoot
+      .type( JSON_TYPE ).accept( JSON_TYPE )
+      .post( ClientResponse.class, content );
     return ActionResponse.create( response );
   }
 
@@ -365,13 +378,21 @@ public class CouchDatabase {
 
   @Nonnull
   public ActionResponse delete( @Nonnull DocId id, @Nonnull Revision revision ) throws ActionFailedException {
-    ClientResponse response = dbRoot.path( id.asString() ).queryParam( PARAM_REV, revision.asString() ).delete( ClientResponse.class );
+    ClientResponse response = dbRoot.path( id.asString() )
+      .queryParam( PARAM_REV, revision.asString() )
+      .type( JSON_TYPE ).accept( JSON_TYPE )
+      .delete( ClientResponse.class );
     return ActionResponse.create( response );
   }
 
   @Nonnull
   public ActionResponse delete( @Nonnull DocId id, @Nonnull Revision revision, @Nonnull AttachmentId attachmentId ) throws ActionFailedException {
-    ClientResponse response = dbRoot.path( id.asString() ).path( attachmentId.asString() ).queryParam( PARAM_REV, revision.asString() ).delete( ClientResponse.class );
+    ClientResponse response = dbRoot
+      .path( id.asString() )
+      .path( attachmentId.asString() )
+      .queryParam( PARAM_REV, revision.asString() )
+      .type( JSON_TYPE ).accept( JSON_TYPE )
+      .delete( ClientResponse.class );
     return ActionResponse.create( response );
   }
 
@@ -385,7 +406,10 @@ public class CouchDatabase {
    */
   @Nonnull
   public Revision getRev( @Nonnull DocId docId ) throws ActionFailedException {
-    ClientResponse response = dbRoot.path( docId.asString() ).head();
+    ClientResponse response = dbRoot
+      .path( docId.asString() )
+      .type( JSON_TYPE ).accept( JSON_TYPE )
+      .head();
     ActionResponse.verifyNoError( response );
 
     EntityTag entityTag = response.getEntityTag();
@@ -397,12 +421,19 @@ public class CouchDatabase {
 
   @Nonnull
   public ClientResponse getHead( @Nonnull DocId docId ) {
-    return dbRoot.path( docId.asString() ).head();
+    return dbRoot
+      .path( docId.asString() )
+      .type( JSON_TYPE ).accept( JSON_TYPE )
+      .head();
   }
 
   @Nonnull
   public ClientResponse getHead( @Nonnull DocId docId, @Nonnull AttachmentId attachmentId ) {
-    return dbRoot.path( docId.asString() ).path( attachmentId.asString() ).head();
+    return dbRoot
+      .path( docId.asString() )
+      .path( attachmentId.asString() )
+      .type( JSON_TYPE ).accept( JSON_TYPE )
+      .head();
   }
 
   @Override

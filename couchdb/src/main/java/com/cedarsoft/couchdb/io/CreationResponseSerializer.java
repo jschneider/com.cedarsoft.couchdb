@@ -46,6 +46,7 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.JsonToken;
 
 import javax.annotation.Nonnull;
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -78,6 +79,10 @@ public class CreationResponseSerializer {
 
   @Nonnull
   public ActionResponse deserialize( @Nonnull ClientResponse response ) throws VersionException {
+    if ( !MediaType.APPLICATION_JSON_TYPE.equals( response.getType() ) ) {
+      throw new IllegalStateException( "Invalid media type: " + response.getType() );
+    }
+
     return deserialize( response.getStatus(), response.getEntityInputStream() );
   }
 
