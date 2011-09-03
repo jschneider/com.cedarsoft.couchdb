@@ -51,7 +51,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class CreationResponseSerializer {
+public class ActionResponseSerializer {
 
   public static final String PROPERTY_ID = "id";
 

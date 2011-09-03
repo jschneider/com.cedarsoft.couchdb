@@ -44,17 +44,17 @@ import java.io.ByteArrayOutputStream;
 
 
 @RunWith( Theories.class )
-public class CreationResponseSerializerTest {
+public class ActionResponseSerializerTest {
   @DataPoint
   public static final Entry<? extends ActionResponse> SUCCESS = AbstractSerializerTest2.create(
     new ActionResponse(new DocId("daid"), new Revision("darev"), 200),
-    CreationResponseSerializerTest.class.getResource("ActionResponse.json")
+    ActionResponseSerializerTest.class.getResource("ActionResponse.json")
   );
 
   @Theory
   public void testName( Entry<? extends ActionResponse> entry ) throws Exception {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    new CreationResponseSerializer().serialize( entry.getObject(), out );
+    new ActionResponseSerializer().serialize( entry.getObject(), out );
 
     JsonUtils.assertJsonEquals(new String(entry.getExpected()), new String(out.toByteArray()));
   }

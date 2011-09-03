@@ -32,7 +32,7 @@
 package com.cedarsoft.couchdb;
 
 import com.cedarsoft.couchdb.io.ActionFailedExceptionSerializer;
-import com.cedarsoft.couchdb.io.CreationResponseSerializer;
+import com.cedarsoft.couchdb.io.ActionResponseSerializer;
 import com.sun.jersey.api.client.ClientResponse;
 
 import javax.annotation.Nonnull;
@@ -102,7 +102,7 @@ public class ActionResponse {
   @Nonnull
   public static ActionResponse create( @Nonnull ClientResponse response ) throws ActionFailedException {
     verifyNoError( response );
-    return new CreationResponseSerializer().deserialize( response );
+    return new ActionResponseSerializer().deserialize( response );
   }
 
   /**
