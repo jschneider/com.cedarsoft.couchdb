@@ -48,7 +48,7 @@
       <dependency>
         <groupId>com.cedarsoft.serialization</groupId>
         <artifactId>jackson</artifactId>
-        <version>4.0.0</version>
+        <version>4.0.1</version>
       </dependency>
 
       <dependency>
