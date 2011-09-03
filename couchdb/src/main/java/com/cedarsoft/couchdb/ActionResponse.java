@@ -65,6 +65,11 @@ public class ActionResponse {
   }
 
   @Nonnull
+  public URI getLocation() {
+    return location;
+  }
+
+  @Nonnull
   public DocId getId() {
     return getUniqueId().getId();
   }

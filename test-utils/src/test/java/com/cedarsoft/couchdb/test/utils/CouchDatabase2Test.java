@@ -46,6 +46,7 @@ import javax.annotation.Nonnull;
 import java.io.ByteArrayInputStream;
 import java.net.URISyntaxException;
 
+import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 /**
@@ -63,6 +64,21 @@ public class CouchDatabase2Test extends CouchTest {
   public void setup() throws URISyntaxException {
     couchDocSerializer = new CouchDocSerializer();
   }
+
+  @Test
+  public void testLocation() throws Exception {
+    Foo foo = new Foo( 2, "asdf" );
+    {
+      CouchDoc<Foo> doc = new CouchDoc<Foo>( new DocId( "foo1" ), foo );
+      ActionResponse response = db().put( doc, new Foo.Serializer() );
+
+      assertThat( response.getStatus() ).isEqualTo( 201 );
+      assertThat( response.getLocation().toString() ).isNotNull();
+      assertThat( response.getLocation().toString() ).contains("http://");
+      assertThat( response.getLocation().toString() ).contains("foo1");
+    }
+  }
+
 
   @Test
   public void testManually() throws Exception {
