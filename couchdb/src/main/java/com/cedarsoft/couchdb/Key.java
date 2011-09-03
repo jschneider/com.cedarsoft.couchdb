@@ -1,11 +1,18 @@
 package com.cedarsoft.couchdb;
 
+import com.google.common.base.Joiner;
+
 import javax.annotation.Nonnull;
 
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class Key {
+  @Nonnull
+  public static final Key EMPTY_ARRAY = new Key( "[]" );
+  @Nonnull
+  public static final Key EMPTY_OBJECT = new Key( "{}" );
+
   @Nonnull
   private final String json;
 
@@ -20,19 +27,25 @@ public class Key {
 
   @Override
   public boolean equals( Object o ) {
-    if ( this == o ) return true;
-    if ( !( o instanceof Key ) ) return false;
+    if ( this == o ) {
+      return true;
+    }
+    if ( !( o instanceof Key ) ) {
+      return false;
+    }
 
     Key key = ( Key ) o;
 
-    if ( json != null ? !json.equals( key.json ) : key.json != null ) return false;
+    if ( !json.equals( key.json ) ) {
+      return false;
+    }
 
     return true;
   }
 
   @Override
   public int hashCode() {
-    return json != null ? json.hashCode() : 0;
+    return json.hashCode();
   }
 
   @Override
@@ -40,5 +53,39 @@ public class Key {
     return "Key{" +
       json + '\'' +
       '}';
+  }
+
+  @Nonnull
+  public static Key array( @Nonnull String... parts ) {
+    StringBuilder builder = new StringBuilder();
+    builder.append( "[" );
+
+    builder.append( Joiner.on( "," ).join( parts ) );
+
+    builder.append( "]" );
+    return new Key( builder.toString() );
+  }
+
+  /**
+   * Returns a key that can be used as "end" array (for "endkey")
+   *
+   * @param parts the parts
+   * @return an array that contains an additional empty object as last element
+   */
+  @Nonnull
+  public static Key endArray( @Nonnull String... parts ) {
+    if ( parts.length == 0 ) {
+      throw new IllegalArgumentException( "Need at least one element" );
+    }
+
+    StringBuilder builder = new StringBuilder();
+    builder.append( "[" );
+
+    builder.append( Joiner.on( "," ).join( parts ) );
+
+    builder.append( ",{}" );
+    builder.append( "]" );
+    return new Key( builder.toString() );
+
   }
 }
