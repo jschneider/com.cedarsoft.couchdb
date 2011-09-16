@@ -30,21 +30,29 @@ public class UniqueId {
 
   @Override
   public boolean equals( Object o ) {
-    if ( this == o ) return true;
-    if ( !( o instanceof UniqueId ) ) return false;
+    if ( this == o ) {
+      return true;
+    }
+    if ( !( o instanceof UniqueId ) ) {
+      return false;
+    }
 
     UniqueId uniqueId = ( UniqueId ) o;
 
-    if ( id != null ? !id.equals( uniqueId.id ) : uniqueId.id != null ) return false;
-    if ( revision != null ? !revision.equals( uniqueId.revision ) : uniqueId.revision != null ) return false;
+    if ( !id.equals( uniqueId.id ) ) {
+      return false;
+    }
+    if ( !revision.equals( uniqueId.revision ) ) {
+      return false;
+    }
 
     return true;
   }
 
   @Override
   public int hashCode() {
-    int result = id != null ? id.hashCode() : 0;
-    result = 31 * result + ( revision != null ? revision.hashCode() : 0 );
+    int result = id.hashCode();
+    result = 31 * result + revision.hashCode();
     return result;
   }
 
@@ -52,5 +60,10 @@ public class UniqueId {
   @Nonnull
   public Revision getRev() {
     return getRevision();
+  }
+
+  @Override
+  public String toString() {
+    return "<" + id + "::" + revision + ">";
   }
 }
