@@ -40,7 +40,6 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.ClientFilter;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -150,14 +149,13 @@ public class CouchDatabase {
    *
    * @param docId     the doc id
    * @param revision  the (optional) revision
-   * @param mediaType the media type
    * @param content   the content
    * @return the response
    *
    * @throws ActionFailedException
    */
   @Nonnull
-  public ActionResponse put( @Nonnull DocId docId, @Nullable Revision revision, @Nonnull MediaType mediaType, @Nonnull InputStream content ) throws ActionFailedException {
+  public ActionResponse put( @Nonnull DocId docId, @Nullable Revision revision, @Nonnull InputStream content ) throws ActionFailedException {
     WebResource resource = dbRoot
       .path( docId.asString() );
 
@@ -167,7 +165,7 @@ public class CouchDatabase {
     }
 
     ClientResponse clientResponse = resource
-      .type( mediaType ).accept( JSON_TYPE )
+      .type( JSON_TYPE ).accept( JSON_TYPE )
       .put( ClientResponse.class, content );
     return ActionResponse.create( clientResponse );
   }
@@ -178,14 +176,13 @@ public class CouchDatabase {
    * @param docId        the doc id
    * @param revision     the (optional) revision
    * @param attachmentId the attachment id
-   * @param mediaType    the media type
    * @param attachment   the attachment
    * @return the response
    *
    * @throws ActionFailedException
    */
   @Nonnull
-  public ActionResponse put( @Nonnull DocId docId, @Nullable Revision revision, @Nonnull AttachmentId attachmentId, @Nonnull MediaType mediaType, @Nonnull InputStream attachment ) throws ActionFailedException {
+  public ActionResponse put( @Nonnull DocId docId, @Nullable Revision revision, @Nonnull AttachmentId attachmentId, @Nonnull InputStream attachment ) throws ActionFailedException {
     WebResource resource = dbRoot
       .path( docId.asString() )
       .path( attachmentId.asString() );
@@ -196,7 +193,7 @@ public class CouchDatabase {
     }
 
     ClientResponse clientResponse = resource
-      .type( mediaType )
+      .type( JSON_TYPE )
       .accept( JSON_TYPE )
       .put( ClientResponse.class, attachment );
     return ActionResponse.create( clientResponse );
