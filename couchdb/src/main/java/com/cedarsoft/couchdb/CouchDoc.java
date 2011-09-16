@@ -64,6 +64,10 @@ public class CouchDoc<T> extends RawCouchDoc {
     this( id, null, object );
   }
 
+  public CouchDoc( @Nonnull UniqueId uniqueId, @Nonnull T object ) {
+    this( uniqueId.getId(), uniqueId.getRevision(), object );
+  }
+
   /**
    * Creates a new info object with a revision
    *

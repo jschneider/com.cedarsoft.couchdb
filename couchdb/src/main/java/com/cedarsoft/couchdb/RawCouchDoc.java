@@ -51,6 +51,10 @@ public class RawCouchDoc {
     this( id, null );
   }
 
+  public RawCouchDoc(@Nonnull UniqueId uniqueId) {
+    this( uniqueId.getId(), uniqueId.getRevision() );
+  }
+
   public RawCouchDoc( @Nonnull DocId id, @Nullable Revision rev ) {
     this.id = id;
     this.rev = rev;
