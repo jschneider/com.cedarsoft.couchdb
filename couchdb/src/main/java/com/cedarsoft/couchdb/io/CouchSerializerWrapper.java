@@ -1,5 +1,8 @@
 package com.cedarsoft.couchdb.io;
 
+import com.cedarsoft.couchdb.DocId;
+import com.cedarsoft.couchdb.Revision;
+import com.cedarsoft.couchdb.UniqueId;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.InvalidTypeException;
 import com.cedarsoft.serialization.jackson.test.compatible.JacksonParserWrapper;
@@ -12,6 +15,7 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.JsonToken;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 
 /**
@@ -51,43 +55,39 @@ public class CouchSerializerWrapper<T> extends AbstractJacksonSerializer<T> {
   }
 
   @Override
-  protected void beforeTypeAndVersion( @Nonnull JacksonParserWrapper wrapper ) throws IOException, JsonProcessingException, InvalidTypeException{
+  protected void beforeTypeAndVersion( @Nonnull JacksonParserWrapper wrapper ) throws IOException, JsonProcessingException, InvalidTypeException {
     super.beforeTypeAndVersion( wrapper );
 
     wrapper.nextFieldValue( "_id" );
+    final DocId id = new DocId( wrapper.getText() );
     wrapper.nextFieldValue( "_rev" );
+    final Revision revision = new Revision( wrapper.getText() );
+
+    current = new UniqueId( id, revision );
   }
-
-  @Override
-  @Nonnull
-  public T deserialize( @Nonnull JsonParser parser ) throws IOException, JsonProcessingException, InvalidTypeException {
-    JacksonParserWrapper wrapper = new JacksonParserWrapper( parser );
-
-    Version version;
-    wrapper.nextToken( JsonToken.START_OBJECT );
-
-    //Couchdb specific stuff...
-    wrapper.nextFieldValue( "_id" );
-    wrapper.nextFieldValue( "_rev" );
-
-    wrapper.nextFieldValue( PROPERTY_TYPE );
-    String readNs = parser.getText();
-    verifyType( readNs );
-    wrapper.nextFieldValue( PROPERTY_VERSION );
-    version = Version.parse( parser.getText() );
-    verifyVersionReadable( version );
-
-    T deserialized = deserialize( parser, version );
-
-    ensureObjectClosed( parser );
-
-    return deserialized;
-  }
-
 
   @Nonnull
   @Override
   public T deserialize( @Nonnull JsonParser deserializeFrom, @Nonnull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
     return delegate.deserialize( deserializeFrom, formatVersion );
+  }
+
+  @Nullable
+  private UniqueId current;
+
+  /**
+   * Returns the current unique id
+   *
+   * @return the current unique id
+   *
+   * @noinspection NullableProblems
+   */
+  @Nonnull
+  public UniqueId getCurrent() throws IllegalStateException {
+    @Nullable final UniqueId copy = current;
+    if ( copy == null ) {
+      throw new IllegalStateException( "No current id available" );
+    }
+    return copy;
   }
 }
