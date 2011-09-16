@@ -20,6 +20,7 @@ import java.io.IOException;
  * Wraps a default serializer.
  *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
+ * @param <T> the type
  */
 public class CouchSerializerWrapper<T> extends AbstractJacksonSerializer<T> {
   @Nonnull
