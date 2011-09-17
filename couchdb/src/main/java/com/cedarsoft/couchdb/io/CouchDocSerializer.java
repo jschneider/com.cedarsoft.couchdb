@@ -63,21 +63,17 @@ public class CouchDocSerializer {
   public static final String PROPERTY_REV = RawCouchDocSerializer.PROPERTY_REV;
 
   @Nonnull
-  public <T> byte[] serialize( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> wrappedSerializer ) {
+  public <T> byte[] serialize( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> wrappedSerializer ) throws IOException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     serialize( doc, wrappedSerializer, out );
     return out.toByteArray();
   }
 
-  public <T> void serialize( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> wrappedSerializer, @Nonnull OutputStream out ) {
-    try {
-      JsonGenerator generator = RawCouchDocSerializer.createJsonGenerator( out );
+  public <T> void serialize( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> wrappedSerializer, @Nonnull OutputStream out ) throws IOException {
+    JsonGenerator generator = RawCouchDocSerializer.createJsonGenerator( out );
 
-      serialize( doc, wrappedSerializer, generator );
-      generator.close();
-    } catch ( IOException e ) {
-      throw new RuntimeException( "Could not parse due to " + e.getMessage(), e );
-    }
+    serialize( doc, wrappedSerializer, generator );
+    generator.close();
   }
 
   public <T> void serialize( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> wrappedSerializer, @Nonnull JsonGenerator generator ) throws IOException {

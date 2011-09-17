@@ -132,7 +132,7 @@ public class CouchDatabase {
    * @throws ActionFailedException
    */
   @Nonnull
-  public <T> ActionResponse put( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> serializer ) throws ActionFailedException {
+  public <T> ActionResponse put( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> serializer ) throws ActionFailedException, IOException {
     ClientResponse clientResponse = dbRoot.path( doc.getId().asString() )
       .type( JSON_TYPE ).accept( JSON_TYPE )
       .put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
@@ -201,7 +201,7 @@ public class CouchDatabase {
 
   @Deprecated
   @Nonnull
-  public <T> ActionResponse putUpdated( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> serializer ) throws ActionFailedException {
+  public <T> ActionResponse putUpdated( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> serializer ) throws ActionFailedException, IOException {
     if ( doc.getRev() == null ) {
       throw new IllegalArgumentException( "Cannot update a doc without REV" );
     }
