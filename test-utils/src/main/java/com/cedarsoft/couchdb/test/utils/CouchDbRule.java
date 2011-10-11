@@ -117,7 +117,7 @@ public class CouchDbRule implements MethodRule {
   public void before() throws IOException, URISyntaxException, CouchDbException {
     URI currentUri = getServerUri();
     serverURI = currentUri;
-    Server currentServer = new ServerImpl( serverURI.getHost(), currentUri.getPort() );
+    Server currentServer = new ServerImpl( currentUri.getHost(), currentUri.getPort() );
 
     final String username = getUsername();
     final String password = getPassword();
