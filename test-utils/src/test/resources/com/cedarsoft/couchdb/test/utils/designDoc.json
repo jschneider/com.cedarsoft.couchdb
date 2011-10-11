@@ -1,0 +1,13 @@
+{
+  "_id" : "doc1",
+  "language" : "javascript",
+  "views" : {
+    "file2" : {
+      "map" : "function(doc){\n\n}"
+    },
+    "file1" : {
+      "map" : "function(doc){\n\n}",
+      "reduce" : "function( key, values, rereduce ) {\n  return sum( values );\n}"
+    }
+  }
+}
