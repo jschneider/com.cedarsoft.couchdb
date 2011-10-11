@@ -50,6 +50,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import static org.junit.Assert.*;
 
@@ -77,14 +78,14 @@ public class FooCouchDb extends CouchTest {
 
     String uri = "/" + db().getDbName() + "/" + info.getId();
     {
-      Response response0 = server().put(uri, out.toByteArray(), MediaType.APPLICATION_JSON);
-      JsonUtils.assertJsonEquals("{\"ok\":true,\"id\":\"daId\",\"rev\":\"1-a61702329aa7cc6b870f7cfcc24aacac\"}", response0.getContentAsString());
-      assertEquals(201, response0.getCode());
+      ClientResponse response0 = server().put( uri, out.toByteArray( ), MediaType.APPLICATION_JSON );
+      JsonUtils.assertJsonEquals( "{\"ok\":true,\"id\":\"daId\",\"rev\":\"1-a61702329aa7cc6b870f7cfcc24aacac\"}", response0.getEntity( String.class ) );
+      assertEquals(201, response0.getStatus( ));
     }
 
     {
-      Response response1 = server().get(uri);
-      String responseContent1 = response1.getContentAsString();
+      ClientResponse response1 = server().get( uri );
+      String responseContent1 = response1.getEntity( String.class );
       JsonUtils.assertJsonEquals("{\n" +
                                    "  \"_id\" : \"daId\",\n" +
                                    "  \"_rev\" : \"1-a61702329aa7cc6b870f7cfcc24aacac\",\n" +
@@ -93,7 +94,7 @@ public class FooCouchDb extends CouchTest {
                                    "  \"aValue\" : 42,\n" +
                                    "  \"description\" : \"asdf\"\n" +
                                    "}", responseContent1);
-      assertEquals(200, response1.getCode());
+      assertEquals(200, response1.getStatus( ));
 
       CouchDoc<Foo> deserialized = serializer.deserialize(fooSerializer, new ByteArrayInputStream(responseContent1.getBytes()));
       assertEquals("daId", deserialized.getId().asString());
@@ -101,17 +102,17 @@ public class FooCouchDb extends CouchTest {
       assertEquals(42, deserialized.getObject().getaValue());
       assertEquals("asdf", deserialized.getObject().getDescription());
 
-      Response response2 = server().put(uri, responseContent1.getBytes(), MediaType.APPLICATION_JSON);
-      UniqueId actionResponse = new ActionResponseSerializer().deserialize( response2.getInputStream() );
+      ClientResponse response2 = server().put( uri, responseContent1.getBytes( ), MediaType.APPLICATION_JSON );
+      UniqueId actionResponse = new ActionResponseSerializer().deserialize( response2.getEntity( InputStream.class ) );
       assertEquals("2-4ffec4730eec590d07f82789cbe991c6", actionResponse.getRevision().asString());
-      assertEquals(201, response2.getCode());
+      assertEquals(201, response2.getStatus( ));
       assertEquals(deserialized.getId(), actionResponse.getId());
 
-      Response response3 = server().put(uri, responseContent1.getBytes(), MediaType.APPLICATION_JSON);
-      ActionFailedException actionFailedResponse1 = new ActionFailedExceptionSerializer().deserialize(response3.getCode(), response3.getInputStream());
+      ClientResponse response3 = server().put( uri, responseContent1.getBytes( ), MediaType.APPLICATION_JSON );
+      ActionFailedException actionFailedResponse1 = new ActionFailedExceptionSerializer().deserialize(response3.getStatus( ), response3.getEntity( InputStream.class  ));
       assertEquals("conflict", actionFailedResponse1.getError());
       assertEquals("Document update conflict.", actionFailedResponse1.getReason());
-      assertEquals(409, response3.getCode());
+      assertEquals(409, response3.getStatus( ));
     }
   }
 

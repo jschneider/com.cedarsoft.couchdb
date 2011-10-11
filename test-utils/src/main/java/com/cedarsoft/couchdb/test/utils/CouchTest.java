@@ -33,6 +33,7 @@ package com.cedarsoft.couchdb.test.utils;
 
 import com.cedarsoft.couchdb.CouchDatabase;
 import com.cedarsoft.couchdb.CouchDbException;
+import com.cedarsoft.couchdb.CouchServer;
 import org.jcouchdb.db.Server;
 import org.junit.*;
 
@@ -65,7 +66,7 @@ public abstract class CouchTest {
   }
 
   @Nonnull
-  protected Server server() {
+  protected CouchServer server( ) {
     return couchDbRule.getCurrentServer();
   }
 

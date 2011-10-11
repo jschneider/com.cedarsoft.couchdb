@@ -63,7 +63,6 @@ public class CouchDbRuleTest {
                   public void evaluate() throws Throwable {
                     called[0] = true;
                     assertThat( rule.getCurrentDb() ).isNotNull();
-                    assertThat( rule.getCurrentServer().isShutdown() ).isFalse();
 
                     dbName[0] = rule.getCurrentDb().getDbName();
                     assertThat( rule.getCurrentServer().listDatabases().contains( dbName[0] ) );

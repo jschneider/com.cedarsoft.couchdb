@@ -31,8 +31,10 @@
 
 package com.cedarsoft.couchdb.test.utils;
 
+import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.couchdb.CouchDatabase;
 import com.cedarsoft.couchdb.CouchDbException;
+import com.cedarsoft.couchdb.CouchServer;
 import com.cedarsoft.exceptions.CanceledException;
 import com.sun.jersey.api.client.filter.ClientFilter;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
@@ -89,7 +91,7 @@ public class CouchDbRule implements MethodRule {
   @Nullable
   protected URI serverURI;
   @Nullable
-  private Server server;
+  private CouchServer server;
   @Nullable
   private final URL viewResource;
   @Nullable
@@ -119,33 +121,22 @@ public class CouchDbRule implements MethodRule {
     URI currentUri = getServerUri();
     serverURI = currentUri;
 
-    int port = currentUri.getPort( );
-    //If no port has been set, we assume it to be port 80
-    if ( port == -1 ) {
-      port = DEFAULT_PORT;
-    }
+    @Nullable HTTPBasicAuthFilter authFilter = getAuthFilter( );
 
-    Server currentServer = new ServerImpl( currentUri.getHost(), port );
-
-    final String username = getUsername();
-    final String password = getPassword();
-
-    if ( username != null && password != null ) {
-      currentServer.setCredentials( AuthScope.ANY, new Credentials() {
-        @Override
-        public Principal getUserPrincipal() {
-          return new UserPrincipal( username );
-        }
-
-        @Override
-        public String getPassword() {
-          return password;
-        }
-      } );
-    }
-
-    this.server = currentServer;
+    this.server = new CouchServer( currentUri, authFilter );
     db = createDb( createNewTestDbName() );
+  }
+
+  @Nullable
+  private HTTPBasicAuthFilter getAuthFilter( ) {
+    @Nullable String username = getUsername( );
+    @Nullable String password = getPassword( );
+
+    if ( username == null || password == null ) {
+      return null;
+    }
+
+    return new HTTPBasicAuthFilter( username, password );
   }
 
   @Nullable
@@ -158,11 +149,11 @@ public class CouchDbRule implements MethodRule {
     return System.getProperty( KEY_PASS );
   }
 
-  public void after() {
+  public void after() throws ActionFailedException {
     deleteDatabases();
   }
 
-  protected void deleteDatabases() {
+  protected void deleteDatabases() throws ActionFailedException {
     if ( Boolean.parseBoolean( System.getProperty( KEY_SKIP_DELETE_DB ) ) ) {
       System.out.println( "----------------------------" );
       System.out.println( "Skipping deletion of " + db.getDbName() );
@@ -170,7 +161,7 @@ public class CouchDbRule implements MethodRule {
       return;
     }
 
-    Server currentServer = server;
+    CouchServer currentServer = server;
     if ( currentServer != null ) {
       for ( Iterator<CouchDatabase> iterator = dbs.iterator(); iterator.hasNext(); ) {
         CouchDatabase couchDatabase = iterator.next();
@@ -183,9 +174,10 @@ public class CouchDbRule implements MethodRule {
 
   @Nonnull
   public CouchDatabase createDb( @Nonnull String dbName ) throws IOException, URISyntaxException, CouchDbException {
+    assert server != null;
     try {
       server.deleteDatabase( dbName );
-    } catch ( CouchDBException ignore ) {
+    } catch ( ActionFailedException ignore ) {
     }
 
     assertTrue( server.createDatabase( dbName ) );
@@ -197,8 +189,8 @@ public class CouchDbRule implements MethodRule {
     return couchDatabase;
   }
 
-  public void deleteDb( @Nonnull String dbName ) {
-    Server currentServer = server;
+  public void deleteDb( @Nonnull String dbName ) throws ActionFailedException {
+    CouchServer currentServer = server;
     if ( currentServer == null ) {
       throw new IllegalArgumentException( "Invalid state - server is null" );
     }
@@ -229,24 +221,25 @@ public class CouchDbRule implements MethodRule {
   }
 
   public void publishViews( @Nonnull String dbName ) throws URISyntaxException, IOException {
-    CouchDBUpdater updater = new CouchDBUpdater();
-    updater.setCreateDatabase( false );
-    updater.setDatabase( new Database( server, dbName ) );
-
-    try {
-      URL resource = getViewResource();
-      if ( resource == null ) {
-        return;
-      }
-      File file = new File( resource.toURI() );
-      File viewsDir = file.getParentFile().getParentFile();
-
-      assertTrue( viewsDir.isDirectory() );
-      updater.setDesignDocumentDir( viewsDir );
-
-      updater.updateDesignDocuments();
-    } catch ( CanceledException ignore ) {
-    }
+    throw new UnsupportedOperationException( );
+    //    CouchDBUpdater updater = new CouchDBUpdater();
+    //    updater.setCreateDatabase( false );
+    //    updater.setDatabase( new Database( server, dbName ) );
+    //
+    //    try {
+    //      URL resource = getViewResource();
+    //      if ( resource == null ) {
+    //        return;
+    //      }
+    //      File file = new File( resource.toURI() );
+    //      File viewsDir = file.getParentFile().getParentFile();
+    //
+    //      assertTrue( viewsDir.isDirectory() );
+    //      updater.setDesignDocumentDir( viewsDir );
+    //
+    //      updater.updateDesignDocuments();
+    //    } catch ( CanceledException ignore ) {
+    //    }
   }
 
   /**
@@ -312,7 +305,7 @@ public class CouchDbRule implements MethodRule {
   }
 
   @Nonnull
-  public Server getCurrentServer() {
+  public CouchServer getCurrentServer( ) {
     if ( server == null ) {
       throw new IllegalStateException( "No server " );
     }
