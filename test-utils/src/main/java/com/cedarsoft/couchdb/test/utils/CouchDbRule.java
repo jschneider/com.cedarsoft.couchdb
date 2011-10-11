@@ -76,6 +76,7 @@ public class CouchDbRule implements MethodRule {
   public static final String KEY_USER = "couchdb.unittests.username";
 
   public static final String KEY_PASS = "couchdb.unittests.password";
+  public static final int DEFAULT_PORT = 80;
 
   @Nullable
   protected CouchDatabase db;
@@ -117,7 +118,14 @@ public class CouchDbRule implements MethodRule {
   public void before() throws IOException, URISyntaxException, CouchDbException {
     URI currentUri = getServerUri();
     serverURI = currentUri;
-    Server currentServer = new ServerImpl( currentUri.getHost(), currentUri.getPort() );
+
+    int port = currentUri.getPort( );
+    //If no port has been set, we assume it to be port 80
+    if ( port == -1 ) {
+      port = DEFAULT_PORT;
+    }
+
+    Server currentServer = new ServerImpl( currentUri.getHost(), port );
 
     final String username = getUsername();
     final String password = getPassword();
