@@ -104,8 +104,13 @@ public class DesignDocumentsTest {
     List<? extends DesignDocument> designDocuments = DesignDocuments.createDesignDocuments( getClass( ).getResource( "views/doc1/file1.map.js" ) );
     assertThat( designDocuments ).hasSize( 3 );
 
-    verifyDoc( designDocuments.get( 0 ) );
-    verifyDoc( designDocuments.get( 1 ) );
+    for ( DesignDocument designDocument : designDocuments ) {
+      if ( !designDocument.hasViews( ) ) {
+        assertThat( designDocument.getId( ) ).isEqualTo( "empty" );
+        continue;
+      }
+      verifyDoc( designDocument );
+    }
   }
 
   private void verifyDoc( @Nonnull DesignDocument designDocument ) throws SAXException, IOException {
