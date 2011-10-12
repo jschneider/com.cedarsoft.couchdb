@@ -13,11 +13,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.google.code.jcouchdb</groupId>
-      <artifactId>jcouchdb</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>com.cedarsoft.serialization</groupId>
       <artifactId>jackson</artifactId>
     </dependency>
