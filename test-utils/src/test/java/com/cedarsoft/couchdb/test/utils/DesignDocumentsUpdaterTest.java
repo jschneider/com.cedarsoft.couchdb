@@ -3,9 +3,7 @@ package com.cedarsoft.couchdb.test.utils;
 import com.cedarsoft.couchdb.DesignDocument;
 import com.cedarsoft.couchdb.DesignDocuments;
 import com.cedarsoft.couchdb.DesignDocumentsUpdater;
-import com.cedarsoft.test.utils.JsonUtils;
 import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import org.junit.*;
 
 import java.util.List;
