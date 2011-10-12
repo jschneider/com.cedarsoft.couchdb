@@ -31,8 +31,9 @@
 package com.cedarsoft.couchdb;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
-import org.apache.commons.io.FileUtils;
+import com.google.common.io.PatternFilenameFilter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -80,7 +81,7 @@ public class DesignDocuments {
 
   @Nonnull
   public static Collection<? extends File> listJsFiles( @Nonnull File baseDir ) {
-    return FileUtils.listFiles( baseDir, new String[]{JS_SUFFIX}, false );
+    return ImmutableList.copyOf( baseDir.listFiles( new PatternFilenameFilter( ".*" + JS_SUFFIX ) ) );
   }
 
   @Nonnull
