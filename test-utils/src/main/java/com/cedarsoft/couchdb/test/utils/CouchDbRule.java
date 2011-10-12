@@ -35,16 +35,13 @@ import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.couchdb.CouchDatabase;
 import com.cedarsoft.couchdb.CouchDbException;
 import com.cedarsoft.couchdb.CouchServer;
+import com.cedarsoft.couchdb.DesignDocument;
+import com.cedarsoft.couchdb.DesignDocuments;
+import com.cedarsoft.couchdb.DesignDocumentsUpdater;
 import com.cedarsoft.exceptions.CanceledException;
 import com.sun.jersey.api.client.filter.ClientFilter;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import com.sun.security.auth.UserPrincipal;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
 import org.jcouchdb.db.Database;
-import org.jcouchdb.db.Server;
-import org.jcouchdb.db.ServerImpl;
-import org.jcouchdb.exception.CouchDBException;
 import org.jcouchdb.util.CouchDBUpdater;
 import org.junit.rules.*;
 import org.junit.runners.model.*;
@@ -56,9 +53,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.security.Principal;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -181,7 +178,7 @@ public class CouchDbRule implements MethodRule {
     }
 
     assertTrue( server.createDatabase( dbName ) );
-    publishViews( dbName );
+    publishViews( );
 
     CouchDatabase couchDatabase = getCouchDatabaseObject( dbName );
 
@@ -220,26 +217,22 @@ public class CouchDbRule implements MethodRule {
     return new CouchDatabase( uri, dbName, filters );
   }
 
-  public void publishViews( @Nonnull String dbName ) throws URISyntaxException, IOException {
-    throw new UnsupportedOperationException( );
-    //    CouchDBUpdater updater = new CouchDBUpdater();
-    //    updater.setCreateDatabase( false );
-    //    updater.setDatabase( new Database( server, dbName ) );
-    //
-    //    try {
-    //      URL resource = getViewResource();
-    //      if ( resource == null ) {
-    //        return;
-    //      }
-    //      File file = new File( resource.toURI() );
-    //      File viewsDir = file.getParentFile().getParentFile();
-    //
-    //      assertTrue( viewsDir.isDirectory() );
-    //      updater.setDesignDocumentDir( viewsDir );
-    //
-    //      updater.updateDesignDocuments();
-    //    } catch ( CanceledException ignore ) {
-    //    }
+  public void publishViews( ) throws URISyntaxException, IOException, ActionFailedException {
+    try {
+      URL resource = getViewResource( );
+      if ( resource == null ) {
+        return;
+      }
+      
+      List<? extends DesignDocument> designDocuments = DesignDocuments.createDesignDocuments( resource );
+      if ( designDocuments.isEmpty( ) ) {
+        return;
+      }
+
+      DesignDocumentsUpdater updater = new DesignDocumentsUpdater( db );
+      updater.update( designDocuments );
+    } catch ( CanceledException ignore ) {
+    }
   }
 
   /**
@@ -248,7 +241,7 @@ public class CouchDbRule implements MethodRule {
    * @return one view resource
    */
   @Nullable
-  public URL getViewResource() {
+  public URL getViewResource() throws CanceledException{
     return viewResource;
   }
 

@@ -70,4 +70,9 @@ public class DesignDocument {
   public boolean hasViews( ) {
     return !views.isEmpty( );
   }
+
+  @Nonnull
+  public String getDesignDocumentPath( ) {
+    return "_design/" + getId( );
+  }
 }

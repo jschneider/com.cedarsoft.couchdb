@@ -61,6 +61,15 @@ public class DesignDocumentsTest {
   }
 
   @Test
+  public void testPathNames( ) throws Exception {
+    DesignDocument designDocument = DesignDocuments.createDesignDocument( getClass( ).getResource( "views/doc1/file1.map.js" ) );
+    assertThat( designDocument.getDesignDocumentPath( ) ).isEqualTo( "_design/doc1" );
+
+    assertThat( new DesignDocument( "asdf" ).getDesignDocumentPath( ) ).isEqualTo( "_design/asdf" );
+    assertThat( new DesignDocument( "1233" ).getDesignDocumentPath( ) ).isEqualTo( "_design/1233" );
+  }
+
+  @Test
   public void testAllViews( ) throws Exception {
     List<? extends DesignDocument> designDocuments = DesignDocuments.createDesignDocuments( getClass( ).getResource( "views/doc1/file1.map.js" ) );
     assertThat( designDocuments ).hasSize( 2 );
