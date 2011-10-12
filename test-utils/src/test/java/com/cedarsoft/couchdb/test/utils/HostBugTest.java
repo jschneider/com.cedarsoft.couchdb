@@ -22,13 +22,4 @@ public class HostBugTest {
     assertThat( serverURI.getHost( ) ).isEqualTo( "couchdb.cedarsoft.com" );
     assertThat( serverURI.getPort( ) ).isEqualTo( -1 );
   }
-
-  @Test
-  public void testManua( ) throws Exception {
-    Client client = new Client( );
-    client.addFilter( new HTTPBasicAuthFilter( "hudson", "lkiah54lkasfd" ) );
-
-    WebResource resource = client.resource( "http://couchdb.cedarsoft.com/asdf" );
-    resource.put( );
-  }
 }
