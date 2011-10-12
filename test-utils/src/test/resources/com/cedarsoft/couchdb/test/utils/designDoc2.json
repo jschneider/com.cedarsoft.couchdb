@@ -1,0 +1,10 @@
+{
+  "_id" : "doc2",
+  "language" : "javascript",
+  "views" : {
+    "asdf" : {
+      "map" : "function(doc){\n\n}",
+      "reduce" : "function( key, values, rereduce ) {\n  return sum( values );\n}"
+    }
+  }
+}

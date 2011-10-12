@@ -10,8 +10,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -117,9 +119,44 @@ public class DesignDocuments {
   @Nonnull
   public static DesignDocument createDesignDocument( @Nonnull URL jsResource ) throws IOException {
     File baseDir = guessBaseDir( jsResource );
-    Collection<? extends File> files = listJsFiles( baseDir );
-    return createDesignDocument( baseDir.getName( ), files );
+    return createDesignDocument( baseDir );
   }
+
+  @Nonnull
+  public static DesignDocument createDesignDocument( @Nonnull File viewBaseDir ) throws IOException {
+    Collection<? extends File> files = listJsFiles( viewBaseDir );
+    return createDesignDocument( viewBaseDir.getName( ), files );
+  }
+
+  /**
+   * Creates all design documents for the given js file
+   *
+   * @param jsResource the js resource
+   * @return the created design documents
+   */
+  @Nonnull
+  public static List<? extends DesignDocument> createDesignDocuments( @Nonnull URL jsResource ) throws IOException {
+    File viewDir = guessBaseDir( jsResource );
+    File viewsDir = viewDir.getParentFile( );
+
+    return createDesignDocuments( viewsDir );
+  }
+
+  @Nonnull
+  public static List<? extends DesignDocument> createDesignDocuments( @Nonnull File viewsDir ) throws IOException {
+    List<DesignDocument> designDocuments = new ArrayList<DesignDocument>( );
+
+    for ( File file : viewsDir.listFiles( ) ) {
+      if ( !file.isDirectory( ) ) {
+        continue;
+      }
+
+      designDocuments.add( createDesignDocument( file ) );
+    }
+
+    return designDocuments;
+  }
+
 
   public static class View {
     @Nonnull
