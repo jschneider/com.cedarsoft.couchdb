@@ -1,21 +1,16 @@
-package com.cedarsoft.couchdb.test.utils;
+package com.cedarsoft.couchdb;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import org.apache.commons.io.FileUtils;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -145,57 +140,4 @@ public class DesignDocuments {
     }
   }
 
-  public static class DesignDocument {
-    @Nonnull
-    private final String id;
-    @Nonnull
-    private final Collection<View> views = new ArrayList<View>( );
-
-    public DesignDocument( @Nonnull String id ) {
-      this.id = id;
-    }
-
-    public void add( @Nonnull View view ) {
-      this.views.add( view );
-    }
-
-    @Nonnull
-    public Collection<? extends View> getViews( ) {
-      return Collections.unmodifiableCollection( views );
-    }
-
-    @Nonnull
-    public String getId( ) {
-      return id;
-    }
-
-    @Nonnull
-    public String createJson( ) throws IOException {
-      StringWriter writer = new StringWriter( );
-      JsonGenerator generator = new JsonFactory( ).createJsonGenerator( writer );
-      generator.writeStartObject();
-      
-      generator.writeStringField( "_id", id );
-      generator.writeStringField( "language", "javascript" );
-
-      generator.writeObjectFieldStart( "views" );
-
-      for ( View view : views ) {
-        generator.writeObjectFieldStart( view.getName( ) );
-
-        generator.writeStringField( "map", view.getMappingFunction( ) );
-        @Nullable String reduceFunction = view.getReduceFunction( );
-        if ( reduceFunction != null ) {
-          generator.writeStringField( "reduce", reduceFunction );
-        }
-        generator.writeEndObject( );
-      }
-
-
-      generator.writeEndObject( );
-      generator.writeEndObject( );
-      generator.flush();
-      return writer.toString( );
-    }
-  }
 }
