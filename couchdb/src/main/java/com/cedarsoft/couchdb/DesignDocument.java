@@ -66,4 +66,8 @@ public class DesignDocument {
     generator.flush();
     return writer.toString( );
   }
+
+  public boolean hasViews( ) {
+    return !views.isEmpty( );
+  }
 }

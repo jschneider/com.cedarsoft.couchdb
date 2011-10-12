@@ -75,7 +75,7 @@ public class DesignDocuments {
         String name = getBaseName( jsFile.getName( ) );
         reduceFunctions.put( name, content );
       } else {
-        throw new IllegalArgumentException( "Invalid file name " + jsFile.getName( ) );
+        throw new IllegalArgumentException( "Invalid file name <" + jsFile.getName( ) + ">" );
       }
     }
 
@@ -89,6 +89,10 @@ public class DesignDocuments {
       designDocument.add( new View( name, mappingFunction, reduceFunction ) );
     }
 
+    if ( designDocument.hasViews( ) ) {
+
+    }
+    
     return designDocument;
   }
 

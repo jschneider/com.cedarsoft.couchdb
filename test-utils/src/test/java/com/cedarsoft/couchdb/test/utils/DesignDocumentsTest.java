@@ -55,6 +55,12 @@ public class DesignDocumentsTest {
   }
 
   @Test
+  public void testEmpty( ) throws Exception {
+    DesignDocument designDocument = DesignDocuments.createDesignDocument( getClass( ).getResource( "views/empty/none.txt" ) );
+    assertThat( designDocument.hasViews( ) ).isFalse( );
+  }
+
+  @Test
   public void testAllViews( ) throws Exception {
     List<? extends DesignDocument> designDocuments = DesignDocuments.createDesignDocuments( getClass( ).getResource( "views/doc1/file1.map.js" ) );
     assertThat( designDocuments ).hasSize( 2 );
