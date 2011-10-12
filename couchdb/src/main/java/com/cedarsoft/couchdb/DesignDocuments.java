@@ -108,6 +108,19 @@ public class DesignDocuments {
     return jsFile.getName( ).endsWith( REDUCE_SUFFIX );
   }
 
+  /**
+   * Creates a design document for a given js file
+   *
+   * @param jsResource the javascript (reduce or mapping) file
+   * @return the design document
+   */
+  @Nonnull
+  public static DesignDocument createDesignDocument( @Nonnull URL jsResource ) throws IOException {
+    File baseDir = guessBaseDir( jsResource );
+    Collection<? extends File> files = listJsFiles( baseDir );
+    return createDesignDocument( baseDir.getName( ), files );
+  }
+
   public static class View {
     @Nonnull
     private final String name;

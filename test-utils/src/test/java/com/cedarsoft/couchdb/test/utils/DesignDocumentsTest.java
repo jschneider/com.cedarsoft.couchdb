@@ -43,4 +43,12 @@ public class DesignDocumentsTest {
 
     JsonUtils.assertJsonEquals( getClass( ).getResource( "designDoc.json" ), designDocument.createJson( ) );
   }
+
+  @Test
+  public void testApi( ) throws Exception {
+    DesignDocument designDocument = DesignDocuments.createDesignDocument( getClass( ).getResource( "views/doc1/file1.map.js" ) );
+
+    assertThat( designDocument.getId( ) ).isEqualTo( "doc1" );
+    JsonUtils.assertJsonEquals( getClass( ).getResource( "designDoc.json" ), designDocument.createJson( ) );
+  }
 }
