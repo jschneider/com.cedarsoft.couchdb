@@ -29,7 +29,7 @@ public class DesignDocumentsTest {
     assertThat( dir.getName( ) ).isEqualTo( "doc1" );
 
     Collection<? extends File> files = DesignDocuments.listJsFiles( dir );
-    assertThat( files ).hasSize( 2 );
+    assertThat( files ).hasSize( 3 );
   }
 
   @Test
