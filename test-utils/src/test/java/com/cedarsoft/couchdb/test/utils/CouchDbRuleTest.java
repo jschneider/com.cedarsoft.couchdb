@@ -31,6 +31,7 @@
 
 package com.cedarsoft.couchdb.test.utils;
 
+import com.cedarsoft.couchdb.ActionFailedException;
 import org.jcouchdb.exception.CouchDBException;
 import org.junit.*;
 import org.junit.runners.model.*;
@@ -89,7 +90,9 @@ public class CouchDbRuleTest {
                     try {
                       rule.createDb( "INVALID_NAme/" );
                       fail( "Where is the Exception" );
-                    } catch ( CouchDBException ignore ) {
+                    } catch ( ActionFailedException e ) {
+                      assertThat( e.getStatus( ) ).isEqualTo( 400 );
+                      assertThat( e.getMessage( ) ).startsWith( "400 illegal_database_name:" );
                     }
                   }
                 }, frameworkMethod, this ).evaluate();

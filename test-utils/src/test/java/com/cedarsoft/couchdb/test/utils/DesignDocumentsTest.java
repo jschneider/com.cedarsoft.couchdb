@@ -72,7 +72,7 @@ public class DesignDocumentsTest {
   @Test
   public void testAllViews( ) throws Exception {
     List<? extends DesignDocument> designDocuments = DesignDocuments.createDesignDocuments( getClass( ).getResource( "views/doc1/file1.map.js" ) );
-    assertThat( designDocuments ).hasSize( 2 );
+    assertThat( designDocuments ).hasSize( 3 );
 
     verifyDoc( designDocuments.get( 0 ) );
     verifyDoc( designDocuments.get( 1 ) );
