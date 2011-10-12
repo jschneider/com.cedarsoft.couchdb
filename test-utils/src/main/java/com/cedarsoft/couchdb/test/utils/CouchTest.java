@@ -34,7 +34,6 @@ package com.cedarsoft.couchdb.test.utils;
 import com.cedarsoft.couchdb.CouchDatabase;
 import com.cedarsoft.couchdb.CouchDbException;
 import com.cedarsoft.couchdb.CouchServer;
-import org.jcouchdb.db.Server;
 import org.junit.*;
 
 import javax.annotation.Nonnull;

@@ -43,7 +43,6 @@ import com.cedarsoft.test.utils.JsonUtils;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import org.jcouchdb.db.Response;
 import org.junit.*;
 
 import javax.ws.rs.core.MediaType;

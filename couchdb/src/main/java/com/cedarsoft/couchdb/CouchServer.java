@@ -30,21 +30,16 @@
  */
 package com.cedarsoft.couchdb;
 
-import com.cedarsoft.couchdb.io.RowSerializer;
-import com.cedarsoft.couchdb.io.ViewResponseSerializer;
 import com.cedarsoft.serialization.jackson.ListSerializer;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.ClientFilter;
-import org.jcouchdb.db.Response;
-import org.jcouchdb.db.Server;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 

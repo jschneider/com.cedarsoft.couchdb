@@ -31,16 +31,10 @@
 package com.cedarsoft.couchdb.test.utils;
 
 import com.cedarsoft.couchdb.ActionResponse;
-import com.cedarsoft.couchdb.CouchDoc;
 import com.cedarsoft.couchdb.DocId;
-import com.cedarsoft.couchdb.RawCouchDoc;
-import com.cedarsoft.test.utils.AssertUtils;
-import com.cedarsoft.test.utils.JsonUtils;
-import com.google.common.io.ByteStreams;
 import org.junit.*;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 import static org.fest.assertions.Assertions.assertThat;
 
