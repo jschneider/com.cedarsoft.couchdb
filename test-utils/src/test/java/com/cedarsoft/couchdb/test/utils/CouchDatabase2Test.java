@@ -166,7 +166,7 @@ public class CouchDatabase2Test extends CouchTest {
       bar.setValue(42);
 
       //Update
-      db().putUpdated(doc, serializer);
+      db().put(doc, serializer);
     }
 
     //fetch2
@@ -181,7 +181,7 @@ public class CouchDatabase2Test extends CouchTest {
       bar.setValue(11);
 
       //Update
-      db().putUpdated(doc, serializer);
+      db().put(doc, serializer);
     }
 
     {
