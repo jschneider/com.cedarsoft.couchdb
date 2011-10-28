@@ -150,7 +150,7 @@ public class CouchDbRule implements MethodRule {
   protected void deleteDatabases() throws ActionFailedException {
     if ( Boolean.parseBoolean( System.getProperty( KEY_SKIP_DELETE_DB ) ) ) {
       System.out.println( "----------------------------" );
-      System.out.println( "Skipping deletion of " + db.getDbName() );
+      System.out.println( "Skipping deletion of " + getCurrentDb().getDbName() );
       System.out.println( "----------------------------" );
       return;
     }
@@ -175,9 +175,10 @@ public class CouchDbRule implements MethodRule {
     }
 
     assertTrue( server.createDatabase( dbName ) );
-    publishViews( );
 
     CouchDatabase couchDatabase = getCouchDatabaseObject( dbName );
+
+    publishViews( couchDatabase );
 
     this.dbs.add( couchDatabase );
     return couchDatabase;
@@ -214,19 +215,19 @@ public class CouchDbRule implements MethodRule {
     return new CouchDatabase( uri, dbName, filters );
   }
 
-  public void publishViews( ) throws URISyntaxException, IOException, ActionFailedException {
+  public void publishViews( @Nonnull CouchDatabase couchDatabase ) throws URISyntaxException, IOException, ActionFailedException {
     try {
       URL resource = getViewResource( );
       if ( resource == null ) {
         return;
       }
-      
+
       List<? extends DesignDocument> designDocuments = DesignDocuments.createDesignDocuments( resource );
       if ( designDocuments.isEmpty( ) ) {
         return;
       }
 
-      DesignDocumentsUpdater updater = new DesignDocumentsUpdater( db );
+      DesignDocumentsUpdater updater = new DesignDocumentsUpdater( couchDatabase );
       updater.update( designDocuments );
     } catch ( CanceledException ignore ) {
     }
