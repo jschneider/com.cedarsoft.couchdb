@@ -36,11 +36,11 @@ import com.cedarsoft.couchdb.io.RowSerializer;
 import com.cedarsoft.couchdb.io.ViewResponseSerializer;
 import com.cedarsoft.serialization.jackson.InvalidTypeException;
 import com.cedarsoft.serialization.jackson.JacksonSerializer;
+import com.google.common.io.ByteStreams;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.ClientFilter;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -51,7 +51,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  *
@@ -302,6 +301,17 @@ public class CouchDatabase {
     }
     ClientResponse response = resource.get( ClientResponse.class );
     ActionResponse.verifyNoError( response );
+
+    if ( Debug.isEnabled() ) {
+      try {
+        byte[] content = ByteStreams.toByteArray( response.getEntityInputStream() );
+        Debug.out().println( new String( content ) );
+        return new ByteArrayInputStream( content );
+      } catch ( IOException e ) {
+        throw new RuntimeException( e );
+      }
+    }
+
     return response.getEntityInputStream();
   }
 
