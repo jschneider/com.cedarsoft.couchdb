@@ -111,14 +111,14 @@ public class CouchDatabase {
    */
   @Nonnull
   public ActionResponse put( @Nonnull DocId id, @Nonnull InputStream content ) throws ActionFailedException {
-    WebResource.Builder path = dbRoot.path( id.asString() )
-      .type( JSON_TYPE ).accept( JSON_TYPE );
+    WebResource path = dbRoot.path( id.asString() );
 
     if ( Debug.isEnabled() ) {
-      Debug.out().print( "PUT " + path.toString() );
+      Debug.out().println( "PUT " + path.toString() );
     }
 
-    ClientResponse response = path.put( ClientResponse.class, content );
+    ClientResponse response = path
+      .type( JSON_TYPE ).accept( JSON_TYPE ).put( ClientResponse.class, content );
     return ActionResponse.create( response );
   }
 
@@ -134,14 +134,13 @@ public class CouchDatabase {
    */
   @Nonnull
   public <T> ActionResponse put( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> serializer ) throws ActionFailedException, IOException {
-    WebResource.Builder path = dbRoot.path( doc.getId().asString() )
-      .type( JSON_TYPE ).accept( JSON_TYPE );
+    WebResource path = dbRoot.path( doc.getId().asString() );
 
     if ( Debug.isEnabled() ) {
-      Debug.out().print( "PUT " + path.toString() );
+      Debug.out().println( "PUT " + path.toString() );
     }
 
-    ClientResponse clientResponse = path.put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
+    ClientResponse clientResponse = path.type( JSON_TYPE ).accept( JSON_TYPE ).put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
     ActionResponse actionResponse = ActionResponse.create( clientResponse );
 
     //Update the rev
@@ -163,20 +162,18 @@ public class CouchDatabase {
    */
   @Nonnull
   public ActionResponse put( @Nonnull DocId docId, @Nullable Revision revision, @Nonnull MediaType mediaType, @Nonnull InputStream content ) throws ActionFailedException {
-    WebResource resource = dbRoot
-      .path( docId.asString() );
+    WebResource resource = dbRoot.path( docId.asString() );
 
     //Add the revision is necessary
     if ( revision != null ) {
       resource = resource.queryParam( PARAM_REV, revision.asString() );
     }
 
-    WebResource.Builder path = resource
-      .type( mediaType ).accept( JSON_TYPE );
-
     if ( Debug.isEnabled() ) {
-      Debug.out().print( "HEAD " + path.toString() );
+      Debug.out().println( "HEAD " + resource.toString() );
     }
+
+    WebResource.Builder path = resource.type( mediaType ).accept( JSON_TYPE );
 
     ClientResponse clientResponse = path.put( ClientResponse.class, content );
     return ActionResponse.create( clientResponse );
@@ -205,15 +202,11 @@ public class CouchDatabase {
       resource = resource.queryParam( PARAM_REV, revision.asString() );
     }
 
-    WebResource.Builder path = resource
-      .type( mediaType )
-      .accept( JSON_TYPE );
-
     if ( Debug.isEnabled() ) {
-      Debug.out().print( "PUT " + path.toString() );
+      Debug.out().println( "PUT " + resource.toString() );
     }
 
-    ClientResponse clientResponse = path.put( ClientResponse.class, attachment );
+    ClientResponse clientResponse = resource.type( mediaType ).accept( JSON_TYPE ).put( ClientResponse.class, attachment );
     return ActionResponse.create( clientResponse );
   }
 
@@ -223,7 +216,7 @@ public class CouchDatabase {
       .type( JSON_TYPE ).accept( JSON_TYPE );
 
     if ( Debug.isEnabled() ) {
-      Debug.out().print( "POST " + path.toString() );
+      Debug.out().println( "POST " + path.toString() );
     }
 
     ClientResponse response = path.post( ClientResponse.class, content );
@@ -373,7 +366,7 @@ public class CouchDatabase {
       .type( JSON_TYPE ).accept( JSON_TYPE );
 
     if ( Debug.isEnabled() ) {
-      Debug.out().print( "DELETE " + path.toString() );
+      Debug.out().println( "DELETE " + path.toString() );
     }
     
     ClientResponse response = path.delete( ClientResponse.class );
@@ -411,7 +404,7 @@ public class CouchDatabase {
       .type( JSON_TYPE ).accept( JSON_TYPE );
 
     if ( Debug.isEnabled() ) {
-      Debug.out().print( "HEAD " + path.toString() );
+      Debug.out().println( "HEAD " + path.toString() );
     }
 
     ClientResponse response = path.head();
@@ -429,7 +422,7 @@ public class CouchDatabase {
     WebResource.Builder path = dbRoot.path( docId.asString() ).type( JSON_TYPE ).accept( JSON_TYPE );
 
     if ( Debug.isEnabled() ) {
-      Debug.out().print( "HEAD " + path.toString() );
+      Debug.out().println( "HEAD " + path.toString() );
     }
 
     return path.head();
@@ -443,7 +436,7 @@ public class CouchDatabase {
       .type( JSON_TYPE ).accept( JSON_TYPE );
 
     if ( Debug.isEnabled() ) {
-      Debug.out().print( "HEAD " + path.toString() );
+      Debug.out().println( "HEAD " + path.toString() );
     }
 
     return path.head();
