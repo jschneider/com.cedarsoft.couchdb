@@ -252,13 +252,7 @@ public class CouchDatabase {
 
   @Nonnull
   public <K, V, D> ViewResponse<K, V, D> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull JacksonSerializer<? extends D> docSerializer ) throws InvalidTypeException, ActionFailedException, IOException {
-//    String type = docSerializer.getType();
-//    Key startKey = new Key( "[\"" + type + "\"]" );
-//    Key endKey = new Key( "[\"" + type + "Z\"]" ); //the "Z" is used as high key
-//
-//    InputStream stream = query( viewDescriptor, true, startKey, endKey );
     InputStream stream = query( viewDescriptor, true );
-
     return viewResponseSerializer.deserialize( keySerializer, valueSerializer, docSerializer, stream );
   }
 
