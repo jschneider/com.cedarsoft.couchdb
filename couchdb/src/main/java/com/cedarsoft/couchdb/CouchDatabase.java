@@ -240,6 +240,14 @@ public class CouchDatabase {
     return ActionResponse.create( clientResponse );
   }
 
+  /**
+   * Posts the given stream to the db
+   *
+   * @param content the content
+   * @return the action response
+   *
+   * @throws ActionFailedException
+   */
   @Nonnull
   public ActionResponse post( @Nonnull InputStream content ) throws ActionFailedException {
     WebResource.Builder path = dbRoot
@@ -273,14 +281,13 @@ public class CouchDatabase {
    * Queries the given view.
    * Each view return
    * <ul>
-   *   <li>the key</li>
-   *   <li>the value</li>
-   *   <li>optionally the document</li>
+   * <li>the key</li>
+   * <li>the value</li>
+   * <li>optionally the document</li>
    * </ul>
-   *
+   * <p/>
    * The serializers assigned as methods parameters are used to deserialize these parts.
    * This method does *not* support included docs.
-   *
    *
    * @param viewDescriptor  describes the view
    * @param keySerializer   the serializer used to deserialize the key
@@ -296,7 +303,7 @@ public class CouchDatabase {
    */
   @Nonnull
   public <K, V> ViewResponse<K, V, Void> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable Options options ) throws InvalidTypeException, ActionFailedException, IOException {
-    if (options!=null && options.isIncludeDocs() ) {
+    if ( options != null && options.isIncludeDocs() ) {
       throw new IllegalArgumentException( Options.INCLUDE_DOCS + " is not supported without a doc serializer" );
     }
 
@@ -304,6 +311,32 @@ public class CouchDatabase {
     return viewResponseSerializer.deserialize( keySerializer, valueSerializer, stream );
   }
 
+  /**
+   * Queries the given view.
+   * Each view return
+   * <ul>
+   * <li>the key</li>
+   * <li>the value</li>
+   * <li>optionally the document</li>
+   * </ul>
+   * <p/>
+   * The serializers assigned as methods parameters are used to deserialize these parts.
+   * This method supports included docs.
+   *
+   * @param viewDescriptor  describes the view
+   * @param keySerializer   the serializer used to deserialize the key
+   * @param valueSerializer the serializer used to deserialize the value
+   * @param docSerializer   the document serializer
+   * @param options         the options for the query - includeDocs(true) is added automatically
+   * @param <K>             the type of the key
+   * @param <V>             the type of the value
+   * @param <D>             the type of the document object
+   * @return the response
+   *
+   * @throws InvalidTypeException
+   * @throws ActionFailedException
+   * @throws IOException
+   */
   @Nonnull
   public <K, V, D> ViewResponse<K, V, D> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull JacksonSerializer<? extends D> docSerializer, @Nullable Options options ) throws InvalidTypeException, ActionFailedException, IOException {
     Options localOptions = new Options( options ).includeDocs( true );//force include docs
@@ -312,6 +345,15 @@ public class CouchDatabase {
     return viewResponseSerializer.deserialize( keySerializer, valueSerializer, docSerializer, stream );
   }
 
+  /**
+   * Executes a query to the given view
+   *
+   * @param viewDescriptor the view descriptor
+   * @param options        the (optional) options
+   * @return the input stream
+   *
+   * @throws ActionFailedException
+   */
   @Nonnull
   public InputStream query( @Nonnull ViewDescriptor viewDescriptor, @Nullable Options options ) throws ActionFailedException {
     WebResource viewPath = dbRoot.path( PATH_SEGMENT_DESIGN ).path( viewDescriptor.getDesignDocumentId() ).path( PATH_SEGMENT_VIEW ).path( viewDescriptor.getViewId() );
