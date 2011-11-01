@@ -1,5 +1,6 @@
 package com.cedarsoft.couchdb.test.utils;
 
+import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.CouchDoc;
 import com.cedarsoft.couchdb.DocId;
@@ -7,6 +8,7 @@ import com.cedarsoft.couchdb.Key;
 import com.cedarsoft.couchdb.Options;
 import com.cedarsoft.couchdb.ViewResponse;
 import com.cedarsoft.couchdb.test.utils.foo.Views;
+import com.cedarsoft.serialization.jackson.InvalidTypeException;
 import com.cedarsoft.serialization.jackson.ListSerializer;
 import com.cedarsoft.serialization.jackson.NullSerializer;
 import com.cedarsoft.serialization.jackson.StringSerializer;
@@ -15,11 +17,13 @@ import com.google.common.io.ByteStreams;
 import org.junit.*;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.fail;
 
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
@@ -106,6 +110,16 @@ public class Foo2Test extends CouchTest {
       assertThat( response.getRowObjects() ).hasSize( 100 );
       assertThat( response.getRowObjects().get( 0 ) ).isNull(  );
       assertThat( response.getRowObjects().get( 99 ) ).isNull(  );
+    }
+
+    //But the docs are included?
+    {
+      try {
+        db().query( Views.Doc1.A_VIEW, new ListSerializer(), new StringSerializer(), new Options().includeDocs( true ) );
+        fail("Where is the Exception");
+      } catch ( NullPointerException e ) {
+        assertThat( e ).hasMessage( "No document serializer found" );
+      }
     }
   }
 
