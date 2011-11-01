@@ -50,20 +50,45 @@ public class ActionResponse {
   @Nonnull
   private final URI location;
 
-  public ActionResponse( @Nonnull DocId uniqueId, @Nonnull Revision rev, int status, @Nonnull URI location ) {
-    this( new UniqueId( uniqueId, rev ), status, location );
+  /**
+   * Creates a new action response
+   *
+   * @param docId    the id
+   * @param rev      the revision
+   * @param status   the status code
+   * @param location the location
+   */
+  public ActionResponse( @Nonnull DocId docId, @Nonnull Revision rev, int status, @Nonnull URI location ) {
+    this( new UniqueId( docId, rev ), status, location );
   }
 
+  /**
+   * Creates a new response
+   *
+   * @param uniqueId the unique id (doc id and revision)
+   * @param status   the status code
+   * @param location the location
+   */
   public ActionResponse( @Nonnull UniqueId uniqueId, int status, @Nonnull URI location ) {
     this.uniqueId = uniqueId;
     this.status = status;
     this.location = location;
   }
 
+  /**
+   * Returns the html status code
+   *
+   * @return the html status code
+   */
   public int getStatus() {
     return status;
   }
 
+  /**
+   * The location
+   *
+   * @return the location
+   */
   @Nonnull
   public URI getLocation() {
     return location;
@@ -93,6 +118,14 @@ public class ActionResponse {
       '}';
   }
 
+  /**
+   * Creates a new action response based on the given client response
+   *
+   * @param response the client response
+   * @return the action response
+   *
+   * @throws ActionFailedException if there has been an error
+   */
   @Nonnull
   public static ActionResponse create( @Nonnull ClientResponse response ) throws ActionFailedException {
     verifyNoError( response );
@@ -117,6 +150,12 @@ public class ActionResponse {
     throw new ActionFailedExceptionSerializer().deserialize( response.getStatus(), response.getEntityInputStream() );
   }
 
+  /**
+   * Returns true if the response has not been successful (does not contain a status code of 200-299)
+   *
+   * @param response the response
+   * @return true if the response has not been successful
+   */
   public static boolean isNotSuccessful( @Nonnull ClientResponse response ) {
     return response.getStatus() < 200 || response.getStatus() > 299;
   }
