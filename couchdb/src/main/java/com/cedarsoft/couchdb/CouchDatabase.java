@@ -53,8 +53,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -65,12 +63,12 @@ public class CouchDatabase {
    * The path segment used to access design documents
    */
   @Nonnull
-  public static final String PREFIX_PATH_DESIGN = "_design";
+  public static final String PATH_SEGMENT_DESIGN = "_design";
   /**
    * The path segment used to access a view
    */
   @Nonnull
-  public static final String PREFIX_PATH_VIEW = "_view";
+  public static final String PATH_SEGMENT_VIEW = "_view";
   /**
    * Param for revision
    */
@@ -275,7 +273,7 @@ public class CouchDatabase {
 
   @Nonnull
   public InputStream query( @Nonnull ViewDescriptor viewDescriptor, @Nullable Options options ) throws ActionFailedException {
-    WebResource viewPath = dbRoot.path( PREFIX_PATH_DESIGN ).path( viewDescriptor.getDesignDocumentId() ).path( PREFIX_PATH_VIEW ).path( viewDescriptor.getViewId() );
+    WebResource viewPath = dbRoot.path( PATH_SEGMENT_DESIGN ).path( viewDescriptor.getDesignDocumentId() ).path( PATH_SEGMENT_VIEW ).path( viewDescriptor.getViewId() );
 
     if ( options != null ) {
       MultivaluedMap<String,String> params = new MultivaluedMapImpl(  );
