@@ -82,6 +82,17 @@ public class Foo2Test extends CouchTest {
       assertThat( response.getRowObjects().get( 10 ).getaValue() ).isSameAs( 99 );
     }
 
+    {
+      ViewResponse<List<? extends Object>, String, Foo> response = db().query( Views.Doc1.A_VIEW, new ListSerializer(), new StringSerializer(), serializer, Options.empty().startKey( Key.array( 89, "" ) ).descending( true ) );
+      assertThat( response.getTotalRows() ).isEqualTo( 100 );
+      assertThat( response.getOffset() ).isEqualTo( 11 );
+      assertThat( response.getRows() ).hasSize( 89 );
+      assertThat( response.getRowObjects() ).hasSize( 89 );
+
+      assertThat( response.getRowObjects().get( 0 ).getaValue() ).isSameAs( 88 );
+      assertThat( response.getRowObjects().get( 88 ).getaValue() ).isSameAs( 0 );
+    }
+
 
   }
 
