@@ -116,6 +116,10 @@ public class Options {
     return put( INCLUDE_DOCS, String.valueOf( includeDocs ) );
   }
 
+  public boolean isIncludeDocs(  ) {
+    return Boolean.TRUE.toString().equals( get( INCLUDE_DOCS ) );
+  }
+
   @Nonnull
   public Options groupLevel( int level ) {
     return put( GROUP_LEVEL, String.valueOf( level ) );

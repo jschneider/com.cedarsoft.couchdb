@@ -117,8 +117,8 @@ public class Foo2Test extends CouchTest {
       try {
         db().query( Views.Doc1.A_VIEW, new ListSerializer(), new StringSerializer(), new Options().includeDocs( true ) );
         fail("Where is the Exception");
-      } catch ( NullPointerException e ) {
-        assertThat( e ).hasMessage( "No document serializer found" );
+      } catch ( IllegalArgumentException e ) {
+        assertThat( e ).hasMessage( "include_docs is not supported without a doc serializer" );
       }
     }
   }

@@ -296,6 +296,10 @@ public class CouchDatabase {
    */
   @Nonnull
   public <K, V> ViewResponse<K, V, Void> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable Options options ) throws InvalidTypeException, ActionFailedException, IOException {
+    if (options!=null && options.isIncludeDocs() ) {
+      throw new IllegalArgumentException( Options.INCLUDE_DOCS + " is not supported without a doc serializer" );
+    }
+
     InputStream stream = query( viewDescriptor, options );
     return viewResponseSerializer.deserialize( keySerializer, valueSerializer, stream );
   }
