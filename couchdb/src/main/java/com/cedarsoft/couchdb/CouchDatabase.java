@@ -41,21 +41,31 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.ClientFilter;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
  */
 public class CouchDatabase {
+  @Nonnull
+  public static final String PREFIX_PATH_DESIGN = "_design";
+  @Nonnull
+  public static final String PREFIX_PATH_VIEW = "_view";
+
   @Nonnull
   public static final String PARAM_REV = "rev";
   @Nonnull
@@ -239,50 +249,35 @@ public class CouchDatabase {
   }
 
   @Nonnull
-  public <K, V> ViewResponse<K, V, Void> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer ) throws InvalidTypeException, ActionFailedException, IOException {
-    return query( viewDescriptor, keySerializer, valueSerializer, null, null );
-  }
-
-  @Nonnull
-  public <K, V> ViewResponse<K, V, Void> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable Key startKey, @Nullable Key endKey ) throws InvalidTypeException, ActionFailedException, IOException {
-    InputStream stream = query( viewDescriptor, false, startKey, endKey );
+  public <K, V> ViewResponse<K, V, Void> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable Options options ) throws InvalidTypeException, ActionFailedException, IOException {
+    InputStream stream = query( viewDescriptor, options );
     return viewResponseSerializer.deserialize( keySerializer, valueSerializer, stream );
   }
 
   @Nonnull
-  public <K, V, D> ViewResponse<K, V, D> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull JacksonSerializer<? extends D> docSerializer ) throws InvalidTypeException, ActionFailedException, IOException {
-    InputStream stream = query( viewDescriptor, true );
+  public <K, V, D> ViewResponse<K, V, D> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull JacksonSerializer<? extends D> docSerializer, @Nullable Options options ) throws InvalidTypeException, ActionFailedException, IOException {
+    Options localOptions = new Options( options ).includeDocs( true );//force include docs
+
+    InputStream stream = query( viewDescriptor, localOptions );
     return viewResponseSerializer.deserialize( keySerializer, valueSerializer, docSerializer, stream );
   }
 
   @Nonnull
-  public InputStream query( @Nonnull ViewDescriptor viewDescriptor ) throws ActionFailedException {
-    return query( viewDescriptor, false );
-  }
+  public InputStream query( @Nonnull ViewDescriptor viewDescriptor, @Nullable Options options ) throws ActionFailedException {
+    WebResource viewPath = dbRoot.path( PREFIX_PATH_DESIGN ).path( viewDescriptor.getDesignDocumentId() ).path( PREFIX_PATH_VIEW ).path( viewDescriptor.getViewId() );
 
-  @Nonnull
-  public InputStream query( @Nonnull ViewDescriptor viewDescriptor, boolean includeDocs ) throws ActionFailedException {
-    return query( viewDescriptor, includeDocs, null, null );
-  }
-
-  @Nonnull
-  public InputStream query( @Nonnull ViewDescriptor viewDescriptor, boolean includeDocs, @Nullable Key startKey, @Nullable Key endKey ) throws ActionFailedException {
-    WebResource viewPath = dbRoot.path( "_design" ).path( viewDescriptor.getDesignDocumentId() ).path( "_view" ).path( viewDescriptor.getViewId() );
-
-    if ( startKey != null ) {
-      viewPath = viewPath.queryParam( "startkey", startKey.getJson() );
-    }
-    if ( endKey != null ) {
-      viewPath = viewPath.queryParam( "endkey", endKey.getJson() );
-    }
-
-    if ( includeDocs ) {
-      viewPath = viewPath.queryParam( "include_docs", "true" );
+    if ( options != null ) {
+      MultivaluedMap<String,String> params = new MultivaluedMapImpl(  );
+      for ( Map.Entry<String, String> paramEntry : options.getParams().entrySet() ) {
+        params.putSingle( paramEntry.getKey(), paramEntry.getValue() );
+      }
+      
+      viewPath = viewPath.queryParams( params );
     }
 
     return get( viewPath );
   }
-
+  
   /**
    * Returns the document
    *

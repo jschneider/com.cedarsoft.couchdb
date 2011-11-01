@@ -3,7 +3,8 @@ package com.cedarsoft.couchdb.test.utils;
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.CouchDoc;
 import com.cedarsoft.couchdb.DocId;
-import com.cedarsoft.couchdb.ViewDescriptor;
+import com.cedarsoft.couchdb.Key;
+import com.cedarsoft.couchdb.Options;
 import com.cedarsoft.couchdb.ViewResponse;
 import com.cedarsoft.couchdb.test.utils.foo.Views;
 import com.cedarsoft.serialization.jackson.ListSerializer;
@@ -24,6 +25,9 @@ import static org.fest.assertions.Assertions.assertThat;
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class Foo2Test extends CouchTest {
+
+  private Foo.Serializer serializer;
+
   @Override
   protected URL getViewResource() {
     @Nullable URL resource = getClass().getResource( "foo/doc1/aView.map.js" );
@@ -31,12 +35,60 @@ public class Foo2Test extends CouchTest {
     return resource;
   }
 
-  @Test
-  public void testQuery() throws Exception {
-    Foo.Serializer serializer = new Foo.Serializer();
+  @Before
+  public void setUp() throws Exception {
+    serializer = new Foo.Serializer();
+  }
 
+  @Test
+  public void testMultiQuery() throws Exception {
     {
-      ViewResponse<List<? extends Object>, Void, Foo> response = db().query( Views.Doc1.A_VIEW, new ListSerializer(), new NullSerializer(), serializer );
+      ViewResponse<List<? extends Object>, Void, Foo> response = db().query( Views.Doc1.A_VIEW, new ListSerializer(), new NullSerializer(), serializer, null );
+      assertThat( response.getTotalRows() ).isEqualTo( 0 );
+      assertThat( response.getRowObjects() ).hasSize( 0 );
+    }
+
+    //Create the objects
+    for ( int i = 0; i < 100; i++ ) {
+      ActionResponse response = db().put( new CouchDoc<Foo>( new DocId( "foo" + i ), new Foo( i, "desc" + i ) ), serializer );
+      assertThat( response.getStatus() ).isEqualTo( 201 );
+      assertThat( response.getLocation().getPath() ).endsWith( "/foo" + i );
+    }
+
+
+    //First query - without any options
+    {
+      ViewResponse<List<? extends Object>, String, Foo> response = db().query( Views.Doc1.A_VIEW, new ListSerializer(), new StringSerializer(), serializer, Options.empty() );
+      assertThat( response.getTotalRows() ).isEqualTo( 100 );
+      assertThat( response.getOffset() ).isEqualTo( 0 );
+      assertThat( response.getRows() ).hasSize( 100 );
+      assertThat( response.getRowObjects() ).hasSize( 100 );
+
+      assertThat( response.getRowObjects().get( 0 ).getaValue() ).isSameAs( 0 );
+      assertThat( response.getRowObjects().get( 99 ).getaValue() ).isSameAs( 99 );
+    }
+
+
+    //Query with key
+    //First query - without any options
+    {
+      ViewResponse<List<? extends Object>, String, Foo> response = db().query( Views.Doc1.A_VIEW, new ListSerializer(), new StringSerializer(), serializer, Options.empty().startKey( Key.array( 89, "" ) ) );
+      assertThat( response.getTotalRows() ).isEqualTo( 100 );
+      assertThat( response.getOffset() ).isEqualTo( 89 );
+      assertThat( response.getRows() ).hasSize( 11 );
+      assertThat( response.getRowObjects() ).hasSize( 11 );
+
+      assertThat( response.getRowObjects().get( 0 ).getaValue() ).isSameAs( 89 );
+      assertThat( response.getRowObjects().get( 10 ).getaValue() ).isSameAs( 99 );
+    }
+
+
+  }
+
+  @Test
+  public void testSingleQuery() throws Exception {
+    {
+      ViewResponse<List<? extends Object>, Void, Foo> response = db().query( Views.Doc1.A_VIEW, new ListSerializer(), new NullSerializer(), serializer, Options.empty() );
       assertThat( response.getTotalRows() ).isEqualTo( 0 );
       assertThat( response.getRowObjects() ).hasSize( 0 );
     }
@@ -49,14 +101,14 @@ public class Foo2Test extends CouchTest {
     }
 
 
-    InputStream inputStream = db().query( Views.Doc1.A_VIEW );
+    InputStream inputStream = db().query( Views.Doc1.A_VIEW, Options.empty() );
     JsonUtils.assertJsonEquals( "{\"total_rows\":1,\"offset\":0,\"rows\":[\n" +
                                   "{\"id\":\"asdfasdf\",\"key\":[123,\"helloyou\"],\"value\":\"helloyou\"}\n" +
                                   "]}", new String( ByteStreams.toByteArray( inputStream ) ) );
 
 
     {
-      ViewResponse<List<? extends Object>, String, Foo> response = db().query( Views.Doc1.A_VIEW, new ListSerializer(), new StringSerializer(), serializer );
+      ViewResponse<List<? extends Object>, String, Foo> response = db().query( Views.Doc1.A_VIEW, new ListSerializer(), new StringSerializer(), serializer, Options.empty() );
       assertThat( response.getTotalRows() ).isEqualTo( 1 );
       assertThat( response.getOffset() ).isEqualTo( 0 );
       assertThat( response.getRows() ).hasSize( 1 );
