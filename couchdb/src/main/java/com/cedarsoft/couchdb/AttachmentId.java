@@ -35,6 +35,8 @@ package com.cedarsoft.couchdb;
 import javax.annotation.Nonnull;
 
 /**
+ * Identifies an attachment for a document
+ *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class AttachmentId {
