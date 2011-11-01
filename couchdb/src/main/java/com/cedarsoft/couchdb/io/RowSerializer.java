@@ -162,7 +162,7 @@ public class RowSerializer {
     JsonToken nextToken = parser.nextToken();
     if ( nextToken == JsonToken.FIELD_NAME ) {
       if ( documentSerializer == null ) {
-        throw new NullPointerException( "No documentSerializer found" );
+        throw new NullPointerException( "No document serializer found" );
       }
       doc = couchDocSerializer.deserialize( documentSerializer, parser );
 
