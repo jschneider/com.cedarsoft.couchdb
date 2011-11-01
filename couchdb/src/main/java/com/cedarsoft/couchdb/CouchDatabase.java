@@ -381,6 +381,14 @@ public class CouchDatabase {
     return get( dbRoot.path( id.asString() ) );
   }
 
+  /**
+   * Returns the content for the given resource
+   *
+   * @param resource the resources
+   * @return the input stream
+   *
+   * @throws ActionFailedException
+   */
   @Nonnull
   protected InputStream get( @Nonnull WebResource resource ) throws ActionFailedException {
     if ( Debug.isEnabled() ) {
@@ -415,6 +423,15 @@ public class CouchDatabase {
     return couchDocSerializer.deserialize( serializer, get( id ) );
   }
 
+  /**
+   * Returns the content of the given attachment
+   *
+   * @param docId        the document id
+   * @param attachmentId the attachment id
+   * @return the content of the attachment
+   *
+   * @throws ActionFailedException
+   */
   @Nonnull
   public InputStream get( @Nonnull DocId docId, @Nonnull AttachmentId attachmentId ) throws ActionFailedException {
     return get( dbRoot.path( docId.asString() ).path( attachmentId.asString() ) );
@@ -430,11 +447,21 @@ public class CouchDatabase {
     return dbRoot.getURI();
   }
 
+  /**
+   * Returns the db root for this database
+   *
+   * @return the db root for this database
+   */
   @Nonnull
   public WebResource getDbRoot() {
     return dbRoot;
   }
 
+  /**
+   * Returns the client for this db
+   *
+   * @return the client used for this db
+   */
   @Nonnull
   protected Client getClient() {
     return client;
@@ -450,6 +477,15 @@ public class CouchDatabase {
     return getURI().getPath().substring( 1 );
   }
 
+  /**
+   * Deletes a given document
+   *
+   * @param id       the id
+   * @param revision the revision
+   * @return the response
+   *
+   * @throws ActionFailedException
+   */
   @Nonnull
   public ActionResponse delete( @Nonnull DocId id, @Nonnull Revision revision ) throws ActionFailedException {
     WebResource.Builder path = dbRoot.path( id.asString() )
@@ -464,6 +500,16 @@ public class CouchDatabase {
     return ActionResponse.create( response );
   }
 
+  /**
+   * Deletes the given attachment
+   *
+   * @param id           the id
+   * @param revision     the revision
+   * @param attachmentId the attachment id
+   * @return the response
+   *
+   * @throws ActionFailedException
+   */
   @Nonnull
   public ActionResponse delete( @Nonnull DocId id, @Nonnull Revision revision, @Nonnull AttachmentId attachmentId ) throws ActionFailedException {
     WebResource.Builder path = dbRoot
@@ -508,6 +554,12 @@ public class CouchDatabase {
     return new Revision( entityTag.getValue() );
   }
 
+  /**
+   * Returns the head for the given doc
+   *
+   * @param docId the doc
+   * @return the head for the given doc id
+   */
   @Nonnull
   public ClientResponse getHead( @Nonnull DocId docId ) {
     WebResource.Builder path = dbRoot.path( docId.asString() ).type( JSON_TYPE ).accept( JSON_TYPE );
@@ -519,6 +571,13 @@ public class CouchDatabase {
     return path.head();
   }
 
+  /**
+   * Returns the head for the given attachment
+   *
+   * @param docId        the doc id
+   * @param attachmentId the attachment id
+   * @return the  response
+   */
   @Nonnull
   public ClientResponse getHead( @Nonnull DocId docId, @Nonnull AttachmentId attachmentId ) {
     WebResource.Builder path = dbRoot
