@@ -94,6 +94,19 @@ public class Foo2Test extends CouchTest {
     }
 
 
+
+    //What happens if there is not serializer added?
+    {
+      ViewResponse<List<? extends Object>, String, Void> response = db().query( Views.Doc1.A_VIEW, new ListSerializer(), new StringSerializer(), null );
+      assertThat( response.getTotalRows() ).isEqualTo( 100 );
+      assertThat( response.getOffset() ).isEqualTo( 0 );
+      assertThat( response.getRows() ).hasSize( 100 );
+      assertThat( response.getRows().get( 0 ).getValue() ).isEqualTo( "desc0" );
+
+      assertThat( response.getRowObjects() ).hasSize( 100 );
+      assertThat( response.getRowObjects().get( 0 ) ).isNull(  );
+      assertThat( response.getRowObjects().get( 99 ) ).isNull(  );
+    }
   }
 
   @Test
