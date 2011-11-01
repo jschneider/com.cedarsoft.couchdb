@@ -91,6 +91,13 @@ public class CouchDatabase {
   @Nonnull
   private final CouchDocSerializer couchDocSerializer = new CouchDocSerializer();
 
+  /**
+   * Creates a new database
+   *
+   * @param serverUri the server uri
+   * @param dbName    the db name (will be appended to the server uri)
+   * @param filters   the filters
+   */
   public CouchDatabase( @Nonnull URI serverUri, @Nonnull String dbName, @Nullable ClientFilter... filters ) {
     this( serverUri.resolve( "/" + dbName ), filters );
   }
@@ -113,6 +120,11 @@ public class CouchDatabase {
     viewResponseSerializer = new ViewResponseSerializer( new RowSerializer( couchDocSerializer ) );
   }
 
+  /**
+   * Returns the client filters
+   *
+   * @return the client filters (a cloned instance)
+   */
   @Nonnull
   public ClientFilter[] getClientFilters() {
     return clientFilters.clone();
@@ -257,6 +269,31 @@ public class CouchDatabase {
     return post( new ByteArrayInputStream( out.toByteArray() ) );
   }
 
+  /**
+   * Queries the given view.
+   * Each view return
+   * <ul>
+   *   <li>the key</li>
+   *   <li>the value</li>
+   *   <li>optionally the document</li>
+   * </ul>
+   *
+   * The serializers assigned as methods parameters are used to deserialize these parts.
+   * This method does *not* support included docs.
+   *
+   *
+   * @param viewDescriptor  describes the view
+   * @param keySerializer   the serializer used to deserialize the key
+   * @param valueSerializer the serializer used to deserialize the value
+   * @param options         the options for the query
+   * @param <K>             the type of the key
+   * @param <V>             the type of the value
+   * @return the response
+   *
+   * @throws InvalidTypeException
+   * @throws ActionFailedException
+   * @throws IOException
+   */
   @Nonnull
   public <K, V> ViewResponse<K, V, Void> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable Options options ) throws InvalidTypeException, ActionFailedException, IOException {
     InputStream stream = query( viewDescriptor, options );
@@ -276,17 +313,17 @@ public class CouchDatabase {
     WebResource viewPath = dbRoot.path( PATH_SEGMENT_DESIGN ).path( viewDescriptor.getDesignDocumentId() ).path( PATH_SEGMENT_VIEW ).path( viewDescriptor.getViewId() );
 
     if ( options != null ) {
-      MultivaluedMap<String,String> params = new MultivaluedMapImpl(  );
+      MultivaluedMap<String, String> params = new MultivaluedMapImpl();
       for ( Map.Entry<String, String> paramEntry : options.getParams().entrySet() ) {
         params.putSingle( paramEntry.getKey(), paramEntry.getValue() );
       }
-      
+
       viewPath = viewPath.queryParams( params );
     }
 
     return get( viewPath );
   }
-  
+
   /**
    * Returns the document
    *
@@ -376,7 +413,7 @@ public class CouchDatabase {
     if ( Debug.isEnabled() ) {
       Debug.out().println( "DELETE " + path.toString() );
     }
-    
+
     ClientResponse response = path.delete( ClientResponse.class );
     return ActionResponse.create( response );
   }
