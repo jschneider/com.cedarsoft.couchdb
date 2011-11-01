@@ -35,12 +35,19 @@ package com.cedarsoft.couchdb;
 import javax.annotation.Nonnull;
 
 /**
+ * Represents a document id (without a revision)
+ *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class DocId {
   @Nonnull
   private final String id;
 
+  /**
+   * Creates a new document id
+   *
+   * @param id the id as string
+   */
   public DocId( @Nonnull String id ) {
     this.id = id;
   }

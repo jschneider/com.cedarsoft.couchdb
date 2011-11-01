@@ -37,6 +37,8 @@ import javax.annotation.Nullable;
 
 
 /**
+ * Represents a row within the result of a query
+ *
  * @param <K> the type of the key
  * @param <V> the type of the value
  * @param <D> the type of the document (if there is one)
@@ -53,10 +55,23 @@ public class Row<K, V, D> {
   @Nullable
   private final CouchDoc<? extends D> doc;
 
+  /**
+   * Creates a new row
+   * @param id the id
+   * @param key the key
+   * @param value the value
+   */
   public Row( @Nonnull DocId id, @Nonnull K key, @Nullable V value ) {
     this( id, key, value, null );
   }
 
+  /**
+   * Creates a new row
+   * @param id the id
+   * @param key the key
+   * @param value the value
+   * @param doc the document
+   */
   public Row( @Nonnull DocId id, @Nonnull K key, @Nullable V value, @Nullable CouchDoc<? extends D> doc ) {
     this.id = id;
     this.key = key;

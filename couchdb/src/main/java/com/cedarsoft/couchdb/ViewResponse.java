@@ -37,6 +37,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * A view response
+ *
  * @param <K> the type of the key (for the rows)
  * @param <V> the type of the value (for the rows)
  * @param <D> the type of the document (for the rows)
@@ -48,6 +50,12 @@ public class ViewResponse<K, V, D> {
   @Nonnull
   private final List<Row<K, V, D>> rows;
 
+  /**
+   * Creates a new view response
+   * @param totalRows the amount of total rows
+   * @param offset the offset
+   * @param rows the rows
+   */
   public ViewResponse( int totalRows, int offset, @Nonnull List<Row<K, V, D>> rows ) {
     this.totalRows = totalRows;
     this.offset = offset;

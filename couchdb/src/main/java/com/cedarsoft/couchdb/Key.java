@@ -33,6 +33,8 @@ package com.cedarsoft.couchdb;
 import javax.annotation.Nonnull;
 
 /**
+ * Represents a key that can be used for queries
+ *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class Key {
@@ -44,6 +46,11 @@ public class Key {
   @Nonnull
   private final String json;
 
+  /**
+   * Creates a new key
+   *
+   * @param json the json code for this key
+   */
   public Key( @Nonnull String json ) {
     this.json = json;
   }
@@ -83,6 +90,12 @@ public class Key {
       '}';
   }
 
+  /**
+   * Creates a new array key
+   *
+   * @param parts the parts of the array (numbers are interpreted as numbers, every other type is interpreted as string)
+   * @return the array key object
+   */
   @Nonnull
   public static Key array( @Nonnull Object... parts ) {
     StringBuilder builder = new StringBuilder();

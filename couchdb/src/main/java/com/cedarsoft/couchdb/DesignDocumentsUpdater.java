@@ -46,20 +46,32 @@ public class DesignDocumentsUpdater {
   @Nonnull
   private final CouchDatabase database;
 
+  /**
+   * Creates a new updater for the given database
+   *
+   * @param database the database
+   */
   public DesignDocumentsUpdater( @Nonnull CouchDatabase database ) {
     this.database = database;
   }
 
+  /**
+   * Uploads the given design documents to the database
+   *
+   * @param designDocuments the design documents
+   * @throws IOException
+   * @throws ActionFailedException
+   */
   public void update( @Nonnull Iterable<? extends DesignDocument> designDocuments ) throws IOException, ActionFailedException {
     for ( DesignDocument designDocument : designDocuments ) {
-      if ( !designDocument.hasViews( ) ) {
+      if ( !designDocument.hasViews() ) {
         continue;
       }
 
-      String path = designDocument.getDesignDocumentPath( );
-      WebResource resource = database.getDbRoot( ).path( path );
+      String path = designDocument.getDesignDocumentPath();
+      WebResource resource = database.getDbRoot().path( path );
 
-      ClientResponse response = resource.put( ClientResponse.class, designDocument.createJson( ) );
+      ClientResponse response = resource.put( ClientResponse.class, designDocument.createJson() );
       ActionResponse.verifyNoError( response );
     }
   }

@@ -48,6 +48,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Offers support for DesignDocuments
+ *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class DesignDocuments {
@@ -60,73 +62,103 @@ public class DesignDocuments {
   @Nonnull
   public static final String FILE_PROTOCOL = "file";
 
+  /**
+   * Guesses a base dir for a given file(!) url.
+   * This method can be used to determine the base dir that can be used to find several design documents that are uploaded to the db.
+   *
+   * @param mapOrReduceScript a map or reduce script that is used to determine the base dir
+   * @return the guessed base dir
+   *
+   * @throws FileNotFoundException
+   */
   @Nonnull
   public static File guessBaseDir( @Nonnull URL mapOrReduceScript ) throws FileNotFoundException {
-    if ( !mapOrReduceScript.getProtocol( ).equals( FILE_PROTOCOL ) ) {
-      throw new IllegalArgumentException( "Invalid protocol <" + mapOrReduceScript.getProtocol( ) + ">" );
+    if ( !mapOrReduceScript.getProtocol().equals( FILE_PROTOCOL ) ) {
+      throw new IllegalArgumentException( "Invalid protocol <" + mapOrReduceScript.getProtocol() + ">" );
     }
 
-    File file = new File( mapOrReduceScript.getFile( ) );
-    if ( !file.exists( ) ) {
-      throw new FileNotFoundException( "File not found " + file.getAbsolutePath( ) );
+    File file = new File( mapOrReduceScript.getFile() );
+    if ( !file.exists() ) {
+      throw new FileNotFoundException( "File not found " + file.getAbsolutePath() );
     }
 
-    File baseDir = file.getParentFile( );
-    if ( !baseDir.isDirectory( ) ) {
-      throw new FileNotFoundException( "Invalid base dir " + baseDir.getAbsolutePath( ) );
+    File baseDir = file.getParentFile();
+    if ( !baseDir.isDirectory() ) {
+      throw new FileNotFoundException( "Invalid base dir " + baseDir.getAbsolutePath() );
     }
 
     return baseDir;
   }
 
+  /**
+   * Lists all js files within the given directory
+   *
+   * @param baseDir the base dir
+   * @return the list of all files ending with "js"
+   */
   @Nonnull
   public static Collection<? extends File> listJsFiles( @Nonnull File baseDir ) {
     return ImmutableList.copyOf( baseDir.listFiles( new PatternFilenameFilter( ".*" + JS_SUFFIX ) ) );
   }
 
+  /**
+   * Creates a design document for the given js files (view and map functions)
+   *
+   * @param id      the id
+   * @param jsFiles the js files (the view and map functions)
+   * @return the design document
+   *
+   * @throws IOException
+   */
   @Nonnull
   public static DesignDocument createDesignDocument( @Nonnull String id, @Nonnull Iterable<? extends File> jsFiles ) throws IOException {
     DesignDocument designDocument = new DesignDocument( id );
 
     @Nonnull
-    Map<String, String> mappingFunctions = new HashMap<String, String>( );
+    Map<String, String> mappingFunctions = new HashMap<String, String>();
     @Nonnull
-    Map<String, String> reduceFunctions = new HashMap<String, String>( );
+    Map<String, String> reduceFunctions = new HashMap<String, String>();
 
     for ( File jsFile : jsFiles ) {
       String content = Files.toString( jsFile, Charsets.UTF_8 );
-      if ( content.trim( ).isEmpty( ) ) {
+      if ( content.trim().isEmpty() ) {
         continue;
       }
 
       if ( isMappingFile( jsFile ) ) {
-        String name = getBaseName( jsFile.getName( ) );
+        String name = getBaseName( jsFile.getName() );
         mappingFunctions.put( name, content );
       } else if ( isReduceFile( jsFile ) ) {
-        String name = getBaseName( jsFile.getName( ) );
+        String name = getBaseName( jsFile.getName() );
         reduceFunctions.put( name, content );
       } else {
-        throw new IllegalArgumentException( "Invalid file name <" + jsFile.getName( ) + ">" );
+        throw new IllegalArgumentException( "Invalid file name <" + jsFile.getName() + ">" );
       }
     }
 
     //Now create the views
-    for ( Map.Entry<String, String> entry : mappingFunctions.entrySet( ) ) {
-      String name = entry.getKey( );
-      String mappingFunction = entry.getValue( );
+    for ( Map.Entry<String, String> entry : mappingFunctions.entrySet() ) {
+      String name = entry.getKey();
+      String mappingFunction = entry.getValue();
 
       @Nullable String reduceFunction = reduceFunctions.get( name );
 
       designDocument.add( new View( name, mappingFunction, reduceFunction ) );
     }
 
-    if ( designDocument.hasViews( ) ) {
+    if ( designDocument.hasViews() ) {
 
     }
-    
+
     return designDocument;
   }
 
+  /**
+   * Returns the base name
+   *
+   * @param fileName the base name
+   * @return
+   */
   @Nonnull
   private static String getBaseName( @Nonnull String fileName ) {
     int index = fileName.indexOf( "." );
@@ -138,11 +170,11 @@ public class DesignDocuments {
   }
 
   private static boolean isMappingFile( @Nonnull File jsFile ) {
-    return jsFile.getName( ).endsWith( MAP_SUFFIX );
+    return jsFile.getName().endsWith( MAP_SUFFIX );
   }
 
   private static boolean isReduceFile( @Nonnull File jsFile ) {
-    return jsFile.getName( ).endsWith( REDUCE_SUFFIX );
+    return jsFile.getName().endsWith( REDUCE_SUFFIX );
   }
 
   /**
@@ -160,7 +192,7 @@ public class DesignDocuments {
   @Nonnull
   public static DesignDocument createDesignDocument( @Nonnull File viewBaseDir ) throws IOException {
     Collection<? extends File> files = listJsFiles( viewBaseDir );
-    return createDesignDocument( viewBaseDir.getName( ), files );
+    return createDesignDocument( viewBaseDir.getName(), files );
   }
 
   /**
@@ -172,17 +204,17 @@ public class DesignDocuments {
   @Nonnull
   public static List<? extends DesignDocument> createDesignDocuments( @Nonnull URL jsResource ) throws IOException {
     File viewDir = guessBaseDir( jsResource );
-    File viewsDir = viewDir.getParentFile( );
+    File viewsDir = viewDir.getParentFile();
 
     return createDesignDocuments( viewsDir );
   }
 
   @Nonnull
   public static List<? extends DesignDocument> createDesignDocuments( @Nonnull File viewsDir ) throws IOException {
-    List<DesignDocument> designDocuments = new ArrayList<DesignDocument>( );
+    List<DesignDocument> designDocuments = new ArrayList<DesignDocument>();
 
-    for ( File file : viewsDir.listFiles( ) ) {
-      if ( !file.isDirectory( ) ) {
+    for ( File file : viewsDir.listFiles() ) {
+      if ( !file.isDirectory() ) {
         continue;
       }
 
@@ -210,17 +242,17 @@ public class DesignDocuments {
     }
 
     @Nonnull
-    public String getName( ) {
+    public String getName() {
       return name;
     }
 
     @Nonnull
-    public String getMappingFunction( ) {
+    public String getMappingFunction() {
       return mappingFunction;
     }
 
     @Nullable
-    public String getReduceFunction( ) {
+    public String getReduceFunction() {
       return reduceFunction;
     }
   }

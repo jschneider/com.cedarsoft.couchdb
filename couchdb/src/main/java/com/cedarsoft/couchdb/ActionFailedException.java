@@ -35,7 +35,7 @@ package com.cedarsoft.couchdb;
 import javax.annotation.Nonnull;
 
 /**
- *
+ * This exception is thrown if an action has failed (http error codes)
  */
 public class ActionFailedException extends CouchDbException {
   @Nonnull
@@ -52,15 +52,27 @@ public class ActionFailedException extends CouchDbException {
     this.reason = reason;
   }
 
+  /**
+   * Returns the html status code
+   * @return the html status code
+   */
   public int getStatus() {
     return status;
   }
 
+  /**
+   * Returns the error message
+   * @return the error message
+   */
   @Nonnull
   public String getError() {
     return error;
   }
 
+  /**
+   * Returns the reason
+   * @return the reason
+   */
   @Nonnull
   public String getReason() {
     return reason;

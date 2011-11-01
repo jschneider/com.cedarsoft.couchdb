@@ -32,6 +32,7 @@
 package com.cedarsoft.couchdb;
 
 /**
+ * Base class for couchdb related exceptions
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class CouchDbException extends Exception {

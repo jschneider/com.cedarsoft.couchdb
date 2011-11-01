@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Query options
+ *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class Options {
@@ -39,7 +41,7 @@ public class Options {
   public Options() {
   }
 
-  public Options( @Nullable  Options options ) {
+  public Options( @Nullable Options options ) {
     if ( options != null ) {
       this.content.putAll( options.getParams() );
     }
@@ -116,7 +118,7 @@ public class Options {
     return put( INCLUDE_DOCS, String.valueOf( includeDocs ) );
   }
 
-  public boolean isIncludeDocs(  ) {
+  public boolean isIncludeDocs() {
     return Boolean.TRUE.toString().equals( get( INCLUDE_DOCS ) );
   }
 
@@ -125,8 +127,8 @@ public class Options {
     return put( GROUP_LEVEL, String.valueOf( level ) );
   }
 
-  
-  @Nonnull 
+
+  @Nonnull
   public Map<String, String> getParams() {
     return Collections.unmodifiableMap( content );
   }
@@ -154,7 +156,7 @@ public class Options {
       }
       first = false;
     }
-    
+
     return builder.toString();
   }
 

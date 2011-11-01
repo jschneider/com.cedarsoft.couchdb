@@ -33,6 +33,8 @@ package com.cedarsoft.couchdb;
 import javax.annotation.Nonnull;
 
 /**
+ * Describes a view
+ *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class ViewDescriptor {

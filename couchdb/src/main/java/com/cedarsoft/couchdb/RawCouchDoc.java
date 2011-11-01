@@ -37,7 +37,7 @@ import javax.annotation.Nullable;
 
 
 /**
- * A raw couch doc - without any further informations
+ * A raw couch document - without any further informations
  *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
