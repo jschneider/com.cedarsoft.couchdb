@@ -58,16 +58,27 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Offers access methods for a couch database
  */
 public class CouchDatabase {
+  /**
+   * The path segment used to access design documents
+   */
   @Nonnull
   public static final String PREFIX_PATH_DESIGN = "_design";
+  /**
+   * The path segment used to access a view
+   */
   @Nonnull
   public static final String PREFIX_PATH_VIEW = "_view";
-
+  /**
+   * Param for revision
+   */
   @Nonnull
   public static final String PARAM_REV = "rev";
+  /**
+   * JSON type
+   */
   @Nonnull
   public static final MediaType JSON_TYPE = MediaType.APPLICATION_JSON_TYPE;
 
