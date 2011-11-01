@@ -84,7 +84,7 @@ public class Key {
   }
 
   @Nonnull
-  public static Key array( @Nonnull String... parts ) {
+  public static Key array( @Nonnull Object... parts ) {
     StringBuilder builder = new StringBuilder();
     builder.append( "[" );
 
@@ -101,7 +101,7 @@ public class Key {
    * @return an array that contains an additional empty object as last element
    */
   @Nonnull
-  public static Key endArray( @Nonnull String... parts ) {
+  public static Key endArray( @Nonnull Object... parts ) {
     if ( parts.length == 0 ) {
       throw new IllegalArgumentException( "Need at least one element" );
     }
@@ -118,12 +118,17 @@ public class Key {
   }
 
   @Nonnull
-  private static String createArrayContent( @Nonnull String[] parts ) {
+  private static String createArrayContent( @Nonnull Object... parts ) {
     StringBuilder builder = new StringBuilder();
 
     for ( int i = 0; i < parts.length; i++ ) {
-      String part = parts[i];
-      builder.append( "\"" ).append( part ).append( "\"" );
+      Object part = parts[i];
+
+      if ( part instanceof Number ) {
+        builder.append( part );
+      } else {
+        builder.append( "\"" ).append( part ).append( "\"" );
+      }
 
       if ( i < parts.length - 1 ) {
         builder.append( "," );

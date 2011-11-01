@@ -57,4 +57,8 @@ public class KeyTest extends TestCase {
 
     assertThat( Key.endArray( "a" ).getJson() ).isEqualTo( "[\"a\",{}]" );
   }
+
+  public void testIntegers() throws Exception {
+    assertThat( Key.array( "a", 1, "c" ).getJson() ).isEqualTo( "[\"a\",1,\"c\"]" );
+  }
 }
