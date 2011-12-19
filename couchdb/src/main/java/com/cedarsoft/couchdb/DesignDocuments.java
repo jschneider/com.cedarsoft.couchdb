@@ -125,10 +125,10 @@ public class DesignDocuments {
         continue;
       }
 
-      if ( isMappingFile( jsFile ) ) {
+      if ( isMappingFile( jsFile.getName() ) ) {
         String name = getBaseName( jsFile.getName() );
         mappingFunctions.put( name, content );
-      } else if ( isReduceFile( jsFile ) ) {
+      } else if ( isReduceFile( jsFile.getName() ) ) {
         String name = getBaseName( jsFile.getName() );
         reduceFunctions.put( name, content );
       } else {
@@ -169,12 +169,12 @@ public class DesignDocuments {
     return fileName.substring( 0, index );
   }
 
-  private static boolean isMappingFile( @Nonnull File jsFile ) {
-    return jsFile.getName().endsWith( MAP_SUFFIX );
+  private static boolean isMappingFile( @Nonnull String fileName ) {
+    return fileName.endsWith( MAP_SUFFIX );
   }
 
-  private static boolean isReduceFile( @Nonnull File jsFile ) {
-    return jsFile.getName().endsWith( REDUCE_SUFFIX );
+  private static boolean isReduceFile( @Nonnull String fileName ) {
+    return fileName.endsWith( REDUCE_SUFFIX );
   }
 
   /**
