@@ -1,6 +1,5 @@
 package com.cedarsoft.couchdb.test.utils;
 
-import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.CouchDoc;
 import com.cedarsoft.couchdb.DocId;
@@ -8,7 +7,6 @@ import com.cedarsoft.couchdb.Key;
 import com.cedarsoft.couchdb.Options;
 import com.cedarsoft.couchdb.ViewResponse;
 import com.cedarsoft.couchdb.test.utils.foo.Views;
-import com.cedarsoft.serialization.jackson.InvalidTypeException;
 import com.cedarsoft.serialization.jackson.ListSerializer;
 import com.cedarsoft.serialization.jackson.NullSerializer;
 import com.cedarsoft.serialization.jackson.StringSerializer;
@@ -17,7 +15,6 @@ import com.google.common.io.ByteStreams;
 import org.junit.*;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
@@ -33,10 +30,10 @@ public class Foo2Test extends CouchTest {
   private Foo.Serializer serializer;
 
   @Override
-  protected URL getViewResource() {
+  protected DesignDocumentsProvider getDesignDocumentsProvider() {
     @Nullable URL resource = getClass().getResource( "foo/doc1/aView.map.js" );
     assertThat( resource ).isNotNull();
-    return resource;
+    return new FileBasedDesignDocumentsProvider( resource );
   }
 
   @Before

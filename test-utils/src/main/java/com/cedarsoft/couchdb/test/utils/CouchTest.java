@@ -47,7 +47,7 @@ import java.net.URL;
  */
 public abstract class CouchTest {
   @Rule
-  public CouchDbRule couchDbRule = new CouchDbRule( getViewResource() );
+  public CouchDbRule couchDbRule = new CouchDbRule( getDesignDocumentsProvider() );
 
   @Nonnull
   protected CouchDatabase db() {
@@ -65,19 +65,17 @@ public abstract class CouchTest {
   }
 
   @Nonnull
-  protected CouchServer server( ) {
+  protected CouchServer server() {
     return couchDbRule.getCurrentServer();
   }
 
   /**
-   * Returns one view resource that is used to find the base dir for all views
+   * Returns the provider for the design documents
    *
-   * @return one view resource
-   *
-   * @throws CanceledException if no views shall be uploaded for the test
+   * @return the provider for the design documents
    */
   @Nullable
-  protected URL getViewResource() {
+  protected DesignDocumentsProvider getDesignDocumentsProvider() {
     return null;
   }
 }
