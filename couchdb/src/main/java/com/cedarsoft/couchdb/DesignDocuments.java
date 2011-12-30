@@ -32,6 +32,7 @@ package com.cedarsoft.couchdb;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
+import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import com.google.common.io.PatternFilenameFilter;
 
@@ -40,6 +41,7 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -102,6 +104,64 @@ public class DesignDocuments {
   }
 
   /**
+   * Creates a new design document
+   * @param baseClass the base class
+   * @param viewDescriptors the view descriptors (must have the same design document id )
+   * @return the design document
+   */
+  @Nonnull
+  public static DesignDocument createDesignDocument( @Nonnull Class<?> baseClass, @Nonnull ViewDescriptor... viewDescriptors ) throws IOException {
+    if ( viewDescriptors.length == 0 ) {
+      throw new IllegalArgumentException( "Need at least one view descriptor" );
+    }
+
+    String designDocumentId = viewDescriptors[0].getDesignDocumentId();
+
+    @Nonnull
+    Map<String, String> mappingFunctions = new HashMap<String, String>();
+    @Nonnull
+    Map<String, String> reduceFunctions = new HashMap<String, String>();
+
+    for ( ViewDescriptor viewDescriptor : viewDescriptors ) {
+      //the mapping file
+      {
+        String path = createMapPath( viewDescriptor );
+        @Nullable URL url = baseClass.getResource( path );
+        if ( url == null ) {
+          throw new IllegalStateException( "No mapping file found for <" + viewDescriptor + "> @ <" + path + "> (" + baseClass.getName() + ")" );
+        }
+
+        String content = new String( ByteStreams.toByteArray( url.openStream() ) );
+        mappingFunctions.put( viewDescriptor.getViewId(), content );
+      }
+
+      //the reduce file
+      {
+        String path = createReducePath( viewDescriptor );
+        @Nullable URL url = baseClass.getResource( path );
+        if ( url == null ) {
+          continue;
+        }
+
+        String content = new String( ByteStreams.toByteArray( url.openStream() ) );
+        reduceFunctions.put( viewDescriptor.getViewId(), content );
+      }
+    }
+
+    return bundle( designDocumentId, mappingFunctions, reduceFunctions );
+  }
+
+  @Nonnull
+  private static String createMapPath( @Nonnull ViewDescriptor viewDescriptor ) {
+    return viewDescriptor.getDesignDocumentId() + "/" + viewDescriptor.getViewId() + MAP_SUFFIX;
+  }
+
+  @Nonnull
+  private static String createReducePath( @Nonnull ViewDescriptor viewDescriptor ) {
+    return viewDescriptor.getDesignDocumentId() + "/" + viewDescriptor.getViewId() + REDUCE_SUFFIX;
+  }
+
+  /**
    * Creates a design document for the given js files (view and map functions)
    *
    * @param id      the id
@@ -112,8 +172,6 @@ public class DesignDocuments {
    */
   @Nonnull
   public static DesignDocument createDesignDocument( @Nonnull String id, @Nonnull Iterable<? extends File> jsFiles ) throws IOException {
-    DesignDocument designDocument = new DesignDocument( id );
-
     @Nonnull
     Map<String, String> mappingFunctions = new HashMap<String, String>();
     @Nonnull
@@ -136,7 +194,21 @@ public class DesignDocuments {
       }
     }
 
+    return bundle( id, mappingFunctions, reduceFunctions );
+  }
+
+  /**
+   * Bundles a design document
+   * @param id the id
+   * @param mappingFunctions the mapping functions (key is name, value is content)
+   * @param reduceFunctions the reduce functions (key is name, value is content)
+   * @return the design document
+   */
+  @Nonnull
+  private static DesignDocument bundle( @Nonnull String id, @Nonnull Map<String, String> mappingFunctions, @Nonnull Map<String, String> reduceFunctions ) {
     //Now create the views
+    DesignDocument designDocument = new DesignDocument( id );
+
     for ( Map.Entry<String, String> entry : mappingFunctions.entrySet() ) {
       String name = entry.getKey();
       String mappingFunction = entry.getValue();
@@ -144,10 +216,6 @@ public class DesignDocuments {
       @Nullable String reduceFunction = reduceFunctions.get( name );
 
       designDocument.add( new View( name, mappingFunction, reduceFunction ) );
-    }
-
-    if ( designDocument.hasViews() ) {
-
     }
 
     return designDocument;
@@ -223,7 +291,6 @@ public class DesignDocuments {
 
     return designDocuments;
   }
-
 
   public static class View {
     @Nonnull

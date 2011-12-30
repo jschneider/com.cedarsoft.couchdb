@@ -32,6 +32,8 @@ package com.cedarsoft.couchdb.test.utils;
 
 import com.cedarsoft.couchdb.DesignDocument;
 import com.cedarsoft.couchdb.DesignDocuments;
+import com.cedarsoft.couchdb.ViewDescriptor;
+import com.cedarsoft.couchdb.test.utils.views.Views;
 import com.cedarsoft.test.utils.JsonUtils;
 import org.junit.*;
 import org.xml.sax.SAXException;
@@ -55,6 +57,15 @@ public class DesignDocumentsTest {
   @Before
   public void setUp( ) throws Exception {
     resource = getClass( ).getResource( "views/doc1/file1.map.js" );
+  }
+
+  @Test
+  public void testIt() throws Exception {
+    DesignDocument designDocument = DesignDocuments.createDesignDocument( Views.class, new ViewDescriptor( "doc1", "file1" ), new ViewDescriptor( "doc1", "file2" ) );
+    assertThat( designDocument ).isNotNull();
+
+    assertThat( designDocument.hasViews() ).isTrue();
+    assertThat( designDocument.getViews() ).hasSize( 2 );
   }
 
   @Test

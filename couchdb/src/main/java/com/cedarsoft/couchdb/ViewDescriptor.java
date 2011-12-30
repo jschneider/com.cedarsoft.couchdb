@@ -58,4 +58,9 @@ public class ViewDescriptor {
   public String getViewId() {
     return viewId;
   }
+
+  @Override
+  public String toString() {
+    return designDocumentId + " | " + viewId;
+  }
 }
