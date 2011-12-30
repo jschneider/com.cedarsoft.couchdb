@@ -3,6 +3,7 @@ package com.cedarsoft.couchdb.test.utils;
 import com.cedarsoft.couchdb.DesignDocument;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -11,6 +12,14 @@ import java.util.List;
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public interface DesignDocumentsProvider {
+
+  /**
+   * Returns the design documents that are uploaded.
+   *
+   * @return the design documents
+   *
+   * @throws IOException
+   */
   @Nonnull
-  List<? extends DesignDocument> getDesignDocuments();
+  List<? extends DesignDocument> getDesignDocuments() throws IOException;
 }
