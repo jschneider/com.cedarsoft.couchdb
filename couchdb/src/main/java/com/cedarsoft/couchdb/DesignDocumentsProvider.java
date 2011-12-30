@@ -1,7 +1,5 @@
 package com.cedarsoft.couchdb;
 
-import com.cedarsoft.couchdb.DesignDocument;
-
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.List;
