@@ -2,6 +2,7 @@ package com.cedarsoft.couchdb.test.utils;
 
 import com.cedarsoft.couchdb.DesignDocument;
 import com.cedarsoft.couchdb.DesignDocuments;
+import com.cedarsoft.couchdb.DesignDocumentsProvider;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;

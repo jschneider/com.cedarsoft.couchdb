@@ -2,6 +2,7 @@ package com.cedarsoft.couchdb.test.utils;
 
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.CouchDoc;
+import com.cedarsoft.couchdb.DesignDocumentsProvider;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Key;
 import com.cedarsoft.couchdb.Options;

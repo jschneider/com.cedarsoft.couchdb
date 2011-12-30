@@ -34,13 +34,13 @@ package com.cedarsoft.couchdb.test.utils;
 import com.cedarsoft.couchdb.CouchDatabase;
 import com.cedarsoft.couchdb.CouchDbException;
 import com.cedarsoft.couchdb.CouchServer;
+import com.cedarsoft.couchdb.DesignDocumentsProvider;
 import org.junit.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)

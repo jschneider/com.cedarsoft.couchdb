@@ -1,4 +1,4 @@
-package com.cedarsoft.couchdb.test.utils;
+package com.cedarsoft.couchdb;
 
 import com.cedarsoft.couchdb.DesignDocument;
 
