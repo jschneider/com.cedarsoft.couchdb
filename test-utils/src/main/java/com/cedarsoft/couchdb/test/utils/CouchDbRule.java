@@ -87,7 +87,7 @@ public class CouchDbRule implements MethodRule {
   @Nullable
   private CouchServer server;
   @Nullable
-  private final URL viewResource;
+  private final DesignDocumentsProvider designDocumentsProvider;
   @Nullable
 
   private final String dbBaseName;
@@ -100,14 +100,14 @@ public class CouchDbRule implements MethodRule {
   /**
    * The view resource will be used to detect the views that are copied to the server
    *
-   * @param viewResource the optional view resource
+   * @param designDocumentsProvider the optional design documents provider
    */
-  public CouchDbRule( @Nullable URL viewResource ) {
-    this( viewResource, null );
+  public CouchDbRule( @Nullable DesignDocumentsProvider designDocumentsProvider ) {
+    this( designDocumentsProvider, null );
   }
 
-  public CouchDbRule( @Nullable URL viewResource, @Nullable String dbBaseName ) {
-    this.viewResource = viewResource;
+  public CouchDbRule( @Nullable DesignDocumentsProvider designDocumentsProvider, @Nullable String dbBaseName ) {
+    this.designDocumentsProvider = designDocumentsProvider;
     this.dbBaseName = dbBaseName;
   }
 
@@ -208,7 +208,7 @@ public class CouchDbRule implements MethodRule {
     @Nullable String password = getPassword();
     if ( username != null && password != null ) {
       filters = new ClientFilter[]{new HTTPBasicAuthFilter( username, password )};
-    }else{
+    } else {
       filters = new ClientFilter[0];
     }
 
@@ -217,13 +217,13 @@ public class CouchDbRule implements MethodRule {
 
   public void publishViews( @Nonnull CouchDatabase couchDatabase ) throws URISyntaxException, IOException, ActionFailedException {
     try {
-      URL resource = getViewResource( );
-      if ( resource == null ) {
+      DesignDocumentsProvider provider = getDesignDocumentsProvider();
+      if ( provider == null ) {
         return;
       }
 
-      List<? extends DesignDocument> designDocuments = DesignDocuments.createDesignDocuments( resource );
-      if ( designDocuments.isEmpty( ) ) {
+      List<? extends DesignDocument> designDocuments = provider.getDesignDocuments();
+      if ( designDocuments.isEmpty() ) {
         return;
       }
 
@@ -234,13 +234,13 @@ public class CouchDbRule implements MethodRule {
   }
 
   /**
-   * Returns one view resource that is used to find the base dir for all views
+   * Returns the design documents provider - if there are any
    *
-   * @return one view resource
+   * @return the provider or null
    */
   @Nullable
-  public URL getViewResource() throws CanceledException{
-    return viewResource;
+  public DesignDocumentsProvider getDesignDocumentsProvider() {
+    return designDocumentsProvider;
   }
 
   @Override
