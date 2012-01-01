@@ -111,11 +111,15 @@ public class DesignDocuments {
    */
   @Nonnull
   public static DesignDocument createDesignDocument( @Nonnull Class<?> baseClass, @Nonnull ViewDescriptor... viewDescriptors ) throws IOException {
-    if ( viewDescriptors.length == 0 ) {
+    return createDesignDocument( baseClass, ImmutableList.copyOf( viewDescriptors ) );
+  }
+
+  public static DesignDocument createDesignDocument( @Nonnull Class<?> baseClass, @Nonnull List<? extends ViewDescriptor> viewDescriptors ) throws IOException {
+    if ( viewDescriptors.isEmpty() ) {
       throw new IllegalArgumentException( "Need at least one view descriptor" );
     }
 
-    String designDocumentId = viewDescriptors[0].getDesignDocumentId();
+    String designDocumentId = viewDescriptors.get( 0 ).getDesignDocumentId();
 
     @Nonnull
     Map<String, String> mappingFunctions = new HashMap<String, String>();
