@@ -36,6 +36,8 @@ import com.cedarsoft.couchdb.io.ActionResponseSerializer;
 import com.sun.jersey.api.client.ClientResponse;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 
 /**
@@ -147,7 +149,16 @@ public class ActionResponse {
       throw new ActionFailedException( response.getStatus(), "unknown", "unknown" );
     }
 
-    throw new ActionFailedExceptionSerializer().deserialize( response.getStatus(), response.getEntityInputStream() );
+    try {
+      InputStream inputStream = response.getEntityInputStream();
+      try {
+        throw new ActionFailedExceptionSerializer().deserialize( response.getStatus(), inputStream );
+      } finally {
+        inputStream.close();
+      }
+    } catch ( IOException e ) {
+      throw new RuntimeException( e );
+    }
   }
 
   /**
