@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.cedarsoft</groupId>
     <artifactId>open</artifactId>
-    <version>20</version>
+    <version>24</version>
   </parent>
 
   <groupId>com.cedarsoft.couchdb</groupId>
