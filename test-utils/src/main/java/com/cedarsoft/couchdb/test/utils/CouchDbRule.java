@@ -72,6 +72,7 @@ public class CouchDbRule implements MethodRule {
 
   public static final String KEY_PASS = "couchdb.unittests.password";
   public static final int DEFAULT_PORT = 80;
+  public static final String COUCH_UNIT_TEST_PREFIX = "couch_unit_test";
 
   @Nullable
   protected CouchDatabase db;
@@ -258,19 +259,16 @@ public class CouchDbRule implements MethodRule {
   }
 
   @Nonnull
-
   public String createNewTestDbName() {
     return getTestDbBaseName() + System.currentTimeMillis();
   }
 
-
   @Nonnull
-
   public String getTestDbBaseName() {
     if ( dbBaseName != null ) {
       return dbBaseName;
     }
-    return System.getProperty( KEY_DB_NAME, "couch_unit_test" );
+    return System.getProperty( KEY_DB_NAME, COUCH_UNIT_TEST_PREFIX );
   }
 
   @Nonnull
