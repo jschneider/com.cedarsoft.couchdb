@@ -112,13 +112,16 @@ public class CouchDbRule implements MethodRule {
   }
 
   public void before() throws IOException, URISyntaxException, CouchDbException {
+    createServer();
+    db = createDb( createNewTestDbName() );
+  }
+
+  public void createServer() throws URISyntaxException {
     URI currentUri = getServerUri();
     serverURI = currentUri;
 
     @Nullable HTTPBasicAuthFilter authFilter = getAuthFilter( );
-
     this.server = new CouchServer( currentUri, authFilter );
-    db = createDb( createNewTestDbName() );
   }
 
   @Nullable
