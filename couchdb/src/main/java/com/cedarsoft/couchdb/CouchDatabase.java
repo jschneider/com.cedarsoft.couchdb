@@ -401,10 +401,14 @@ public class CouchDatabase {
     ClientResponse response = resource.get( ClientResponse.class );
     ActionResponse.verifyNoError( response );
 
-    if ( logger.isLoggable( Level.FINE ) ) {
+    if ( logger.isLoggable( Level.FINER ) ) {
       try {
         byte[] content = ByteStreams.toByteArray( response.getEntityInputStream() );
-        logger.fine( new String( content ) );
+        if ( content.length > 1024 ) {
+          logger.finer( "Showing first 1024 bytes:\n" + new String( content ).substring( 0, 1024 ) + "..." );
+        }else{
+          logger.finest( new String( content ) );
+        }
         return new ByteArrayInputStream( content );
       } catch ( IOException e ) {
         throw new RuntimeException( e );
