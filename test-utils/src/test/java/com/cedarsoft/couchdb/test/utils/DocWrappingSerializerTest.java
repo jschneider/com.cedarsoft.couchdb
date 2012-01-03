@@ -30,11 +30,15 @@
  */
 package com.cedarsoft.couchdb.test.utils;
 
+import com.cedarsoft.couchdb.DocId;
+import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.couchdb.io.CouchSerializerWrapper;
+import com.cedarsoft.test.utils.JsonUtils;
 import com.cedarsoft.version.VersionException;
 import org.codehaus.jackson.JsonParseException;
 import org.junit.*;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -51,6 +55,32 @@ public class DocWrappingSerializerTest {
   @Before
   public void setUp() throws Exception {
     res = getClass().getResource( "bar.json" );
+  }
+
+  @Test
+  public void testSerialize() throws Exception {
+    CouchSerializerWrapper<Bar> serializer = new CouchSerializerWrapper<Bar>( new Bar.Serializer() );
+
+    Bar bar = new Bar( 123, "asdf" );
+    
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    try {
+      serializer.serialize( bar, out );
+      fail("Where is the Exception");
+    } catch ( UnsupportedOperationException e ) {
+      assertThat( e ).hasMessage( "Use #serialize(Object, OutputStream, DocId, Revision) instead" );
+    }
+
+    serializer.serialize( bar, out, new DocId( "dadocid" ), new Revision( "darevision" ) );
+
+    JsonUtils.assertJsonEquals( "{\n" +
+                                  "  \"_id\" : \"dadocid\",\n" +
+                                  "  \"_rev\" : \"darevision\",\n" +
+                                  "  \"@type\" : \"bar\",\n" +
+                                  "  \"@version\" : \"1.0.0\",\n" +
+                                  "  \"value\" : 123,\n" +
+                                  "  \"description\" : \"asdf\"\n" +
+                                  "}", new String( out.toByteArray() ) );
   }
 
   @Test

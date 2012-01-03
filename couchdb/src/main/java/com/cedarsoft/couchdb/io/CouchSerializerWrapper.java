@@ -46,15 +46,20 @@ import org.codehaus.jackson.JsonToken;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.WillNotClose;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * This wrapper skips couchdb specific entries ("_id" and "_rev").
  * <p/>
  * Wraps a default serializer.
+ * <p/>
+ * ATTENTION: Serializing is only supported for test cases and requires additional informations. Use
+ * {@link #serialize(Object, OutputStream, DocId, Revision)} for those cases!
  *
- * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  * @param <T> the type
+ * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class CouchSerializerWrapper<T> extends AbstractJacksonSerializer<T> {
   @Nonnull
@@ -82,6 +87,57 @@ public class CouchSerializerWrapper<T> extends AbstractJacksonSerializer<T> {
   @Override
   public void serialize( @Nonnull JsonGenerator serializeTo, @Nonnull T object, @Nonnull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
     delegate.serialize( serializeTo, object, formatVersion );
+  }
+
+  @Override
+  protected void beforeTypeAndVersion( @Nonnull T object, @Nonnull JsonGenerator serializeTo ) throws IOException {
+    UniqueId uniqueId = getUniqueId();
+
+    serializeTo.writeStringField( "_id", uniqueId.getId().asString() );
+    serializeTo.writeStringField( "_rev", uniqueId.getRevision().asString() );
+    super.beforeTypeAndVersion( object, serializeTo );
+  }
+
+  /**
+   * @noinspection RefusedBequest
+   */
+  @Deprecated
+  @Override
+  public void serialize( @Nonnull T object, @WillNotClose @Nonnull OutputStream out ) throws IOException {
+    throw new UnsupportedOperationException( "Use #serialize(Object, OutputStream, DocId, Revision) instead" );
+  }
+
+  /**
+   * @param object   the object to serialize
+   * @param out      the output stream
+   * @param id       the document id
+   * @param revision the revision
+   * @noinspection MethodOverloadsMethodOfSuperclass
+   */
+  public void serialize( @Nonnull T object, @WillNotClose @Nonnull OutputStream out, @Nonnull DocId id, @Nonnull Revision revision ) throws IOException {
+    storeUniqueId( new UniqueId( id, revision ) );
+    super.serialize( object, out );
+  }
+
+  /**
+   * Only necessary for serialization in tests!
+   */
+  @Nonnull
+  private static final ThreadLocal<UniqueId> uniqueIdThreadLocal = new ThreadLocal<UniqueId>();
+
+  private static void storeUniqueId( @Nonnull UniqueId uniqueId ) {
+    uniqueIdThreadLocal.set( uniqueId );
+  }
+
+  @Nonnull
+  private static UniqueId getUniqueId() {
+    @Nullable UniqueId resolved = uniqueIdThreadLocal.get();
+    if ( resolved == null ) {
+      throw new IllegalStateException( "No unique id found" );
+    }
+
+    uniqueIdThreadLocal.remove();
+    return resolved;
   }
 
   @Override
