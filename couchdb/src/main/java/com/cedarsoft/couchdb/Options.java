@@ -29,6 +29,7 @@ public class Options {
   public static final String STALE = "stale";
   public static final String REDUCE = "reduce";
   public static final String INCLUDE_DOCS = "include_docs";
+  public static final String INCLUSIVE_END = "inclusive_end";
   public static final String GROUP_LEVEL = "group_level";
 
   private final Map<String, String> content = new HashMap<String, String>();
@@ -91,6 +92,11 @@ public class Options {
   @Nonnull
   public Options descending( boolean update ) {
     return put( DESCENDING, String.valueOf( update ) );
+  }
+
+  @Nonnull
+  public Options inclusiveEnd( boolean inclusiveEnd ) {
+    return put( INCLUSIVE_END, String.valueOf( inclusiveEnd ) );
   }
 
   @Nonnull
