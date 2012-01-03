@@ -42,7 +42,7 @@
       <dependency>
         <groupId>com.cedarsoft.serialization</groupId>
         <artifactId>jackson</artifactId>
-        <version>4.0.5</version>
+        <version>${serialization.version}</version>
       </dependency>
 
       <dependency>
@@ -61,11 +61,16 @@
       <dependency>
         <groupId>com.cedarsoft.serialization</groupId>
         <artifactId>test-utils</artifactId>
-        <version>4.0.5</version>
+        <version>${serialization.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <properties >
+    <serialization.version>4.0.7-SNAPSHOT</serialization.version>
+  </properties>
+
 
   <mailingLists>
     <mailingList>
