@@ -30,11 +30,26 @@
  */
 package com.cedarsoft.couchdb;
 
+import com.cedarsoft.couchdb.io.CouchSerializerWrapper;
+import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
+import com.cedarsoft.serialization.jackson.JacksonSupport;
+import com.cedarsoft.serialization.jackson.test.compatible.JacksonParserWrapper;
+import com.cedarsoft.version.Version;
+import com.cedarsoft.version.VersionException;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.JsonToken;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.ws.rs.HEAD;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -71,14 +86,54 @@ public class DesignDocumentsUpdater {
         continue;
       }
 
-      log.info( "Updating " + designDocument.getId() );
-      
+      log.info( "Updating db <" + designDocument.getId() + ">:" );
+
       String path = designDocument.getDesignDocumentPath();
       WebResource resource = database.getDbRoot().path( path );
-      log.fine( "PUT: " + resource.toString() );
 
-      ClientResponse response = resource.put( ClientResponse.class, designDocument.createJson() );
+
+      @Nullable Revision currentRevision = getRevision( resource );
+
+      log.fine( "PUT: " + resource.toString() );
+      ClientResponse response = resource.put( ClientResponse.class, designDocument.createJson(currentRevision) );
       ActionResponse.verifyNoError( response );
+    }
+  }
+
+  /**
+   * Returns the current revision (if there is one) or null
+   *
+   * @param path the path
+   * @return the revision or null if there is no revision
+   */
+  @Nullable
+  private Revision getRevision( @Nonnull WebResource path ) throws ActionFailedException, IOException {
+    log.fine( "HEAD: " + path.toString() );
+    ClientResponse response = path.get( ClientResponse.class );
+    log.fine( "\tStatus: " + response.getStatus() );
+    if ( response.getStatus() == 404 ) {
+      return null;
+    }
+
+    ActionResponse.verifyNoError( response );
+
+    if ( response.getStatus() != 200 ) {
+      throw new IllegalStateException( "Invalid response: " + response.getStatus() + ": " + response.getEntity( String.class ) );
+    }
+
+    JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
+    InputStream entityInputStream = response.getEntityInputStream();
+    try {
+      JsonParser parser = jsonFactory.createJsonParser( entityInputStream );
+      JacksonParserWrapper wrapper = new JacksonParserWrapper( parser );
+
+      wrapper.nextToken( JsonToken.START_OBJECT );
+
+      wrapper.nextFieldValue( "_id" );
+      wrapper.nextFieldValue( "_rev" );
+      return new Revision( wrapper.getText() );
+    } finally {
+      entityInputStream.close();
     }
   }
 }

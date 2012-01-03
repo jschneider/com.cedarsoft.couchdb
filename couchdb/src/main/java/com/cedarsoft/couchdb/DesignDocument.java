@@ -77,13 +77,15 @@ public class DesignDocument {
    *
    * @throws IOException
    */
-  @Nonnull
-  public String createJson() throws IOException {
+  public String createJson(@Nullable Revision revision) throws IOException {
     StringWriter writer = new StringWriter();
     JsonGenerator generator = new JsonFactory().createJsonGenerator( writer );
     generator.writeStartObject();
 
     generator.writeStringField( "_id", id );
+    if ( revision != null ) {
+      generator.writeStringField( "_rev", revision.asString() );
+    }
     generator.writeStringField( "language", "javascript" );
 
     generator.writeObjectFieldStart( "views" );

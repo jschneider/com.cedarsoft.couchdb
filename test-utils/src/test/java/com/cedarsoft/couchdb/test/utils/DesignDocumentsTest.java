@@ -86,7 +86,7 @@ public class DesignDocumentsTest {
     DesignDocument designDocument = DesignDocuments.createDesignDocument( "doc1", DesignDocuments.listJsFiles( dir ) );
     assertThat( designDocument.getViews( ) ).hasSize( 2 );
 
-    JsonUtils.assertJsonEquals( getClass( ).getResource( "designDoc.json" ), designDocument.createJson( ) );
+    JsonUtils.assertJsonEquals( getClass( ).getResource( "designDoc.json" ), designDocument.createJson( null ) );
   }
 
   @Test
@@ -136,12 +136,12 @@ public class DesignDocumentsTest {
 
   private void verifyDoc1( @Nonnull DesignDocument designDocument ) throws SAXException, IOException {
     assertThat( designDocument.getId( ) ).isEqualTo( "doc1" );
-    JsonUtils.assertJsonEquals( getClass( ).getResource( "designDoc.json" ), designDocument.createJson( ) );
+    JsonUtils.assertJsonEquals( getClass( ).getResource( "designDoc.json" ), designDocument.createJson( null ) );
   }
 
   private void verifyDoc2( @Nonnull DesignDocument designDocument ) throws SAXException, IOException {
     assertThat( designDocument.getId( ) ).isEqualTo( "doc2" );
-    JsonUtils.assertJsonEquals( getClass( ).getResource( "designDoc2.json" ), designDocument.createJson( ) );
+    JsonUtils.assertJsonEquals( getClass( ).getResource( "designDoc2.json" ), designDocument.createJson( null ) );
   }
 
 }
