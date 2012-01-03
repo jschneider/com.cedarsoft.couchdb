@@ -32,7 +32,11 @@
 package com.cedarsoft.couchdb;
 
 
+import com.google.common.base.Charsets;
+
 import javax.annotation.Nonnull;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * Represents a document id (without a revision)
@@ -49,7 +53,11 @@ public class DocId {
    * @param id the id as string
    */
   public DocId( @Nonnull String id ) {
-    this.id = id;
+    try {
+      this.id = URLEncoder.encode( id, Charsets.UTF_8.name() );
+    } catch ( UnsupportedEncodingException e ) {
+      throw new RuntimeException( e );
+    }
   }
 
   @Nonnull
