@@ -36,6 +36,7 @@ import com.sun.jersey.api.client.WebResource;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Updates the design documents
@@ -43,6 +44,8 @@ import java.util.List;
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class DesignDocumentsUpdater {
+  @Nonnull
+  private static final Logger log = Logger.getLogger( DesignDocumentsUpdater.class.getName() );
   @Nonnull
   private final CouchDatabase database;
 
@@ -68,8 +71,11 @@ public class DesignDocumentsUpdater {
         continue;
       }
 
+      log.info( "Updating " + designDocument.getId() );
+      
       String path = designDocument.getDesignDocumentPath();
       WebResource resource = database.getDbRoot().path( path );
+      log.fine( "PUT: " + resource.toString() );
 
       ClientResponse response = resource.put( ClientResponse.class, designDocument.createJson() );
       ActionResponse.verifyNoError( response );
