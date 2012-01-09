@@ -43,18 +43,28 @@ public class EmitTest extends AbstractViewTest {
   @Test
   public void testEmit() throws Exception {
     evaluate( getContent( EMIT_JS ) );
+    evaluate( getContent( JSON2 ) );
     assertEquals( "1--4", Context.toString( evaluate( "emit(1,4);" + EMIT_TO_STRING ) ) );
   }
 
   @Test
   public void testArrayEmity() throws Exception {
     evaluate( getContent( EMIT_JS ) );
-    assertEquals( "1,2,3--4", Context.toString( evaluate( "emit([1,2,3],4);" + EMIT_TO_STRING ) ) );
+    evaluate( getContent( JSON2 ) );
+    assertEquals( "[1,2,3]--4", Context.toString( evaluate( "emit([1,2,3],4);" + EMIT_TO_STRING ) ) );
   }
 
   @Test
   public void testEmptyEmit() throws Exception {
     evaluate( getContent( EMIT_JS ) );
+    evaluate( getContent( JSON2 ) );
     assertEquals( "undefined", Context.toString( evaluate( AbstractViewTest.EMIT_TO_STRING ) ) );
+  }
+
+  @Test
+  public void testJson() throws Exception {
+    evaluate( getContent( JSON2 ) );
+    assertEquals( "{}", evaluate( "JSON.stringify(JSON)" ) );
+    assertEquals( "{\"asdf\":123}", Context.toString( evaluate( "JSON.stringify({  'asdf':123})" ) ) );
   }
 }

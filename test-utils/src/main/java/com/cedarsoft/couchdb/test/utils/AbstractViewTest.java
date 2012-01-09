@@ -49,10 +49,12 @@ public abstract class AbstractViewTest {
   @Nonnull
   public static final URL EMIT_JS = AbstractViewTest.class.getResource( "emit.js" );
   @Nonnull
+  public static final URL JSON2 = AbstractViewTest.class.getResource( "json2.js" );
+  @Nonnull
   public static final URL EMPTY_JSON = AbstractViewTest.class.getResource( "empty.json" );
 
   @Nonnull
-  static final String EMIT_TO_STRING = "if(emitted){emitted.key+\"--\"+emitted.value;}else{undefined}";
+  static final String EMIT_TO_STRING = "if(emitted){JSON.stringify(emitted.key)+\"--\"+JSON.stringify(emitted.value);}else{undefined}";
 
   protected Context context;
   protected Scriptable scriptable;
@@ -85,6 +87,7 @@ public abstract class AbstractViewTest {
 
     //Prepare the emit function
     evaluate( getContent( EMIT_JS ) );
+    evaluate( getContent( JSON2 ) );
 
     //Evaluate the document
     evaluateJson( "doc", doc );
