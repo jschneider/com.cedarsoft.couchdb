@@ -54,7 +54,7 @@ public abstract class AbstractViewTest {
   public static final URL EMPTY_JSON = AbstractViewTest.class.getResource( "empty.json" );
 
   @Nonnull
-  static final String EMIT_TO_STRING = "if(emitted){JSON.stringify(emitted.key)+\"--\"+JSON.stringify(emitted.value);}else{undefined}";
+  static final String EMIT_TO_STRING = "emitted2String()";
 
   protected Context context;
   protected Scriptable scriptable;

@@ -29,10 +29,33 @@
  * have any questions.
  */
 
-var emitted;
+var emitted=[];
 function emit( key, value ) {
-  emitted = {
-    "key": key,
-    "value": value
-  }
+  emitted.push({
+                   "key": key,
+                   "value": value
+                 });
 }
+
+
+function emitted2String(){
+  if(emitted.length==0) {
+    return undefined;
+  }
+
+  if (emitted.length==1) {
+    return JSON.stringify(emitted[0].key)+"--"+JSON.stringify(emitted[0].value);
+  }
+
+
+  var builder="";
+  for (e in emitted){
+    var current = emitted[e];
+    builder = builder + JSON.stringify(current.key)+"--"+JSON.stringify(current.value);
+    builder = builder + "\n";
+  }
+
+  return builder;
+}
+
+

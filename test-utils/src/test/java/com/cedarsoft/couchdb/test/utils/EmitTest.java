@@ -34,6 +34,8 @@ package com.cedarsoft.couchdb.test.utils;
 import org.junit.*;
 import org.mozilla.javascript.Context;
 
+import java.io.IOException;
+
 import static org.junit.Assert.*;
 
 /**
@@ -42,23 +44,25 @@ import static org.junit.Assert.*;
 public class EmitTest extends AbstractViewTest {
   @Test
   public void testEmit() throws Exception {
-    evaluate( getContent( EMIT_JS ) );
-    evaluate( getContent( JSON2 ) );
+    prepare();
     assertEquals( "1--4", Context.toString( evaluate( "emit(1,4);" + EMIT_TO_STRING ) ) );
   }
 
   @Test
   public void testArrayEmity() throws Exception {
-    evaluate( getContent( EMIT_JS ) );
-    evaluate( getContent( JSON2 ) );
+    prepare();
     assertEquals( "[1,2,3]--4", Context.toString( evaluate( "emit([1,2,3],4);" + EMIT_TO_STRING ) ) );
   }
 
   @Test
   public void testEmptyEmit() throws Exception {
+    prepare();
+    assertEquals( "undefined", Context.toString( evaluate( AbstractViewTest.EMIT_TO_STRING ) ) );
+  }
+
+  private void prepare() throws IOException {
     evaluate( getContent( EMIT_JS ) );
     evaluate( getContent( JSON2 ) );
-    assertEquals( "undefined", Context.toString( evaluate( AbstractViewTest.EMIT_TO_STRING ) ) );
   }
 
   @Test
@@ -66,5 +70,13 @@ public class EmitTest extends AbstractViewTest {
     evaluate( getContent( JSON2 ) );
     assertEquals( "{}", evaluate( "JSON.stringify(JSON)" ) );
     assertEquals( "{\"asdf\":123}", Context.toString( evaluate( "JSON.stringify({  'asdf':123})" ) ) );
+  }
+
+  @Test
+  public void testMultiEmit() throws Exception {
+    prepare();
+    assertEquals( "0--17\n" +
+                    "1--4\n", Context.toString( evaluate( "emit(0,17);emit(1,4);" + EMIT_TO_STRING ) ) );
+
   }
 }
