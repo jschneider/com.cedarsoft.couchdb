@@ -30,7 +30,13 @@
  */
 package com.cedarsoft.couchdb;
 
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.impl.JsonWriteContext;
+
 import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.io.StringWriter;
 
 /**
  * Represents a key that can be used for queries
@@ -139,8 +145,10 @@ public class Key {
 
       if ( part instanceof Number ) {
         builder.append( part );
+      } else if ( part instanceof String ) {
+        builder.append( escape( ( String ) part ) );
       } else {
-        builder.append( "\"" ).append( part ).append( "\"" );
+        throw new IllegalArgumentException( "Unknown part at index " + i + ": <" + part + ">" );
       }
 
       if ( i < parts.length - 1 ) {
@@ -149,5 +157,23 @@ public class Key {
     }
 
     return builder.toString();
+  }
+
+  @Nonnull
+  public static Key string( @Nonnull String value ) {
+    return new Key( escape( value ) );
+  }
+
+  @Nonnull
+  private static String escape( @Nonnull String value ) {
+    try {
+      StringWriter out = new StringWriter();
+      JsonGenerator generator = new JsonFactory().createJsonGenerator( out );
+      generator.writeString( value );
+      generator.close();
+      return out.toString();
+    } catch ( IOException e ) {
+      throw new IllegalArgumentException( "Invalid value: <" + value + ">", e );
+    }
   }
 }

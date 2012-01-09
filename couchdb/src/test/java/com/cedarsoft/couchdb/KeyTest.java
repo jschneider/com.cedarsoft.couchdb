@@ -45,6 +45,7 @@ public class KeyTest extends TestCase {
   public void testArray() throws Exception {
     assertThat( Key.array().getJson() ).isEqualTo( "[]" );
     assertThat( Key.array( "a", "b", "c" ).getJson() ).isEqualTo( "[\"a\",\"b\",\"c\"]" );
+    assertThat( Key.array( "a", "b\"", "c" ).getJson() ).isEqualTo( "[\"a\",\"b\\\"\",\"c\"]" );
   }
 
   public void testEndKey() throws Exception {
@@ -60,5 +61,10 @@ public class KeyTest extends TestCase {
 
   public void testIntegers() throws Exception {
     assertThat( Key.array( "a", 1, "c" ).getJson() ).isEqualTo( "[\"a\",1,\"c\"]" );
+  }
+
+  public void testString() throws Exception {
+    assertThat( Key.string( "asdf" ).getJson() ).isEqualTo( "\"asdf\"" );
+    assertThat( Key.string( "as\"df" ).getJson() ).isEqualTo( "\"as\\\"df\"" );
   }
 }
