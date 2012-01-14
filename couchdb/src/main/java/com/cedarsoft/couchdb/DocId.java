@@ -37,6 +37,7 @@ import com.google.common.base.Charsets;
 import javax.annotation.Nonnull;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.UUID;
 
 /**
  * Represents a document id (without a revision)
@@ -47,6 +48,10 @@ public class DocId {
   @Nonnull
   private final String id;
 
+  public DocId( @Nonnull UUID uuid ) {
+    this( uuid.toString() );
+  }
+  
   /**
    * Creates a new document id
    *
