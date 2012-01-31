@@ -56,7 +56,7 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class FooCouchDb extends CouchTest {
+public class FooCouchDbTest extends CouchTest {
   @Test
   public void testMVCC() throws Exception {
     Foo foo = new Foo(42, "asdf");
