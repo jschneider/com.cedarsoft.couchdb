@@ -9,7 +9,7 @@
 
   <groupId>com.cedarsoft.couchdb</groupId>
   <artifactId>couchdb-parent</artifactId>
-  <version>1.0.3-SNAPSHOT</version>
+  <version>1.0.3</version>
   <packaging>pom</packaging>
   <name>CouchDB Parent</name>
   <description>Parent for CouchDB integration</description>
@@ -80,7 +80,7 @@
 
   </dependencyManagement>
 
-  <properties >
+  <properties>
     <serialization.version>4.1.0</serialization.version>
     <commons.version>5.1.1</commons.version>
   </properties>
