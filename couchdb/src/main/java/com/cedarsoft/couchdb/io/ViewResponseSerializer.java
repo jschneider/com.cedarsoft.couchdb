@@ -101,14 +101,32 @@ public class ViewResponseSerializer {
 
     AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
 
-    AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_TOTAL_ROWS );
-    int totalRows = parser.getIntValue();
 
-    AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_OFFSET );
-    int offset = parser.getIntValue();
+    int totalRows = -1;
+    int offset = -1;
 
+    AbstractJacksonSerializer.nextToken( parser, JsonToken.FIELD_NAME );
+    //If reduced, no total rows and no offset are availlable!
 
-    AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_ROWS );
+    String fieldName = parser.getText();
+
+    while ( !fieldName.equals( PROPERTY_ROWS ) ) {
+      if ( fieldName.equals( PROPERTY_TOTAL_ROWS ) ) {
+        AbstractJacksonSerializer.nextToken( parser, JsonToken.VALUE_NUMBER_INT );
+        totalRows = parser.getIntValue();
+      }
+
+      if ( fieldName.equals( PROPERTY_OFFSET ) ) {
+        AbstractJacksonSerializer.nextToken( parser, JsonToken.VALUE_NUMBER_INT );
+        offset = parser.getIntValue();
+      }
+
+      AbstractJacksonSerializer.nextToken( parser, JsonToken.FIELD_NAME );
+      fieldName = parser.getText();
+    }
+
+    //Now the rows...
+    AbstractJacksonSerializer.nextToken( parser, JsonToken.START_ARRAY );
 
     List<Row<K, V, D>> deserialized = new ArrayList<Row<K, V, D>>();
     while ( parser.nextToken() != JsonToken.END_ARRAY ) {

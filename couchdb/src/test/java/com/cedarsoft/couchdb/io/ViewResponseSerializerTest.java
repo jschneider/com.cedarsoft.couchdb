@@ -39,6 +39,8 @@ import com.cedarsoft.serialization.jackson.ListSerializer;
 import com.cedarsoft.serialization.jackson.NullSerializer;
 import com.cedarsoft.serialization.jackson.StringSerializer;
 import com.cedarsoft.test.utils.JsonUtils;
+import com.google.common.io.ByteStreams;
+import org.fest.assertions.Assertions;
 import org.junit.*;
 
 import java.io.ByteArrayInputStream;
@@ -48,6 +50,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -178,5 +181,15 @@ public class ViewResponseSerializerTest {
     assertEquals( viewResponse.getTotalRows(), deserialized.getTotalRows() );
     assertEquals( viewResponse.getOffset(), deserialized.getOffset() );
     assertEquals( viewResponse.getRows(), deserialized.getRows() );
+  }
+
+  @Test
+  public void testReduced() throws Exception {
+    ViewResponse<List<? extends Object>, Void, ?> response = serializer.deserialize( new ListSerializer(), NullSerializer.INSTANCE, getClass().getResourceAsStream( "ViewResponse.reduced.foo.json" ) );
+    assertEquals( -1, response.getTotalRows() );
+    assertEquals( -1, response.getOffset() );
+    assertEquals( 2, response.getRows().size() );
+
+    assertEquals( "lens_canon_ef_35mm_f-1.4l", response.getRows().get( 0 ).getId().asString() );
   }
 }
