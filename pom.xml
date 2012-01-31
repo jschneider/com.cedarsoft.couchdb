@@ -51,11 +51,22 @@
         <version>1.11</version>
       </dependency>
 
+      <dependency>
+        <groupId>com.cedarsoft.commons</groupId>
+        <artifactId>exceptions</artifactId>
+        <version>${commons.version}</version>
+      </dependency>
+
       <!--Test Dependencies-->
+      <dependency>
+        <groupId>rhino</groupId>
+        <artifactId>js</artifactId>
+        <version>1.7R2</version>
+      </dependency>
       <dependency>
         <groupId>com.cedarsoft.commons</groupId>
         <artifactId>test-utils</artifactId>
-        <version>5.0.9</version>
+        <version>${commons.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -65,10 +76,13 @@
         <scope>test</scope>
       </dependency>
     </dependencies>
+
+
   </dependencyManagement>
 
   <properties >
-    <serialization.version>4.0.7-SNAPSHOT</serialization.version>
+    <serialization.version>4.0.7</serialization.version>
+    <commons.version>5.1.1</commons.version>
   </properties>
 
 
