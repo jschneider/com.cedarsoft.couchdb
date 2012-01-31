@@ -32,6 +32,7 @@
 package com.cedarsoft.couchdb;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -87,6 +88,22 @@ public class ViewResponse<K, V, D> {
       } else {
         objects.add( doc.getObject() );
       }
+    }
+
+    return objects;
+  }
+
+  /**
+   * Returns the value objects
+   * @return the value objects
+   */
+  @Nonnull
+  public List<? extends V> getValueObjects() {
+    List<V> objects = new ArrayList<V>();
+
+    for ( Row<?, V, ?> row : getRows() ) {
+      @Nullable V value = row.getValue();
+      objects.add( value );
     }
 
     return objects;
