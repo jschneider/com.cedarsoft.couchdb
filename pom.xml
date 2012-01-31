@@ -81,7 +81,7 @@
   </dependencyManagement>
 
   <properties >
-    <serialization.version>4.0.7</serialization.version>
+    <serialization.version>4.1.0</serialization.version>
     <commons.version>5.1.1</commons.version>
   </properties>
 
