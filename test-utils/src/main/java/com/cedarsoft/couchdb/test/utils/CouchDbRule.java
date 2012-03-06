@@ -52,6 +52,7 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -262,8 +263,11 @@ public class CouchDbRule implements MethodRule {
   }
 
   @Nonnull
+  private final Random random = new Random();
+
+  @Nonnull
   public String createNewTestDbName() {
-    return getTestDbBaseName() + System.currentTimeMillis();
+    return getTestDbBaseName() + "_" + System.currentTimeMillis() + "_" + random.nextInt( 100000 );
   }
 
   @Nonnull
