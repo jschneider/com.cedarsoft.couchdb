@@ -174,7 +174,7 @@ public class CouchDbRule implements MethodRule {
     assert server != null;
     try {
       server.deleteDatabase( dbName );
-    } catch ( ActionFailedException ignore ) {
+    } catch ( Exception ignore ) {
     }
 
     assertTrue( server.createDatabase( dbName ) );
