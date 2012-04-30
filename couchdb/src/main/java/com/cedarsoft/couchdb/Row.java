@@ -45,7 +45,7 @@ import javax.annotation.Nullable;
  * @noinspection ClassNamingConvention
  */
 public class Row<K, V, D> {
-  @Nonnull
+  @Nullable
   private final DocId id;
   @Nonnull
   private final K key;
@@ -72,51 +72,71 @@ public class Row<K, V, D> {
    * @param value the value
    * @param doc the document
    */
-  public Row( @Nonnull DocId id, @Nonnull K key, @Nullable V value, @Nullable CouchDoc<? extends D> doc ) {
+  public Row(  @Nonnull K key, @Nullable V value, @Nullable CouchDoc<? extends D> doc ) {
+    this( null, key, value, doc );
+  }
+
+  public Row( @Nullable  DocId id, @Nonnull K key, @Nullable V value, @Nullable CouchDoc<? extends D> doc ) {
     this.id = id;
     this.key = key;
     this.value = value;
     this.doc = doc;
   }
 
-  @Nonnull
+  /**
+   * Returns a doc id if there is one. Reduced rows do not have a doc id
+   * @return the doc id
+   */
+  @Nullable
   public DocId getId() {
     return id;
   }
 
+  /**
+   * Returns the key for the row
+   * @return the key
+   */
   @Nonnull
   public K getKey() {
     return key;
   }
 
+  /**
+   * Returns the value (if there is one)
+   * @return the value
+   */
   @Nullable
   public V getValue() {
     return value;
   }
 
+  /**
+   * Returns the document
+   * @return
+   */
   @Nullable
   public CouchDoc<? extends D> getDoc() {
     return doc;
   }
 
   @Override
-  public boolean equals( Object o ) {
-    if ( this == o ) {
+  public boolean equals( Object obj ) {
+    if ( this == obj ) {
       return true;
     }
-    if ( !( o instanceof Row ) ) {
+    if ( !( obj instanceof Row ) ) {
       return false;
     }
 
-    Row<?,?,?> row = ( Row<?,?,?> ) o;
+    Row<?,?,?> row = ( Row<?,?,?> ) obj;
 
-    if ( !id.equals( row.id ) ) {
+    if ( doc != null ? !doc.equals( row.doc ) : row.doc != null ) {
+      return false;
+    }
+    if ( id != null ? !id.equals( row.id ) : row.id != null ) {
       return false;
     }
     if ( !key.equals( row.key ) ) {
-      return false;
-    }
-    if ( doc != null ? !doc.equals( row.doc ) : row.doc != null ) {
       return false;
     }
     if ( value != null ? !value.equals( row.value ) : row.value != null ) {
@@ -128,7 +148,7 @@ public class Row<K, V, D> {
 
   @Override
   public int hashCode() {
-    int result = id.hashCode();
+    int result = id != null ? id.hashCode() : 0;
     result = 31 * result + key.hashCode();
     result = 31 * result + ( value != null ? value.hashCode() : 0 );
     result = 31 * result + ( doc != null ? doc.hashCode() : 0 );

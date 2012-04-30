@@ -36,6 +36,7 @@ import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Row;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.InvalidTypeException;
+import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.serialization.jackson.JacksonSerializer;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
 import org.codehaus.jackson.JsonEncoding;
@@ -91,7 +92,11 @@ public class RowSerializer {
 
   public <K, V, D> void serialize( @Nonnull Row<K, V, D> row, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable JacksonSerializer<? super D> documentSerializer, @Nonnull JsonGenerator generator ) throws IOException {
     generator.writeStartObject();
-    generator.writeStringField( PROPERTY_ID, row.getId().asString() );
+
+    @Nullable DocId id = row.getId();
+    if ( id != null ) {
+      generator.writeStringField( PROPERTY_ID, id.asString() );
+    }
 
     //The key
     generator.writeFieldName( PROPERTY_KEY );
@@ -142,16 +147,26 @@ public class RowSerializer {
 
   @Nonnull
   public <K, V, D> Row<K, V, D> deserialize( @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable JacksonSerializer<? extends D> documentSerializer, @Nonnull JsonParser parser ) throws IOException, InvalidTypeException {
+    JacksonParserWrapper wrapper = new JacksonParserWrapper( parser );
+    wrapper.nextToken( JsonToken.FIELD_NAME );
+    String fieldName = wrapper.getCurrentName();
+
     //The id
-    AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_ID );
-    DocId id = new DocId( parser.getText() );
+    @Nullable final DocId id;
+    if ( fieldName.equals( PROPERTY_ID ) ) {
+      wrapper.nextValue();
+      id = new DocId( wrapper.getText() );
+      wrapper.nextField( PROPERTY_KEY );
+    }else {
+      id = null;
+    }
 
     //The key
-    AbstractJacksonSerializer.nextField( parser, PROPERTY_KEY );
     K key = ( K ) keySerializer.deserialize( parser );
 
     //The value
-    AbstractJacksonSerializer.nextField( parser, PROPERTY_VALUE );
+    wrapper.nextField( PROPERTY_VALUE );
+
     @Nullable
     V value = ( V ) valueSerializer.deserialize( parser );
 
@@ -159,19 +174,19 @@ public class RowSerializer {
     @Nullable
     CouchDoc<? extends D> doc;
 
-    JsonToken nextToken = parser.nextToken();
+    JsonToken nextToken = wrapper.nextToken();
     if ( nextToken == JsonToken.FIELD_NAME ) {
       if ( documentSerializer == null ) {
         throw new NullPointerException( "No document serializer found" );
       }
       doc = couchDocSerializer.deserialize( documentSerializer, parser );
 
-      AbstractJacksonSerializer.closeObject( parser );
+      wrapper.closeObject();
     } else {
       doc = null;
     }
 
-    AbstractJacksonSerializer.verifyCurrentToken( parser, JsonToken.END_OBJECT );
+    wrapper.verifyCurrentToken( JsonToken.END_OBJECT );
     return new Row<K, V, D>( id, key, value, doc );
   }
 }
