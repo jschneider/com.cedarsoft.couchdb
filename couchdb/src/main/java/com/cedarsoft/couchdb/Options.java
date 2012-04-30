@@ -128,6 +128,10 @@ public class Options {
     return Boolean.TRUE.toString().equals( get( INCLUDE_DOCS ) );
   }
 
+  public boolean isGroup() {
+    return Boolean.TRUE.toString().equals( get( GROUP ) );
+  }
+
   @Nonnull
   public Options groupLevel( int level ) {
     return put( GROUP_LEVEL, String.valueOf( level ) );
