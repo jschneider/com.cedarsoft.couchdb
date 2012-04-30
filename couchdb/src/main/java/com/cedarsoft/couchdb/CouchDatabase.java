@@ -407,7 +407,7 @@ public class CouchDatabase {
         if ( content.length > 1024 ) {
           logger.finer( "Showing first 1024 bytes:\n" + new String( content ).substring( 0, 1024 ) + "..." );
         }else{
-          logger.finest( new String( content ) );
+          logger.finer( new String( content ) );
         }
         return new ByteArrayInputStream( content );
       } catch ( IOException e ) {
