@@ -343,7 +343,12 @@ public class CouchDatabase {
    */
   @Nonnull
   public <K, V, D> ViewResponse<K, V, D> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull JacksonSerializer<? extends D> docSerializer, @Nullable Options options ) throws InvalidTypeException, ActionFailedException, IOException {
-    Options localOptions = new Options( options ).includeDocs( true );//force include docs
+    Options localOptions;
+    if ( options != null && !options.isGroup() ) {
+      localOptions = new Options( options ).includeDocs( true ); //force include docs
+    } else {
+      localOptions = options;
+    }
 
     InputStream stream = query( viewDescriptor, localOptions );
     return viewResponseSerializer.deserialize( keySerializer, valueSerializer, docSerializer, stream );
