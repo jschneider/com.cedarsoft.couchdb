@@ -86,7 +86,7 @@ public class DesignDocumentsUpdater {
         continue;
       }
 
-      log.info( "Updating db <" + designDocument.getId() + ">:" );
+      log.info( "Updating document <" + designDocument.getId() + ">:" );
 
       String path = designDocument.getDesignDocumentPath();
       WebResource resource = database.getDbRoot().path( path );
