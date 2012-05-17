@@ -40,16 +40,16 @@ import java.util.List;
 /**
  * A view response
  *
- * @param <K> the type of the key (for the rows)
- * @param <V> the type of the value (for the rows)
- * @param <D> the type of the document (for the rows)
+ * @param <TRowKey> the type of the key (for the rows)
+ * @param <TRowValue> the type of the value (for the rows)
+ * @param <TDocument> the type of the document (for the rows)
  */
-public class ViewResponse<K, V, D> {
+public class ViewResponse<TRowKey, TRowValue, TDocument> {
   private final int totalRows;
   private final int offset;
 
   @Nonnull
-  private final List<Row<K, V, D>> rows;
+  private final List<Row<TRowKey, TRowValue, TDocument>> rows;
 
   /**
    * Creates a new view response
@@ -57,10 +57,10 @@ public class ViewResponse<K, V, D> {
    * @param offset the offset
    * @param rows the rows
    */
-  public ViewResponse( int totalRows, int offset, @Nonnull List<Row<K, V, D>> rows ) {
+  public ViewResponse( int totalRows, int offset, @Nonnull List<Row<TRowKey, TRowValue, TDocument>> rows ) {
     this.totalRows = totalRows;
     this.offset = offset;
-    this.rows = new ArrayList<Row<K, V, D>>( rows );
+    this.rows = new ArrayList<Row<TRowKey, TRowValue, TDocument>>( rows );
   }
 
   public int getTotalRows() {
@@ -72,16 +72,16 @@ public class ViewResponse<K, V, D> {
   }
 
   @Nonnull
-  public List<? extends Row<K, V, D>> getRows() {
+  public List<? extends Row<TRowKey, TRowValue, TDocument>> getRows() {
     return Collections.unmodifiableList( rows );
   }
 
   @Nonnull
-  public List<? extends D> getRowObjects() {
-    List<D> objects = new ArrayList<D>();
+  public List<? extends TDocument> getRowObjects() {
+    List<TDocument> objects = new ArrayList<TDocument>();
 
-    for ( Row<?, ?, D> row : getRows() ) {
-      CouchDoc<? extends D> doc = row.getDoc();
+    for ( Row<?, ?, TDocument> row : getRows() ) {
+      CouchDoc<? extends TDocument> doc = row.getDoc();
 
       if ( doc == null ) {
         objects.add( null );
@@ -98,11 +98,11 @@ public class ViewResponse<K, V, D> {
    * @return the value objects
    */
   @Nonnull
-  public List<? extends V> getValueObjects() {
-    List<V> objects = new ArrayList<V>();
+  public List<? extends TRowValue> getValueObjects() {
+    List<TRowValue> objects = new ArrayList<TRowValue>();
 
-    for ( Row<?, V, ?> row : getRows() ) {
-      @Nullable V value = row.getValue();
+    for ( Row<?, TRowValue, ?> row : getRows() ) {
+      @Nullable TRowValue value = row.getValue();
       objects.add( value );
     }
 
