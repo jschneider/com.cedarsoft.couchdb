@@ -165,6 +165,11 @@ public class Key {
   }
 
   @Nonnull
+  public static Key endString( @Nonnull String value ) {
+    return new Key( escape( value + "ZZZ" ) );
+  }
+
+  @Nonnull
   private static String escape( @Nonnull String value ) {
     try {
       StringWriter out = new StringWriter();
