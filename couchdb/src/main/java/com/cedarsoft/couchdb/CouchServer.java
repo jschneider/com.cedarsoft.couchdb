@@ -77,7 +77,7 @@ public class CouchServer {
     ClientResponse response = root.path( dbName ).delete( ClientResponse.class );
     try {
       ActionResponse.verifyNoError( response );
-    } catch ( ActionFailedException e ) {
+    } finally {
       response.close();
     }
   }
