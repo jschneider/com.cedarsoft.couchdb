@@ -45,6 +45,7 @@ import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 
 import javax.annotation.Nonnull;
+import javax.annotation.WillClose;
 import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -117,13 +118,17 @@ public class CouchDocSerializer {
   }
 
   @Nonnull
-  public <T> CouchDoc<T> deserialize( @Nonnull JacksonSerializer<T> wrappedSerializer, @Nonnull InputStream in ) {
+  public <T> CouchDoc<T> deserialize( @Nonnull JacksonSerializer<T> wrappedSerializer, @WillClose @Nonnull InputStream in ) {
     try {
-      JsonParser parser = RawCouchDocSerializer.createJsonParser( in );
-      CouchDoc<T> doc = deserialize( wrappedSerializer, parser );
+      try {
+        JsonParser parser = RawCouchDocSerializer.createJsonParser( in );
+        CouchDoc<T> doc = deserialize( wrappedSerializer, parser );
 
-      AbstractJacksonSerializer.ensureParserClosed( parser );
-      return doc;
+        AbstractJacksonSerializer.ensureParserClosed( parser );
+        return doc;
+      } finally {
+        in.close();
+      }
     } catch ( InvalidTypeException e ) {
       throw new RuntimeException( "Could not parse due to " + e.getMessage(), e );
     } catch ( IOException e ) {
