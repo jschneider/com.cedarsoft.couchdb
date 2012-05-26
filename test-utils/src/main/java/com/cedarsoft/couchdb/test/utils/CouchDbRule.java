@@ -142,8 +142,12 @@ public class CouchDbRule implements MethodRule {
     @Nullable String username = getUsername( );
     @Nullable String password = getPassword( );
 
-    if ( username == null || password == null ) {
+    if ( username == null && password == null ) {
       return null;
+    }
+
+    if ( username == null || password == null ) {
+      throw new IllegalStateException( "You need both password *and* user name" );
     }
 
     return new HTTPBasicAuthFilter( username, password );
