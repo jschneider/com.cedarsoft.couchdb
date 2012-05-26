@@ -40,7 +40,6 @@ import com.google.common.io.ByteStreams;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.ClientFilter;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
@@ -63,7 +62,8 @@ import java.util.logging.Logger;
  * Offers access methods for a couch database
  */
 public class CouchDatabase {
-  private final Logger logger = Logger.getLogger( CouchDatabase.class.getName() );
+  @Nonnull
+  private static final Logger LOG = Logger.getLogger( CouchDatabase.class.getName() );
 
   /**
    * The path segment used to access design documents
@@ -148,8 +148,8 @@ public class CouchDatabase {
   public ActionResponse put( @Nonnull DocId id, @Nonnull InputStream content ) throws ActionFailedException {
     WebResource path = dbRoot.path( id.asString() );
 
-    if ( logger.isLoggable( Level.FINE ) ) {
-      logger.fine( "PUT " + path.toString() );
+    if ( LOG.isLoggable( Level.FINE ) ) {
+      LOG.fine( "PUT " + path.toString() );
     }
 
     ClientResponse response = path
@@ -171,8 +171,8 @@ public class CouchDatabase {
   public <T> ActionResponse put( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> serializer ) throws ActionFailedException, IOException {
     WebResource path = dbRoot.path( doc.getId().asString() );
 
-    if ( logger.isLoggable( Level.FINE ) ) {
-      logger.fine( "PUT " + path.toString() );
+    if ( LOG.isLoggable( Level.FINE ) ) {
+      LOG.fine( "PUT " + path.toString() );
     }
 
     ClientResponse clientResponse = path.type( JSON_TYPE ).accept( JSON_TYPE ).put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
@@ -204,8 +204,8 @@ public class CouchDatabase {
       resource = resource.queryParam( PARAM_REV, revision.asString() );
     }
 
-    if ( logger.isLoggable( Level.FINE ) ) {
-      logger.fine( "HEAD " + resource.toString() );
+    if ( LOG.isLoggable( Level.FINE ) ) {
+      LOG.fine( "HEAD " + resource.toString() );
     }
 
     WebResource.Builder path = resource.type( mediaType ).accept( JSON_TYPE );
@@ -237,8 +237,8 @@ public class CouchDatabase {
       resource = resource.queryParam( PARAM_REV, revision.asString() );
     }
 
-    if ( logger.isLoggable( Level.FINE ) ) {
-      logger.fine( "PUT " + resource.toString() );
+    if ( LOG.isLoggable( Level.FINE ) ) {
+      LOG.fine( "PUT " + resource.toString() );
     }
 
     ClientResponse clientResponse = resource.type( mediaType ).accept( JSON_TYPE ).put( ClientResponse.class, attachment );
@@ -258,8 +258,8 @@ public class CouchDatabase {
     WebResource.Builder path = dbRoot
       .type( JSON_TYPE ).accept( JSON_TYPE );
 
-    if ( logger.isLoggable( Level.FINE ) ) {
-      logger.fine( "POST " + path.toString() );
+    if ( LOG.isLoggable( Level.FINE ) ) {
+      LOG.fine( "POST " + path.toString() );
     }
 
     ClientResponse response = path.post( ClientResponse.class, content );
@@ -410,24 +410,24 @@ public class CouchDatabase {
   @Nonnull
   protected InputStream get( @Nonnull WebResource resource ) throws ActionFailedException {
     long start = System.currentTimeMillis();
-    if ( logger.isLoggable( Level.FINE ) ) {
-      logger.fine( "GET " + resource.toString() );
+    if ( LOG.isLoggable( Level.FINE ) ) {
+      LOG.fine( "GET " + resource.toString() );
     }
     ClientResponse response = resource.get( ClientResponse.class );
     long end = System.currentTimeMillis();
-    if ( logger.isLoggable( Level.FINE ) ) {
-      logger.fine( "Took: " + ( end - start ) + " ms" );
+    if ( LOG.isLoggable( Level.FINE ) ) {
+      LOG.fine( "Took: " + ( end - start ) + " ms" );
     }
 
     ActionResponse.verifyNoError( response );
 
-    if ( logger.isLoggable( Level.FINER ) ) {
+    if ( LOG.isLoggable( Level.FINER ) ) {
       try {
         byte[] content = ByteStreams.toByteArray( response.getEntityInputStream() );
         if ( content.length > 1024 ) {
-          logger.finer( "Showing first 1024 bytes:\n" + new String( content ).substring( 0, 1024 ) + "..." );
+          LOG.finer( "Showing first 1024 bytes:\n" + new String( content ).substring( 0, 1024 ) + "..." );
         } else {
-          logger.finer( new String( content ) );
+          LOG.finer( new String( content ) );
         }
         return new ByteArrayInputStream( content );
       } catch ( IOException e ) {
@@ -510,8 +510,8 @@ public class CouchDatabase {
       .queryParam( PARAM_REV, revision.asString() )
       .type( JSON_TYPE ).accept( JSON_TYPE );
 
-    if ( logger.isLoggable( Level.FINE ) ) {
-      logger.fine( "DELETE " + path.toString() );
+    if ( LOG.isLoggable( Level.FINE ) ) {
+      LOG.fine( "DELETE " + path.toString() );
     }
 
     ClientResponse response = path.delete( ClientResponse.class );
@@ -536,8 +536,8 @@ public class CouchDatabase {
       .queryParam( PARAM_REV, revision.asString() )
       .type( JSON_TYPE ).accept( JSON_TYPE );
 
-    if ( logger.isLoggable( Level.FINE ) ) {
-      logger.fine( "DELETE " + path.toString() );
+    if ( LOG.isLoggable( Level.FINE ) ) {
+      LOG.fine( "DELETE " + path.toString() );
     }
 
     ClientResponse response = path.delete( ClientResponse.class );
@@ -558,8 +558,8 @@ public class CouchDatabase {
       .path( docId.asString() )
       .type( JSON_TYPE ).accept( JSON_TYPE );
 
-    if ( logger.isLoggable( Level.FINE ) ) {
-      logger.fine( "HEAD " + path.toString() );
+    if ( LOG.isLoggable( Level.FINE ) ) {
+      LOG.fine( "HEAD " + path.toString() );
     }
 
     ClientResponse response = path.head();
@@ -586,8 +586,8 @@ public class CouchDatabase {
   public ClientResponse getHead( @Nonnull DocId docId ) {
     WebResource.Builder path = dbRoot.path( docId.asString() ).type( JSON_TYPE ).accept( JSON_TYPE );
 
-    if ( logger.isLoggable( Level.FINE ) ) {
-      logger.fine( "HEAD " + path.toString() );
+    if ( LOG.isLoggable( Level.FINE ) ) {
+      LOG.fine( "HEAD " + path.toString() );
     }
 
     return path.head();
@@ -607,8 +607,8 @@ public class CouchDatabase {
       .path( attachmentId.asString() )
       .type( JSON_TYPE ).accept( JSON_TYPE );
 
-    if ( logger.isLoggable( Level.FINE ) ) {
-      logger.fine( "HEAD " + path.toString() );
+    if ( LOG.isLoggable( Level.FINE ) ) {
+      LOG.fine( "HEAD " + path.toString() );
     }
 
     return path.head();
