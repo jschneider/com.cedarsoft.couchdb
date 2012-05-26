@@ -400,10 +400,16 @@ public class CouchDatabase {
    */
   @Nonnull
   protected InputStream get( @Nonnull WebResource resource ) throws ActionFailedException {
+    long start = System.currentTimeMillis();
     if ( logger.isLoggable( Level.FINE ) ) {
       logger.fine( "GET " + resource.toString() );
     }
     ClientResponse response = resource.get( ClientResponse.class );
+    long end = System.currentTimeMillis();
+    if ( logger.isLoggable( Level.FINE ) ) {
+      logger.fine( "Took: " + ( end - start ) + " ms" );
+    }
+
     ActionResponse.verifyNoError( response );
 
     if ( logger.isLoggable( Level.FINER ) ) {
