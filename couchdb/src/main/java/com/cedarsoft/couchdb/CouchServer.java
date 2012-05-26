@@ -52,13 +52,11 @@ public class CouchServer {
   public static final String ALL_DBS = "_all_dbs";
 
   @Nonnull
-  private final Client client;
-  @Nonnull
   private final WebResource root;
 
 
   public CouchServer( @Nonnull URI uri, @Nullable ClientFilter... filters ) {
-    client = ApacheHttpClient4.create();
+    Client client = ApacheHttpClient4.create();
     if ( filters != null ) {
       for ( ClientFilter filter : filters ) {
         if ( filter != null ) {
