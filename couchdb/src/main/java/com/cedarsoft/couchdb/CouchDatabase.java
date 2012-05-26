@@ -558,13 +558,17 @@ public class CouchDatabase {
     }
 
     ClientResponse response = path.head();
-    ActionResponse.verifyNoError( response );
+    try {
+      ActionResponse.verifyNoError( response );
 
-    EntityTag entityTag = response.getEntityTag();
-    if ( entityTag == null ) {
-      throw new IllegalArgumentException( "No Etag found" );
+      EntityTag entityTag = response.getEntityTag();
+      if ( entityTag == null ) {
+        throw new IllegalArgumentException( "No Etag found" );
+      }
+      return new Revision( entityTag.getValue() );
+    } finally {
+      response.close();
     }
-    return new Revision( entityTag.getValue() );
   }
 
   /**

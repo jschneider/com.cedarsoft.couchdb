@@ -36,6 +36,7 @@ import com.cedarsoft.couchdb.io.ActionResponseSerializer;
 import com.sun.jersey.api.client.ClientResponse;
 
 import javax.annotation.Nonnull;
+import javax.annotation.WillClose;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -129,9 +130,13 @@ public class ActionResponse {
    * @throws ActionFailedException if there has been an error
    */
   @Nonnull
-  public static ActionResponse create( @Nonnull ClientResponse response ) throws ActionFailedException {
-    verifyNoError( response );
-    return new ActionResponseSerializer().deserialize( response );
+  public static ActionResponse create( @WillClose @Nonnull ClientResponse response ) throws ActionFailedException {
+    try {
+      verifyNoError( response );
+      return new ActionResponseSerializer().deserialize( response );
+    } finally {
+      response.close();
+    }
   }
 
   /**
