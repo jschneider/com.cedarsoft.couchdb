@@ -54,17 +54,8 @@ public class CouchServer {
   @Nonnull
   private final WebResource root;
 
-
-  public CouchServer( @Nonnull URI uri, @Nullable ClientFilter... filters ) {
-    Client client = ApacheHttpClient4.create();
-    if ( filters != null ) {
-      for ( ClientFilter filter : filters ) {
-        if ( filter != null ) {
-          client.addFilter( filter );
-        }
-      }
-    }
-    root = client.resource( uri );
+  public CouchServer( @Nonnull WebResource root ) {
+    this.root = root;
   }
 
   public void deleteDatabase( @Nonnull String dbName ) throws ActionFailedException {
