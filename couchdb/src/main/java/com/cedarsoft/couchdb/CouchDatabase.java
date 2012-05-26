@@ -93,39 +93,6 @@ public class CouchDatabase {
   @Nonnull
   private final CouchDocSerializer couchDocSerializer = new CouchDocSerializer();
 
-  /**
-   * Creates a new database
-   *
-   * @param serverUri the server uri
-   * @param dbName    the db name (will be appended to the server uri)
-   * @param filters   the filters
-   */
-  @Deprecated
-  public CouchDatabase( @Nonnull URI serverUri, @Nonnull String dbName, @Nullable ClientFilter... filters ) {
-    this( serverUri.resolve( "/" + dbName ), filters );
-  }
-
-  /**
-   * Creates a new database
-   *
-   * @param uri     the uri
-   * @param filters optional filters (e.g. for authentication)
-   */
-  @Deprecated
-  public CouchDatabase( @Nonnull URI uri, @Nullable ClientFilter... filters ) {
-    this( createClient( filters ), uri );
-  }
-
-  /**
-   * Creates a new database
-   * @param client the client
-   * @param uri the uri
-   */
-  @Deprecated
-  public CouchDatabase( @Nonnull Client client, @Nonnull URI uri ) {
-    this( client.resource( uri ) );
-  }
-
   @Nonnull
   public static CouchDatabase create( @Nonnull Client client, @Nonnull URI uri ) {
     return new CouchDatabase( client.resource( uri ) );
