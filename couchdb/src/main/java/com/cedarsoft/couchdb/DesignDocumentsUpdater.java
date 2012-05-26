@@ -95,8 +95,12 @@ public class DesignDocumentsUpdater {
       @Nullable Revision currentRevision = getRevision( resource );
 
       log.fine( "PUT: " + resource.toString() );
-      ClientResponse response = resource.put( ClientResponse.class, designDocument.createJson(currentRevision) );
-      ActionResponse.verifyNoError( response );
+      ClientResponse response = resource.put( ClientResponse.class, designDocument.createJson( currentRevision ) );
+      try {
+        ActionResponse.verifyNoError( response );
+      } finally {
+        response.close();
+      }
     }
   }
 
@@ -110,30 +114,34 @@ public class DesignDocumentsUpdater {
   private Revision getRevision( @Nonnull WebResource path ) throws ActionFailedException, IOException {
     log.fine( "HEAD: " + path.toString() );
     ClientResponse response = path.get( ClientResponse.class );
-    log.fine( "\tStatus: " + response.getStatus() );
-    if ( response.getStatus() == 404 ) {
-      return null;
-    }
-
-    ActionResponse.verifyNoError( response );
-
-    if ( response.getStatus() != 200 ) {
-      throw new IllegalStateException( "Invalid response: " + response.getStatus() + ": " + response.getEntity( String.class ) );
-    }
-
-    JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
-    InputStream entityInputStream = response.getEntityInputStream();
     try {
-      JsonParser parser = jsonFactory.createJsonParser( entityInputStream );
-      JacksonParserWrapper wrapper = new JacksonParserWrapper( parser );
+      log.fine( "\tStatus: " + response.getStatus() );
+      if ( response.getStatus() == 404 ) {
+        return null;
+      }
 
-      wrapper.nextToken( JsonToken.START_OBJECT );
+      ActionResponse.verifyNoError( response );
 
-      wrapper.nextFieldValue( "_id" );
-      wrapper.nextFieldValue( "_rev" );
-      return new Revision( wrapper.getText() );
+      if ( response.getStatus() != 200 ) {
+        throw new IllegalStateException( "Invalid response: " + response.getStatus() + ": " + response.getEntity( String.class ) );
+      }
+
+      JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
+      InputStream entityInputStream = response.getEntityInputStream();
+      try {
+        JsonParser parser = jsonFactory.createJsonParser( entityInputStream );
+        JacksonParserWrapper wrapper = new JacksonParserWrapper( parser );
+
+        wrapper.nextToken( JsonToken.START_OBJECT );
+
+        wrapper.nextFieldValue( "_id" );
+        wrapper.nextFieldValue( "_rev" );
+        return new Revision( wrapper.getText() );
+      } finally {
+        entityInputStream.close();
+      }
     } finally {
-      entityInputStream.close();
+      response.close();
     }
   }
 }
