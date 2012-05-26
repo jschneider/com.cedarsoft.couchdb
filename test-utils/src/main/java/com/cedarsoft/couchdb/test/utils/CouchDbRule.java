@@ -40,9 +40,11 @@ import com.cedarsoft.couchdb.DesignDocumentsProvider;
 import com.cedarsoft.couchdb.DesignDocumentsUpdater;
 import com.cedarsoft.exceptions.CanceledException;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.filter.ClientFilter;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
+import org.fest.assertions.Assertions;
 import org.junit.rules.*;
 import org.junit.runners.model.*;
 
@@ -135,6 +137,15 @@ public class CouchDbRule implements MethodRule {
 
     assert client != null;
     this.server = new CouchServer(client.resource( currentUri ));
+
+    //Verify the CouchDB version
+    ClientResponse response = server.get( "" );
+    try {
+      String content = response.getEntity( String.class );
+      Assertions.assertThat( content.trim() ).isEqualTo( "{\"couchdb\":\"Welcome\",\"version\":\"1.2.0\"}" );
+    } finally {
+      response.close();
+    }
   }
 
   @Nullable
