@@ -312,7 +312,11 @@ public class CouchDatabase {
     }
 
     InputStream stream = query( viewDescriptor, options );
-    return viewResponseSerializer.deserialize( keySerializer, valueSerializer, stream );
+    try {
+      return viewResponseSerializer.deserialize( keySerializer, valueSerializer, stream );
+    } finally {
+      stream.close();
+    }
   }
 
   /**
@@ -351,7 +355,11 @@ public class CouchDatabase {
     }
 
     InputStream stream = query( viewDescriptor, localOptions );
-    return viewResponseSerializer.deserialize( keySerializer, valueSerializer, docSerializer, stream );
+    try {
+      return viewResponseSerializer.deserialize( keySerializer, valueSerializer, docSerializer, stream );
+    } finally {
+      stream.close();
+    }
   }
 
   /**
