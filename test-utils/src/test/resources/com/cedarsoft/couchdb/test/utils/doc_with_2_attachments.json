@@ -1,6 +1,6 @@
 {
   "_id" : "asdf",
-  "_rev" : "1-7a11f1968753e5accc7961a8da3d7e32",
+  "_rev" : "1-c793c493b837a1a20bcd5a99f65edc75",
   "@type" : "daString",
   "@version" : "1.0.0",
   "daString" : "the object",
@@ -8,12 +8,14 @@
     "daid" : {
       "content_type" : "text/xml",
       "revpos" : 1,
+      "digest" : "md5-LEEWIGk9PiUlHXWkj0k9Wg==",
       "length" : 4,
       "stub" : true
     },
     "hehe" : {
       "content_type" : "application/xml",
       "revpos" : 1,
+      "digest" : "md5-O2G5veUXH9jHttdJvuDplw==",
       "length" : 5,
       "stub" : true
     }

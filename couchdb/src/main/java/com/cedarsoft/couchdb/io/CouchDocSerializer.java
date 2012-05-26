@@ -174,6 +174,7 @@ public class CouchDocSerializer {
         nextFieldValue( parser, "content_type" );
         String contentType = parser.getText();
         nextFieldValue( parser, "revpos" );
+        nextFieldValue( parser, "digest" );
         nextFieldValue( parser, "length" );
         long length = parser.getNumberValue().longValue();
         nextFieldValue( parser, "stub" );

@@ -1,16 +1,18 @@
 {
   "_id" : "daDocId",
-  "_rev" : "2-929f2959f8e81ed6b6c7784bee926065",
+  "_rev" : "2-729e2fe22ae74962f5cf4a16d7013f4c",
   "_attachments" : {
     "test_data2.xml" : {
       "content_type" : "application/xml",
       "revpos" : 2,
+      "digest" : "md5-4bptZ5Lk2H3osh5T6SOjXg==",
       "length" : 191,
       "stub" : true
     },
     "test_data.xml" : {
       "content_type" : "application/xml",
       "revpos" : 1,
+      "digest" : "md5-4Cp+JD0Gj11ZYHt3loiPtg==",
       "length" : 188,
       "stub" : true
     }

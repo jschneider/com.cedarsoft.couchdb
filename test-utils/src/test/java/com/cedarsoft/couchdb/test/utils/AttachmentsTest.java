@@ -65,13 +65,13 @@ import static org.junit.Assert.*;
  */
 public class AttachmentsTest extends CouchTest {
 
-  public static final String REV_1 = "1-4b8635c26c5b91bd2bc658ed866c727a";
+  public static final String REV_1 = "1-f47c3fb3f2f88ffc93b07dd82e12c39a";
 
-  public static final String REV_2 = "2-929f2959f8e81ed6b6c7784bee926065";
+  public static final String REV_2 = "2-729e2fe22ae74962f5cf4a16d7013f4c";
   @Nonnull
-  public static final String REV_3 = "3-46baf5940bdf721b5a1c590de66bfd94";
+  public static final String REV_3 = "3-3159e55e06f742cb4158f953493a80d5";
   @Nonnull
-  public static final String REV_4 = "4-0686197065ccc1e0a310e894da9c8dd7";
+  public static final String REV_4 = "4-5275597cd62afd173118748b2d6ecd14";
   @Nonnull
   public static final DocId DOC_ID = new DocId( "daDocId" );
 
