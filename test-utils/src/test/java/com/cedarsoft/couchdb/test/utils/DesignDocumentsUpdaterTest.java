@@ -56,13 +56,21 @@ public class DesignDocumentsUpdaterTest extends CouchTest {
 
     {
       ClientResponse response = db( ).getDbRoot( ).path( "_design/doc1" ).get( ClientResponse.class );
-      assertThat( response ).isNotNull( );
-      assertThat( response.getStatus( ) ).isEqualTo( 200 );
+      try {
+        assertThat( response ).isNotNull( );
+        assertThat( response.getStatus( ) ).isEqualTo( 200 );
+      } finally {
+        response.close();
+      }
     }
     {
       ClientResponse response = db( ).getDbRoot( ).path( "_design/doc1/_view/file1" ).get( ClientResponse.class );
-      assertThat( response ).isNotNull( );
-      assertThat( response.getStatus( ) ).isEqualTo( 200 );
+      try {
+        assertThat( response ).isNotNull( );
+        assertThat( response.getStatus( ) ).isEqualTo( 200 );
+      } finally {
+        response.close();
+      }
     }
   }
 }
