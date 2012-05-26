@@ -64,7 +64,7 @@ import java.util.logging.Logger;
  */
 public class CouchDatabase {
   private final Logger logger = Logger.getLogger( CouchDatabase.class.getName() );
-  
+
   /**
    * The path segment used to access design documents
    */
@@ -87,10 +87,6 @@ public class CouchDatabase {
   public static final MediaType JSON_TYPE = MediaType.APPLICATION_JSON_TYPE;
 
   @Nonnull
-  private final Client client;
-  @Nonnull
-  private final ClientFilter[] clientFilters;
-  @Nonnull
   private final WebResource dbRoot;
   @Nonnull
   private final ViewResponseSerializer viewResponseSerializer;
@@ -104,6 +100,7 @@ public class CouchDatabase {
    * @param dbName    the db name (will be appended to the server uri)
    * @param filters   the filters
    */
+  @Deprecated
   public CouchDatabase( @Nonnull URI serverUri, @Nonnull String dbName, @Nullable ClientFilter... filters ) {
     this( serverUri.resolve( "/" + dbName ), filters );
   }
@@ -114,26 +111,28 @@ public class CouchDatabase {
    * @param uri     the uri
    * @param filters optional filters (e.g. for authentication)
    */
+  @Deprecated
   public CouchDatabase( @Nonnull URI uri, @Nullable ClientFilter... filters ) {
-    client = ApacheHttpClient4.create();
-    if ( filters != null ) {
-      for ( ClientFilter filter : filters ) {
-        client.addFilter( filter );
-      }
-    }
-    this.clientFilters = filters == null ? new ClientFilter[0] : filters.clone();
-    dbRoot = client.resource( uri );
-    viewResponseSerializer = new ViewResponseSerializer( new RowSerializer( couchDocSerializer ) );
+    this( createClient( filters ), uri );
   }
 
   /**
-   * Returns the client filters
-   *
-   * @return the client filters (a cloned instance)
+   * Creates a new database
+   * @param client the client
+   * @param uri the uri
    */
-  @Nonnull
-  public ClientFilter[] getClientFilters() {
-    return clientFilters.clone();
+  @Deprecated
+  public CouchDatabase( @Nonnull Client client, @Nonnull URI uri ) {
+    this( client.resource( uri ) );
+  }
+
+  /**
+   * Creates a new database for the given db root
+   * @param dbRoot the db root
+   */
+  public CouchDatabase(@Nonnull WebResource dbRoot) {
+    this.dbRoot = dbRoot;
+    viewResponseSerializer = new ViewResponseSerializer( new RowSerializer( couchDocSerializer ) );
   }
 
   /**
@@ -427,7 +426,7 @@ public class CouchDatabase {
         byte[] content = ByteStreams.toByteArray( response.getEntityInputStream() );
         if ( content.length > 1024 ) {
           logger.finer( "Showing first 1024 bytes:\n" + new String( content ).substring( 0, 1024 ) + "..." );
-        }else{
+        } else {
           logger.finer( new String( content ) );
         }
         return new ByteArrayInputStream( content );
@@ -484,16 +483,6 @@ public class CouchDatabase {
   @Nonnull
   public WebResource getDbRoot() {
     return dbRoot;
-  }
-
-  /**
-   * Returns the client for this db
-   *
-   * @return the client used for this db
-   */
-  @Nonnull
-  protected Client getClient() {
-    return client;
   }
 
   /**
@@ -630,5 +619,19 @@ public class CouchDatabase {
     return "CouchDatabase{" +
       "dbRoot=" + dbRoot +
       '}';
+  }
+
+
+  @Nonnull
+  private static ApacheHttpClient4 createClient( @Nullable ClientFilter[] filters ) {
+    ApacheHttpClient4 client = ApacheHttpClient4.create();
+    if ( filters == null ) {
+      return client;
+    }
+
+    for ( ClientFilter filter : filters ) {
+      client.addFilter( filter );
+    }
+    return client;
   }
 }
