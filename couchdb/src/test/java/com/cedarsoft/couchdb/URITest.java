@@ -62,8 +62,10 @@ public class URITest {
 
   @Test
   public void testConstructors() throws Exception {
-    assertEquals( "http://localhost:8080/dbName$asdf", new CouchDatabase( new URI( "http://localhost:8080/dbName$asdf" ) ).getURI().toString() );
-    assertEquals( "http://localhost:8080/dbName$asdf", new CouchDatabase( new URI( "http://localhost:8080" ), "dbName$asdf" ).getURI().toString() );
+    Client client = Client.create();
+
+    assertEquals( "http://localhost:8080/dbName$asdf", CouchDatabase.create( client, new URI( "http://localhost:8080/dbName$asdf" ) ).getURI().toString() );
+    assertEquals( "http://localhost:8080/dbName$asdf", CouchDatabase.create( client, new URI( "http://localhost:8080" ), "dbName$asdf" ).getURI().toString() );
   }
 
   @Test
