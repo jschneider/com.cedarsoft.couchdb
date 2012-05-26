@@ -39,8 +39,10 @@ import com.cedarsoft.couchdb.DesignDocument;
 import com.cedarsoft.couchdb.DesignDocumentsProvider;
 import com.cedarsoft.couchdb.DesignDocumentsUpdater;
 import com.cedarsoft.exceptions.CanceledException;
+import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.filter.ClientFilter;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import com.sun.jersey.client.apache4.ApacheHttpClient4;
 import org.junit.rules.*;
 import org.junit.runners.model.*;
 
@@ -84,6 +86,9 @@ public class CouchDbRule implements MethodRule {
   private final Set<CouchDatabase> dbs = new HashSet<CouchDatabase>();
 
   @Nullable
+  protected Client client;
+
+  @Nullable
   protected URI serverURI;
   @Nullable
   private CouchServer server;
@@ -113,6 +118,8 @@ public class CouchDbRule implements MethodRule {
   }
 
   public void before() throws IOException, URISyntaxException, CouchDbException {
+    client = ApacheHttpClient4.create();
+
     createServer();
     db = createDb( createNewTestDbName() );
   }
@@ -149,6 +156,7 @@ public class CouchDbRule implements MethodRule {
 
   public void after() throws ActionFailedException {
     deleteDatabases();
+    client = null;
   }
 
   protected void deleteDatabases() throws ActionFailedException {
@@ -206,6 +214,7 @@ public class CouchDbRule implements MethodRule {
   public CouchDatabase getCouchDatabaseObject( @Nonnull String dbName ) {
     URI uri = serverURI;
     assert uri != null;
+    assert client != null;
 
     ClientFilter[] filters;
     @Nullable String username = getUsername();
@@ -216,7 +225,7 @@ public class CouchDbRule implements MethodRule {
       filters = new ClientFilter[0];
     }
 
-    return new CouchDatabase( uri, dbName, filters );
+    return CouchDatabase.create( client, uri, dbName );
   }
 
   public void publishViews( @Nonnull CouchDatabase couchDatabase ) throws URISyntaxException, IOException, ActionFailedException {
