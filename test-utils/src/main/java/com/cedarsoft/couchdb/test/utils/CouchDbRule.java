@@ -44,7 +44,13 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.filter.ClientFilter;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
+import com.sun.jersey.client.apache4.ApacheHttpClient4Handler;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.impl.conn.AbstractPooledConnAdapter;
+import org.apache.http.impl.conn.SingleClientConnManager;
 import org.fest.assertions.Assertions;
+import org.fest.reflect.core.Reflection;
+import org.fest.reflect.reference.TypeRef;
 import org.junit.rules.*;
 import org.junit.runners.model.*;
 
@@ -117,6 +123,16 @@ public class CouchDbRule implements MethodRule {
   public CouchDbRule( @Nullable DesignDocumentsProvider designDocumentsProvider, @Nullable String dbBaseName ) {
     this.designDocumentsProvider = designDocumentsProvider;
     this.dbBaseName = dbBaseName;
+
+    LAST_INSTANCE = this;
+  }
+
+  @Nullable
+  private static CouchDbRule LAST_INSTANCE;
+
+  @Nullable
+  public static CouchDbRule getLastInstance() {
+    return LAST_INSTANCE;
   }
 
   public void before() throws IOException, URISyntaxException, CouchDbException {
@@ -175,8 +191,25 @@ public class CouchDbRule implements MethodRule {
   }
 
   public void after() throws ActionFailedException {
+    ensureConnectionsClosed();
+
     deleteDatabases();
     client = null;
+  }
+
+  public void ensureConnectionsClosed() {
+    assert client != null;
+    try {
+      //Ensure client is empty
+      ApacheHttpClient4Handler clientHandler = ( ( ApacheHttpClient4 ) client ).getClientHandler();
+      SingleClientConnManager connectionManager = ( SingleClientConnManager ) clientHandler.getHttpClient().getConnectionManager();
+      @Nullable AbstractPooledConnAdapter managedConn = ( AbstractPooledConnAdapter ) Reflection.field( "managedConn" ).ofType( Class.forName( "org.apache.http.impl.conn.SingleClientConnManager$ConnAdapter" ) ).in( connectionManager ).get();
+      if ( managedConn != null ) {
+        throw new IllegalStateException( "Connection not closed properly: " + managedConn.getRoute() );
+      }
+    } catch ( ClassNotFoundException e ) {
+      throw new RuntimeException( e );
+    }
   }
 
   protected void deleteDatabases() throws ActionFailedException {
