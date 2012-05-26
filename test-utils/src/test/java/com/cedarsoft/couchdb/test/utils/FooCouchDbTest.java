@@ -78,8 +78,12 @@ public class FooCouchDbTest extends CouchTest {
     String uri = "/" + db().getDbName() + "/" + info.getId();
     {
       ClientResponse response0 = server().put( uri, out.toByteArray( ), MediaType.APPLICATION_JSON );
-      JsonUtils.assertJsonEquals( "{\"ok\":true,\"id\":\"daId\",\"rev\":\"1-a61702329aa7cc6b870f7cfcc24aacac\"}", response0.getEntity( String.class ) );
-      assertEquals(201, response0.getStatus( ));
+      try {
+        JsonUtils.assertJsonEquals( "{\"ok\":true,\"id\":\"daId\",\"rev\":\"1-a61702329aa7cc6b870f7cfcc24aacac\"}", response0.getEntity( String.class ) );
+        assertEquals(201, response0.getStatus( ));
+      } finally {
+        response0.close();
+      }
     }
 
     {
@@ -102,16 +106,24 @@ public class FooCouchDbTest extends CouchTest {
       assertEquals("asdf", deserialized.getObject().getDescription());
 
       ClientResponse response2 = server().put( uri, responseContent1.getBytes( ), MediaType.APPLICATION_JSON );
-      UniqueId actionResponse = new ActionResponseSerializer().deserialize( response2.getEntity( InputStream.class ) );
-      assertEquals("2-4ffec4730eec590d07f82789cbe991c6", actionResponse.getRevision().asString());
-      assertEquals(201, response2.getStatus( ));
-      assertEquals(deserialized.getId(), actionResponse.getId());
+      try {
+        UniqueId actionResponse = new ActionResponseSerializer().deserialize( response2.getEntity( InputStream.class ) );
+        assertEquals("2-4ffec4730eec590d07f82789cbe991c6", actionResponse.getRevision().asString());
+        assertEquals(201, response2.getStatus( ));
+        assertEquals(deserialized.getId(), actionResponse.getId());
+      } finally {
+        response2.close();
+      }
 
       ClientResponse response3 = server().put( uri, responseContent1.getBytes( ), MediaType.APPLICATION_JSON );
-      ActionFailedException actionFailedResponse1 = new ActionFailedExceptionSerializer().deserialize(response3.getStatus( ), response3.getEntity( InputStream.class  ));
-      assertEquals("conflict", actionFailedResponse1.getError());
-      assertEquals("Document update conflict.", actionFailedResponse1.getReason());
-      assertEquals(409, response3.getStatus( ));
+      try {
+        ActionFailedException actionFailedResponse1 = new ActionFailedExceptionSerializer().deserialize(response3.getStatus( ), response3.getEntity( InputStream.class  ));
+        assertEquals("conflict", actionFailedResponse1.getError());
+        assertEquals("Document update conflict.", actionFailedResponse1.getReason());
+        assertEquals(409, response3.getStatus( ));
+      } finally {
+        response3.close();
+      }
     }
   }
 

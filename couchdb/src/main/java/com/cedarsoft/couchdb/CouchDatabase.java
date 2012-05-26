@@ -40,7 +40,9 @@ import com.google.common.io.ByteStreams;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.ClientFilter;
+import com.sun.jersey.client.apache4.ApacheHttpClient4;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 import javax.annotation.Nonnull;
@@ -113,7 +115,7 @@ public class CouchDatabase {
    * @param filters optional filters (e.g. for authentication)
    */
   public CouchDatabase( @Nonnull URI uri, @Nullable ClientFilter... filters ) {
-    client = new Client();
+    client = ApacheHttpClient4.create();
     if ( filters != null ) {
       for ( ClientFilter filter : filters ) {
         client.addFilter( filter );

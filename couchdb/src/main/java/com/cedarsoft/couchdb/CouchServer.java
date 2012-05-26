@@ -35,6 +35,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.ClientFilter;
+import com.sun.jersey.client.apache4.ApacheHttpClient4;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -59,7 +60,8 @@ public class CouchServer {
 
 
   public CouchServer( @Nonnull URI uri, @Nullable ClientFilter... filters ) {
-    client = new Client( );
+    //    client = Client.create();
+    client = ApacheHttpClient4.create();
     if ( filters != null ) {
       for ( ClientFilter filter : filters ) {
         if ( filter != null ) {
@@ -67,22 +69,30 @@ public class CouchServer {
         }
       }
     }
-    this.clientFilters = filters == null ? new ClientFilter[0] : filters.clone( );
+    this.clientFilters = filters == null ? new ClientFilter[0] : filters.clone();
     root = client.resource( uri );
   }
 
   public void deleteDatabase( @Nonnull String dbName ) throws ActionFailedException {
     ClientResponse response = root.path( dbName ).delete( ClientResponse.class );
-    ActionResponse.verifyNoError( response );
+    try {
+      ActionResponse.verifyNoError( response );
+    } catch ( ActionFailedException e ) {
+      response.close();
+    }
   }
 
   public boolean createDatabase( @Nonnull String dbName ) throws ActionFailedException {
     ClientResponse response = root.path( dbName ).put( ClientResponse.class );
-    if ( response.getStatus( ) == 201 ) {
-      return true;
-    }
+    try {
+      if ( response.getStatus( ) == 201 ) {
+        return true;
+      }
 
-    ActionResponse.verifyNoError( response );
+      ActionResponse.verifyNoError( response );
+    } finally {
+      response.close();
+    }
     return false;
   }
 

@@ -37,6 +37,7 @@ import com.sun.jersey.api.client.ClientResponse;
 
 import javax.annotation.Nonnull;
 import javax.annotation.WillClose;
+import javax.annotation.WillNotClose;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -145,7 +146,7 @@ public class ActionResponse {
    * @param response the response
    * @throws ActionFailedException
    */
-  public static void verifyNoError( @Nonnull ClientResponse response ) throws ActionFailedException {
+  public static void verifyNoError( @WillNotClose @Nonnull ClientResponse response ) throws ActionFailedException {
     if ( !isNotSuccessful( response ) ) {
       return;
     }
@@ -172,7 +173,7 @@ public class ActionResponse {
    * @param response the response
    * @return true if the response has not been successful
    */
-  public static boolean isNotSuccessful( @Nonnull ClientResponse response ) {
+  public static boolean isNotSuccessful( @WillNotClose @Nonnull ClientResponse response ) {
     return response.getStatus() < 200 || response.getStatus() > 299;
   }
 }
