@@ -31,17 +31,12 @@
 package com.cedarsoft.couchdb;
 
 import com.cedarsoft.serialization.jackson.ListSerializer;
-import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.filter.ClientFilter;
-import com.sun.jersey.client.apache4.ApacheHttpClient4;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.List;
 
 /**
@@ -53,6 +48,7 @@ public class CouchServer {
 
   @Nonnull
   private final WebResource root;
+
 
   public CouchServer( @Nonnull WebResource root ) {
     this.root = root;
