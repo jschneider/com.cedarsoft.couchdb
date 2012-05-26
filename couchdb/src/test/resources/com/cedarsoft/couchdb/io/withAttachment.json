@@ -9,12 +9,14 @@
     "test_data2.xml": {
       "content_type": "application/xml",
       "revpos": 2,
+      "digest": "dadigest...",
       "length": 191,
       "stub": true
     },
     "test_data.xml": {
       "content_type": "application/xml",
       "revpos": 1,
+      "digest": "dadigest...",
       "length": 188,
       "stub": true
     }
