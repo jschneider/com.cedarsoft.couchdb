@@ -100,10 +100,14 @@ public class CouchServer {
   public List<? extends String> listDatabases( ) throws IOException {
     InputStream in = root.path( ALL_DBS ).get( InputStream.class );
 
-    ListSerializer listSerializer = new ListSerializer( );
-    List<? extends Object> dbs = listSerializer.deserialize( in );
+    try {
+      ListSerializer listSerializer = new ListSerializer( );
+      List<? extends Object> dbs = listSerializer.deserialize( in );
 
-    return ( List<? extends String> ) dbs;
+      return ( List<? extends String> ) dbs;
+    } finally {
+      in.close();
+    }
   }
 
   @Nonnull
