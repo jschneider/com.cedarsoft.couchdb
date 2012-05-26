@@ -124,18 +124,20 @@ public class AttachmentsTest extends CouchTest {
   public void testManuallyInline() throws Exception {
     WebResource dbRoot = db().getDbRoot();
 
-    {
-      ClientResponse response = dbRoot
-        .path( DOC_ID.asString() )
-        .type( MediaType.APPLICATION_JSON_TYPE )
-        .put( ClientResponse.class,
-              getClass().getResourceAsStream( "doc_with_inlined_attachment_put.json" ) );
+    ClientResponse response = dbRoot
+      .path( DOC_ID.asString() )
+      .type( MediaType.APPLICATION_JSON_TYPE )
+      .put( ClientResponse.class,
+            getClass().getResourceAsStream( "doc_with_inlined_attachment_put.json" ) );
 
+    try {
       assertEquals( 201, response.getStatus() );
-
-      String doc = dbRoot.path( DOC_ID.asString() ).get( String.class );
-      JsonUtils.assertJsonEquals( getClass().getResource( "doc_with_inlined_attachment_get.json" ), doc );
+    } finally {
+      response.close();
     }
+
+    String doc = dbRoot.path( DOC_ID.asString() ).get( String.class );
+    JsonUtils.assertJsonEquals( getClass().getResource( "doc_with_inlined_attachment_get.json" ), doc );
   }
 
   @Test
