@@ -54,13 +54,10 @@ public class CouchServer {
   @Nonnull
   private final Client client;
   @Nonnull
-  private final ClientFilter[] clientFilters;
-  @Nonnull
   private final WebResource root;
 
 
   public CouchServer( @Nonnull URI uri, @Nullable ClientFilter... filters ) {
-    //    client = Client.create();
     client = ApacheHttpClient4.create();
     if ( filters != null ) {
       for ( ClientFilter filter : filters ) {
@@ -69,7 +66,6 @@ public class CouchServer {
         }
       }
     }
-    this.clientFilters = filters == null ? new ClientFilter[0] : filters.clone();
     root = client.resource( uri );
   }
 

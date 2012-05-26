@@ -126,6 +126,16 @@ public class CouchDatabase {
     this( client.resource( uri ) );
   }
 
+  @Nonnull
+  public static CouchDatabase create( @Nonnull Client client, @Nonnull URI uri ) {
+    return new CouchDatabase( client.resource( uri ) );
+  }
+
+  @Nonnull
+  public static CouchDatabase create( @Nonnull Client client, @Nonnull URI serverUri, @Nonnull String dbName ) {
+    return create( client, serverUri.resolve( "/" + dbName ) );
+  }
+
   /**
    * Creates a new database for the given db root
    * @param dbRoot the db root
