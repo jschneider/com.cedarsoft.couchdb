@@ -120,6 +120,11 @@ public class CouchDbRule implements MethodRule {
   public void before() throws IOException, URISyntaxException, CouchDbException {
     client = ApacheHttpClient4.create();
 
+    @Nullable HTTPBasicAuthFilter authFilter = getAuthFilter( );
+    if ( authFilter != null ) {
+      client.addFilter( authFilter );
+    }
+
     createServer();
     db = createDb( createNewTestDbName() );
   }
@@ -128,8 +133,8 @@ public class CouchDbRule implements MethodRule {
     URI currentUri = getServerUri();
     serverURI = currentUri;
 
-    @Nullable HTTPBasicAuthFilter authFilter = getAuthFilter( );
-    this.server = new CouchServer( currentUri, authFilter );
+    assert client != null;
+    this.server = new CouchServer(client.resource( currentUri ));
   }
 
   @Nullable
