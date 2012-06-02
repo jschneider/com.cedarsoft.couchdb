@@ -597,18 +597,4 @@ public class CouchDatabase {
       "dbRoot=" + dbRoot +
       '}';
   }
-
-
-  @Nonnull
-  private static ApacheHttpClient4 createClient( @Nullable ClientFilter[] filters ) {
-    ApacheHttpClient4 client = ApacheHttpClient4.create();
-    if ( filters == null ) {
-      return client;
-    }
-
-    for ( ClientFilter filter : filters ) {
-      client.addFilter( filter );
-    }
-    return client;
-  }
 }
