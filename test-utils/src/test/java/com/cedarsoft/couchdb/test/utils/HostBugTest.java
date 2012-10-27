@@ -33,7 +33,7 @@ package com.cedarsoft.couchdb.test.utils;
 import com.sun.jndi.toolkit.url.Uri;
 import org.junit.*;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
