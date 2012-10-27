@@ -37,6 +37,7 @@ import com.sun.jersey.api.client.WebResource;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -66,7 +67,7 @@ public class CouchServer {
   public boolean createDatabase( @Nonnull String dbName ) throws ActionFailedException {
     ClientResponse response = root.path( dbName ).put( ClientResponse.class );
     try {
-      if ( response.getStatus( ) == 201 ) {
+      if ( response.getClientResponseStatus() == ClientResponse.Status.CREATED ) {
         return true;
       }
 
@@ -78,14 +79,14 @@ public class CouchServer {
   }
 
   @Nonnull
-  public List<? extends String> listDatabases( ) throws IOException {
+  public Collection<? extends String> listDatabases( ) throws IOException {
     InputStream in = root.path( ALL_DBS ).get( InputStream.class );
 
     try {
       ListSerializer listSerializer = new ListSerializer( );
       List<? extends Object> dbs = listSerializer.deserialize( in );
 
-      return ( List<? extends String> ) dbs;
+      return ( Collection<? extends String> ) dbs;
     } finally {
       in.close();
     }

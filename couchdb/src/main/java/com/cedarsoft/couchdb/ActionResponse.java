@@ -174,6 +174,7 @@ public class ActionResponse {
    * @return true if the response has not been successful
    */
   public static boolean isNotSuccessful( @WillNotClose @Nonnull ClientResponse response ) {
+    //noinspection MagicNumber
     return response.getStatus() < 200 || response.getStatus() > 299;
   }
 }

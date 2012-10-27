@@ -83,6 +83,7 @@ public class CouchDatabase {
    */
   @Nonnull
   public static final MediaType JSON_TYPE = MediaType.APPLICATION_JSON_TYPE;
+  public static final int DEBUG_MAX_LENGTH = 1024;
 
   @Nonnull
   private final WebResource dbRoot;
@@ -399,8 +400,8 @@ public class CouchDatabase {
     if ( LOG.isLoggable( Level.FINER ) ) {
       try {
         byte[] content = ByteStreams.toByteArray( response.getEntityInputStream() );
-        if ( content.length > 1024 ) {
-          LOG.finer( "Showing first 1024 bytes:\n" + new String( content ).substring( 0, 1024 ) + "..." );
+        if ( content.length > DEBUG_MAX_LENGTH ) {
+          LOG.finer( "Showing first " + DEBUG_MAX_LENGTH + " bytes:\n" + new String( content ).substring( 0, DEBUG_MAX_LENGTH ) + "..." );
         } else {
           LOG.finer( new String( content ) );
         }

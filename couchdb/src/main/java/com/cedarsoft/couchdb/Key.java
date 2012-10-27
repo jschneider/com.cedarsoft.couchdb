@@ -172,6 +172,7 @@ public class Key {
   @Nonnull
   private static String escape( @Nonnull String value ) {
     try {
+      //noinspection TypeMayBeWeakened
       StringWriter out = new StringWriter();
       JsonGenerator generator = new JsonFactory().createJsonGenerator( out );
       generator.writeString( value );

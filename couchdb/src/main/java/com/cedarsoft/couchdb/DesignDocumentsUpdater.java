@@ -115,13 +115,13 @@ public class DesignDocumentsUpdater {
       if ( LOG.isLoggable( Level.FINE ) ) {
         LOG.fine( "\tStatus: " + response.getStatus() );
       }
-      if ( response.getStatus() == 404 ) {
+      if ( response.getClientResponseStatus() == ClientResponse.Status.NOT_FOUND ) {
         return null;
       }
 
       ActionResponse.verifyNoError( response );
 
-      if ( response.getStatus() != 200 ) {
+      if ( response.getClientResponseStatus() != ClientResponse.Status.OK ) {
         throw new IllegalStateException( "Invalid response: " + response.getStatus() + ": " + response.getEntity( String.class ) );
       }
 

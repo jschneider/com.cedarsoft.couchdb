@@ -140,6 +140,7 @@ public class CouchDbRule implements MethodRule {
 
     @Nullable HTTPBasicAuthFilter authFilter = getAuthFilter( );
     if ( authFilter != null ) {
+      assert client != null;
       client.addFilter( authFilter );
     }
 
@@ -329,6 +330,7 @@ public class CouchDbRule implements MethodRule {
 
   @Nonnull
   public String createNewTestDbName() {
+    //noinspection MagicNumber
     return getTestDbBaseName() + "_" + System.currentTimeMillis() + "_" + random.nextInt( 100000 );
   }
 

@@ -78,6 +78,7 @@ public class DesignDocument {
    * @throws IOException
    */
   public String createJson(@Nullable Revision revision) throws IOException {
+    //noinspection TypeMayBeWeakened
     StringWriter writer = new StringWriter();
     JsonGenerator generator = new JsonFactory().createJsonGenerator( writer );
     generator.writeStartObject();
