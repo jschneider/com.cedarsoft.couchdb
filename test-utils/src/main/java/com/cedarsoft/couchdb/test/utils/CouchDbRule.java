@@ -41,6 +41,7 @@ import com.cedarsoft.couchdb.DesignDocumentsUpdater;
 import com.cedarsoft.exceptions.CanceledException;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.ClientFilter;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
@@ -69,6 +70,7 @@ import static org.junit.Assert.*;
 
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
+ * @noinspection UseOfSystemOutOrSystemErr
  */
 public class CouchDbRule implements MethodRule {
 
@@ -270,13 +272,10 @@ public class CouchDbRule implements MethodRule {
     assert uri != null;
     assert client != null;
 
-    ClientFilter[] filters;
     @Nullable String username = getUsername();
     @Nullable String password = getPassword();
     if ( username != null && password != null ) {
-      filters = new ClientFilter[]{new HTTPBasicAuthFilter( username, password )};
-    } else {
-      filters = new ClientFilter[0];
+      client.addFilter( new HTTPBasicAuthFilter( username, password ) );
     }
 
     return CouchDatabase.create( client, uri, dbName );
