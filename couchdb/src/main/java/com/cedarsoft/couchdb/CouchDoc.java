@@ -39,6 +39,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -103,6 +104,10 @@ public class CouchDoc<T> extends RawCouchDoc {
     return !attachments.isEmpty();
   }
 
+  /**
+   * Returns whether the given document contains any inline attachments
+   * @return true if the doc has inline attachments, false otherwise
+   */
   public boolean hasInlineAttachments() {
     for ( Attachment attachment : attachments ) {
       if ( attachment.isInline() ) {
@@ -112,8 +117,8 @@ public class CouchDoc<T> extends RawCouchDoc {
     return false;
   }
 
-  public void addAttachments( @Nonnull List<? extends Attachment> attachments ) {
-    this.attachments.addAll( attachments );
+  public void addAttachments( @Nonnull Collection<? extends Attachment> additionalAttachments ) {
+    this.attachments.addAll( additionalAttachments );
   }
 
   /**
@@ -173,7 +178,6 @@ public class CouchDoc<T> extends RawCouchDoc {
 
   public static class InlineAttachment extends Attachment {
     @Nonnull
-
     private final byte[] data;
 
     public InlineAttachment( @Nonnull AttachmentId id, @Nonnull MediaType mediaType, @Nonnull InputStream content ) throws IOException {
@@ -187,15 +191,8 @@ public class CouchDoc<T> extends RawCouchDoc {
 
     @Override
     @Nonnull
-
     public byte[] getData() {
       return data.clone();
-    }
-
-    @Nonnull
-
-    public byte[] getDataEncoded() {
-      return data;
     }
 
     @Override
