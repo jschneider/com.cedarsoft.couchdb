@@ -6,6 +6,7 @@ import com.cedarsoft.couchdb.CouchServer;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -14,6 +15,7 @@ import java.util.List;
 public class DeleteCouchUnitDbs {
   public static void main( String[] args ) throws IOException, URISyntaxException, CouchDbException {
     CouchDbRule couchDbRule = new CouchDbRule();
+    couchDbRule.before();
     couchDbRule.createServer();
 
     List<String> namesToDelete = new ArrayList<String>();
