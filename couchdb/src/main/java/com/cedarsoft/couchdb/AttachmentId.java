@@ -53,13 +53,19 @@ public class AttachmentId {
   }
 
   @Override
-  public boolean equals( Object o ) {
-    if ( this == o ) return true;
-    if ( o == null || getClass() != o.getClass() ) return false;
+  public boolean equals( Object obj ) {
+    if ( this == obj ) {
+      return true;
+    }
+    if ( obj == null || getClass() != obj.getClass() ) {
+      return false;
+    }
 
-    AttachmentId docId = ( AttachmentId ) o;
+    AttachmentId docId = ( AttachmentId ) obj;
 
-    if ( !id.equals( docId.id ) ) return false;
+    if ( !id.equals( docId.id ) ) {
+      return false;
+    }
 
     return true;
   }

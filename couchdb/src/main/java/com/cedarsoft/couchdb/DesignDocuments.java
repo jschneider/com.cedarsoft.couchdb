@@ -64,6 +64,9 @@ public class DesignDocuments {
   @Nonnull
   public static final String FILE_PROTOCOL = "file";
 
+  private DesignDocuments() {
+  }
+
   /**
    * Guesses a base dir for a given file(!) url.
    * This method can be used to determine the base dir that can be used to find several design documents that are uploaded to the db.

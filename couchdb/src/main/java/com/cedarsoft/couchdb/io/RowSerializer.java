@@ -179,7 +179,7 @@ public class RowSerializer {
       if ( documentSerializer == null ) {
         throw new NullPointerException( "No document serializer found" );
       }
-      doc = couchDocSerializer.deserialize( documentSerializer, parser );
+      doc = couchDocSerializer.deserialize( documentSerializer, new JacksonParserWrapper( parser ) );
 
       wrapper.closeObject();
     } else {

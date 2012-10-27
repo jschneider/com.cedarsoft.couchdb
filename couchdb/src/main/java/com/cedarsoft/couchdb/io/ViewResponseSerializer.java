@@ -102,14 +102,13 @@ public class ViewResponseSerializer {
     AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
 
 
-    int totalRows = -1;
-    int offset = -1;
-
     AbstractJacksonSerializer.nextToken( parser, JsonToken.FIELD_NAME );
     //If reduced, no total rows and no offset are availlable!
 
     String fieldName = parser.getText();
 
+    int totalRows = -1;
+    int offset = -1;
     while ( !fieldName.equals( PROPERTY_ROWS ) ) {
       if ( fieldName.equals( PROPERTY_TOTAL_ROWS ) ) {
         AbstractJacksonSerializer.nextToken( parser, JsonToken.VALUE_NUMBER_INT );

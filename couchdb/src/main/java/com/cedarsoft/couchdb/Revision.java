@@ -63,13 +63,19 @@ public class Revision {
   }
 
   @Override
-  public boolean equals( Object o ) {
-    if ( this == o ) return true;
-    if ( o == null || getClass() != o.getClass() ) return false;
+  public boolean equals( Object obj ) {
+    if ( this == obj ) {
+      return true;
+    }
+    if ( obj == null || getClass() != obj.getClass() ) {
+      return false;
+    }
 
-    Revision revision = ( Revision ) o;
+    Revision revision = ( Revision ) obj;
 
-    if ( !rev.equals( revision.rev ) ) return false;
+    if ( !rev.equals( revision.rev ) ) {
+      return false;
+    }
 
     return true;
   }

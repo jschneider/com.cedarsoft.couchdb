@@ -11,8 +11,12 @@ import java.util.List;
 
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
+ * @noinspection UseOfSystemOutOrSystemErr
  */
 public class DeleteCouchUnitDbs {
+  private DeleteCouchUnitDbs() {
+  }
+
   public static void main( String[] args ) throws IOException, URISyntaxException, CouchDbException {
     CouchDbRule couchDbRule = new CouchDbRule();
     couchDbRule.before();
