@@ -35,6 +35,7 @@ import com.cedarsoft.couchdb.Row;
 import com.cedarsoft.couchdb.ViewResponse;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.InvalidTypeException;
+import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.serialization.jackson.JacksonSerializer;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
 import org.codehaus.jackson.JsonEncoding;
@@ -99,10 +100,11 @@ public class ViewResponseSerializer {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
     JsonParser parser = jsonFactory.createJsonParser( in );
 
-    AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
+    JacksonParserWrapper parserWrapper = new JacksonParserWrapper( parser );
+    parserWrapper.nextToken(  JsonToken.START_OBJECT );
 
 
-    AbstractJacksonSerializer.nextToken( parser, JsonToken.FIELD_NAME );
+    parserWrapper.nextToken(  JsonToken.FIELD_NAME );
     //If reduced, no total rows and no offset are availlable!
 
     String fieldName = parser.getText();
@@ -111,21 +113,21 @@ public class ViewResponseSerializer {
     int offset = -1;
     while ( !fieldName.equals( PROPERTY_ROWS ) ) {
       if ( fieldName.equals( PROPERTY_TOTAL_ROWS ) ) {
-        AbstractJacksonSerializer.nextToken( parser, JsonToken.VALUE_NUMBER_INT );
+        parserWrapper.nextToken( JsonToken.VALUE_NUMBER_INT );
         totalRows = parser.getIntValue();
       }
 
       if ( fieldName.equals( PROPERTY_OFFSET ) ) {
-        AbstractJacksonSerializer.nextToken( parser, JsonToken.VALUE_NUMBER_INT );
+        parserWrapper.nextToken( JsonToken.VALUE_NUMBER_INT );
         offset = parser.getIntValue();
       }
 
-      AbstractJacksonSerializer.nextToken( parser, JsonToken.FIELD_NAME );
+      parserWrapper.nextToken( JsonToken.FIELD_NAME );
       fieldName = parser.getText();
     }
 
     //Now the rows...
-    AbstractJacksonSerializer.nextToken( parser, JsonToken.START_ARRAY );
+    parserWrapper.nextToken( JsonToken.START_ARRAY );
 
     List<Row<K, V, D>> deserialized = new ArrayList<Row<K, V, D>>();
     while ( parser.nextToken() != JsonToken.END_ARRAY ) {
