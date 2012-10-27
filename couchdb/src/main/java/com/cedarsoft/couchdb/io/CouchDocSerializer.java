@@ -31,6 +31,7 @@
 
 package com.cedarsoft.couchdb.io;
 
+import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.version.Version;
 import com.cedarsoft.couchdb.AttachmentId;
 import com.cedarsoft.couchdb.CouchDoc;
@@ -53,9 +54,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.cedarsoft.serialization.jackson.AbstractJacksonSerializer.nextFieldValue;
-import static com.cedarsoft.serialization.jackson.AbstractJacksonSerializer.nextToken;
 
 public class CouchDocSerializer {
 
@@ -122,9 +120,10 @@ public class CouchDocSerializer {
     try {
       try {
         JsonParser parser = RawCouchDocSerializer.createJsonParser( in );
-        CouchDoc<T> doc = deserialize( wrappedSerializer, parser );
+        JacksonParserWrapper parserWrapper = new JacksonParserWrapper( parser );
+        CouchDoc<T> doc = deserialize( wrappedSerializer, parserWrapper );
 
-        AbstractJacksonSerializer.ensureParserClosed( parser );
+        parserWrapper.ensureParserClosed();
         return doc;
       } finally {
         in.close();
@@ -137,58 +136,58 @@ public class CouchDocSerializer {
   }
 
   @Nonnull
-  public <T> CouchDoc<T> deserialize( @Nonnull JacksonSerializer<T> wrappedSerializer, @Nonnull JsonParser parser ) throws InvalidTypeException, IOException {
-    nextToken( parser, JsonToken.START_OBJECT );
+  public <T> CouchDoc<T> deserialize( @Nonnull JacksonSerializer<T> wrappedSerializer, @Nonnull JacksonParserWrapper parserWrapper ) throws InvalidTypeException, IOException {
+    parserWrapper.nextToken( JsonToken.START_OBJECT );
 
-    nextFieldValue( parser, PROPERTY_ID );
-    String id = parser.getText();
+    parserWrapper.nextFieldValue( PROPERTY_ID );
+    String id = parserWrapper.getText();
 
-    nextFieldValue( parser, PROPERTY_REV );
-    String rev = parser.getText();
+    parserWrapper.nextFieldValue( PROPERTY_REV );
+    String rev = parserWrapper.getText();
 
     //Type and Version
-    nextFieldValue( parser, AbstractJacksonSerializer.PROPERTY_TYPE );
-    wrappedSerializer.verifyType( parser.getText() );
-    nextFieldValue( parser, AbstractJacksonSerializer.PROPERTY_VERSION );
-    Version version = Version.parse( parser.getText() );
+    parserWrapper.nextFieldValue( AbstractJacksonSerializer.PROPERTY_TYPE );
+    wrappedSerializer.verifyType( parserWrapper.getText() );
+    parserWrapper.nextFieldValue( AbstractJacksonSerializer.PROPERTY_VERSION );
+    Version version = Version.parse( parserWrapper.getText() );
 
     //The wrapped object
-    T wrapped = wrappedSerializer.deserialize( parser, version );
+    T wrapped = wrappedSerializer.deserialize( parserWrapper.getParser(), version );
 
     //the attachments - if there are any....
-    List<? extends CouchDoc.Attachment> attachments = deserializeAttachments( parser );
+    List<? extends CouchDoc.Attachment> attachments = deserializeAttachments( parserWrapper );
 
-    AbstractJacksonSerializer.ensureObjectClosed( parser );
+    parserWrapper.ensureObjectClosed();
     CouchDoc<T> doc = new CouchDoc<T>( new DocId( id ), rev == null ? null : new Revision( rev ), wrapped );
     doc.addAttachments( attachments );
     return doc;
   }
 
   @Nonnull
-  private List<? extends CouchDoc.Attachment> deserializeAttachments( JsonParser parser ) throws IOException {
+  private static List<? extends CouchDoc.Attachment> deserializeAttachments( @Nonnull JacksonParserWrapper parserWrapper ) throws IOException {
     List<CouchDoc.Attachment> attachments = new ArrayList<CouchDoc.Attachment>();
 
     //check for attachments
-    if ( parser.getCurrentToken() == JsonToken.FIELD_NAME && parser.getCurrentName().equals( "_attachments" ) ) {
-      nextToken( parser, JsonToken.START_OBJECT );
+    if ( parserWrapper.getCurrentToken() == JsonToken.FIELD_NAME && parserWrapper.getCurrentName().equals( "_attachments" ) ) {
+      parserWrapper.nextToken( JsonToken.START_OBJECT );
 
-      while ( parser.nextToken() != JsonToken.END_OBJECT ) {
-        String attachmentId = parser.getCurrentName();
+      while ( parserWrapper.nextToken() != JsonToken.END_OBJECT ) {
+        String attachmentId = parserWrapper.getCurrentName();
 
-        nextToken( parser, JsonToken.START_OBJECT );
-        nextFieldValue( parser, "content_type" );
-        String contentType = parser.getText();
-        nextFieldValue( parser, "revpos" );
-        nextFieldValue( parser, "digest" );
-        nextFieldValue( parser, "length" );
-        long length = parser.getNumberValue().longValue();
-        nextFieldValue( parser, "stub" );
+        parserWrapper.nextToken( JsonToken.START_OBJECT );
+        parserWrapper.nextFieldValue( "content_type" );
+        String contentType = parserWrapper.getText();
+        parserWrapper.nextFieldValue( "revpos" );
+        parserWrapper.nextFieldValue( "digest" );
+        parserWrapper.nextFieldValue( "length" );
+        long length = parserWrapper.getNumberValue().longValue();
+        parserWrapper.nextFieldValue( "stub" );
 
         attachments.add( new CouchDoc.StubbedAttachment( new AttachmentId( attachmentId ), MediaType.valueOf( contentType ), length ) );
 
-        nextToken( parser, JsonToken.END_OBJECT );
+        parserWrapper.nextToken( JsonToken.END_OBJECT );
       }
-      nextToken( parser, JsonToken.END_OBJECT );
+      parserWrapper.nextToken( JsonToken.END_OBJECT );
     }
 
     return attachments;
