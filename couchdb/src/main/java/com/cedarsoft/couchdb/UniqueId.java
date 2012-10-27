@@ -59,15 +59,15 @@ public class UniqueId {
   }
 
   @Override
-  public boolean equals( Object o ) {
-    if ( this == o ) {
+  public boolean equals( Object obj ) {
+    if ( this == obj ) {
       return true;
     }
-    if ( !( o instanceof UniqueId ) ) {
+    if ( !( obj instanceof UniqueId ) ) {
       return false;
     }
 
-    UniqueId uniqueId = ( UniqueId ) o;
+    UniqueId uniqueId = ( UniqueId ) obj;
 
     if ( !id.equals( uniqueId.id ) ) {
       return false;

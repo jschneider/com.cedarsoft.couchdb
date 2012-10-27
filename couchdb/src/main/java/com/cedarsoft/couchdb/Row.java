@@ -42,7 +42,6 @@ import javax.annotation.Nullable;
  * @param <K> the type of the key
  * @param <V> the type of the value
  * @param <D> the type of the document (if there is one)
- * @noinspection ClassNamingConvention
  */
 public class Row<K, V, D> {
   @Nullable
@@ -67,7 +66,6 @@ public class Row<K, V, D> {
 
   /**
    * Creates a new row
-   * @param id the id
    * @param key the key
    * @param value the value
    * @param doc the document
@@ -112,7 +110,7 @@ public class Row<K, V, D> {
 
   /**
    * Returns the document
-   * @return
+   * @return the document
    */
   @Nullable
   public CouchDoc<? extends D> getDoc() {

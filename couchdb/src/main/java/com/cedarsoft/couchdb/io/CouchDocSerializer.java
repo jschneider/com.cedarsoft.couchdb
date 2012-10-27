@@ -60,6 +60,9 @@ public class CouchDocSerializer {
   public static final String PROPERTY_ID = RawCouchDocSerializer.PROPERTY_ID;
 
   public static final String PROPERTY_REV = RawCouchDocSerializer.PROPERTY_REV;
+  public static final String PROPERTY_ATTACHMENTS = "_attachments";
+  public static final String PROPERTY_CONTENT_TYPE = "content_type";
+  public static final String PROPERTY_DATA = "data";
 
   @Nonnull
   public <T> byte[] serialize( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> wrappedSerializer ) throws IOException {
@@ -93,12 +96,12 @@ public class CouchDocSerializer {
     generator.writeEndObject();
   }
 
-  private <T> void serializeInlineAttachments( @Nonnull CouchDoc<T> doc, @Nonnull JsonGenerator generator ) throws IOException {
+  private static <T> void serializeInlineAttachments( @Nonnull CouchDoc<T> doc, @Nonnull JsonGenerator generator ) throws IOException {
     if ( !doc.hasInlineAttachments() ) {
       return;
     }
 
-    generator.writeObjectFieldStart( "_attachments" );
+    generator.writeObjectFieldStart( PROPERTY_ATTACHMENTS );
 
     for ( CouchDoc.Attachment attachment : doc.getAttachments() ) {
       if ( !attachment.isInline() ) {
@@ -106,8 +109,8 @@ public class CouchDocSerializer {
       }
       generator.writeObjectFieldStart( attachment.getId().asString() );
 
-      generator.writeStringField( "content_type", attachment.getContentType().toString() );
-      generator.writeStringField( "data", new String( Base64.encode( attachment.getData() ) ) );
+      generator.writeStringField( PROPERTY_CONTENT_TYPE, attachment.getContentType().toString() );
+      generator.writeStringField( PROPERTY_DATA, new String( Base64.encode( attachment.getData() ) ) );
 
       generator.writeEndObject();
     }
@@ -168,14 +171,14 @@ public class CouchDocSerializer {
     List<CouchDoc.Attachment> attachments = new ArrayList<CouchDoc.Attachment>();
 
     //check for attachments
-    if ( parserWrapper.getCurrentToken() == JsonToken.FIELD_NAME && parserWrapper.getCurrentName().equals( "_attachments" ) ) {
+    if ( parserWrapper.getCurrentToken() == JsonToken.FIELD_NAME && parserWrapper.getCurrentName().equals( PROPERTY_ATTACHMENTS ) ) {
       parserWrapper.nextToken( JsonToken.START_OBJECT );
 
       while ( parserWrapper.nextToken() != JsonToken.END_OBJECT ) {
         String attachmentId = parserWrapper.getCurrentName();
 
         parserWrapper.nextToken( JsonToken.START_OBJECT );
-        parserWrapper.nextFieldValue( "content_type" );
+        parserWrapper.nextFieldValue( PROPERTY_CONTENT_TYPE );
         String contentType = parserWrapper.getText();
         parserWrapper.nextFieldValue( "revpos" );
         parserWrapper.nextFieldValue( "digest" );

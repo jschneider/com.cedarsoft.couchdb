@@ -60,6 +60,9 @@ import java.io.OutputStream;
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class CouchSerializerWrapper<T> extends AbstractJacksonSerializer<T> {
+  public static final String ID = "_id";
+  public static final String REV = "_rev";
+
   @Nonnull
   private final AbstractJacksonSerializer<T> delegate;
 
@@ -83,7 +86,7 @@ public class CouchSerializerWrapper<T> extends AbstractJacksonSerializer<T> {
    * @throws JsonProcessingException
    */
   @Override
-  public void serialize( @Nonnull JsonGenerator serializeTo, @Nonnull T object, @Nonnull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
+  public void serialize( @Nonnull JsonGenerator serializeTo, @Nonnull T object, @Nonnull Version formatVersion ) throws IOException, VersionException {
     delegate.serialize( serializeTo, object, formatVersion );
   }
 
@@ -91,8 +94,8 @@ public class CouchSerializerWrapper<T> extends AbstractJacksonSerializer<T> {
   protected void beforeTypeAndVersion( @Nonnull T object, @Nonnull JsonGenerator serializeTo ) throws IOException {
     UniqueId uniqueId = getUniqueId();
 
-    serializeTo.writeStringField( "_id", uniqueId.getId().asString() );
-    serializeTo.writeStringField( "_rev", uniqueId.getRevision().asString() );
+    serializeTo.writeStringField( ID, uniqueId.getId().asString() );
+    serializeTo.writeStringField( REV, uniqueId.getRevision().asString() );
     super.beforeTypeAndVersion( object, serializeTo );
   }
 
@@ -110,7 +113,6 @@ public class CouchSerializerWrapper<T> extends AbstractJacksonSerializer<T> {
    * @param out      the output stream
    * @param id       the document id
    * @param revision the revision
-   * @noinspection MethodOverloadsMethodOfSuperclass
    */
   public void serialize( @Nonnull T object, @WillNotClose @Nonnull OutputStream out, @Nonnull DocId id, @Nonnull Revision revision ) throws IOException {
     storeUniqueId( new UniqueId( id, revision ) );
@@ -139,7 +141,7 @@ public class CouchSerializerWrapper<T> extends AbstractJacksonSerializer<T> {
   }
 
   @Override
-  protected void beforeTypeAndVersion( @Nonnull JacksonParserWrapper wrapper ) throws IOException, JsonProcessingException, InvalidTypeException {
+  protected void beforeTypeAndVersion( @Nonnull JacksonParserWrapper wrapper ) throws IOException, InvalidTypeException {
     super.beforeTypeAndVersion( wrapper );
 
     wrapper.nextFieldValue( "_id" );
@@ -152,7 +154,7 @@ public class CouchSerializerWrapper<T> extends AbstractJacksonSerializer<T> {
 
   @Nonnull
   @Override
-  public T deserialize( @Nonnull JsonParser deserializeFrom, @Nonnull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
+  public T deserialize( @Nonnull JsonParser deserializeFrom, @Nonnull Version formatVersion ) throws IOException, VersionException {
     return delegate.deserialize( deserializeFrom, formatVersion );
   }
 
@@ -164,7 +166,6 @@ public class CouchSerializerWrapper<T> extends AbstractJacksonSerializer<T> {
    *
    * @return the current unique id
    *
-   * @noinspection NullableProblems
    */
   @Nonnull
   public UniqueId getCurrent() throws IllegalStateException {

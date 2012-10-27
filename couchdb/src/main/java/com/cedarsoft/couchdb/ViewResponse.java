@@ -110,15 +110,15 @@ public class ViewResponse<TRowKey, TRowValue, TDocument> {
   }
 
   @Override
-  public boolean equals( Object o ) {
-    if ( this == o ) {
+  public boolean equals( Object obj ) {
+    if ( this == obj ) {
       return true;
     }
-    if ( !( o instanceof ViewResponse ) ) {
+    if ( !( obj instanceof ViewResponse ) ) {
       return false;
     }
 
-    ViewResponse<?,?,?> that = ( ViewResponse<?,?,?> ) o;
+    ViewResponse<?,?,?> that = ( ViewResponse<?,?,?> ) obj;
 
     if ( offset != that.offset ) {
       return false;

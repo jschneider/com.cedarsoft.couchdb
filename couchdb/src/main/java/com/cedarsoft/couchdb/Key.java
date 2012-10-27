@@ -32,7 +32,6 @@ package com.cedarsoft.couchdb;
 
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.impl.JsonWriteContext;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -67,15 +66,15 @@ public class Key {
   }
 
   @Override
-  public boolean equals( Object o ) {
-    if ( this == o ) {
+  public boolean equals( Object obj ) {
+    if ( this == obj ) {
       return true;
     }
-    if ( !( o instanceof Key ) ) {
+    if ( !( obj instanceof Key ) ) {
       return false;
     }
 
-    Key key = ( Key ) o;
+    Key key = ( Key ) obj;
 
     if ( !json.equals( key.json ) ) {
       return false;

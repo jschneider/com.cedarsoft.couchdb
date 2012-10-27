@@ -232,11 +232,11 @@ public class DesignDocuments {
    * Returns the base name
    *
    * @param fileName the base name
-   * @return
+   * @return the base name
    */
   @Nonnull
   private static String getBaseName( @Nonnull String fileName ) {
-    int index = fileName.indexOf( "." );
+    int index = fileName.indexOf( '.' );
     if ( index < 0 ) {
       throw new IllegalArgumentException( "invalid file name <" + fileName + ">" );
     }
@@ -288,7 +288,11 @@ public class DesignDocuments {
   public static List<? extends DesignDocument> createDesignDocuments( @Nonnull File viewsDir ) throws IOException {
     List<DesignDocument> designDocuments = new ArrayList<DesignDocument>();
 
-    for ( File file : viewsDir.listFiles() ) {
+    @Nullable File[] files = viewsDir.listFiles();
+    if ( files == null ) {
+      throw new IllegalStateException( "Not a dir: " + viewsDir.getAbsolutePath() );
+    }
+    for ( File file : files ) {
       if ( !file.isDirectory() ) {
         continue;
       }

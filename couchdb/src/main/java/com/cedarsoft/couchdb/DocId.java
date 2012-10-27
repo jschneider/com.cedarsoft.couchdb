@@ -35,6 +35,7 @@ package com.cedarsoft.couchdb;
 import com.google.common.base.Charsets;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.UUID;
@@ -71,7 +72,7 @@ public class DocId {
   }
 
   @Override
-  public boolean equals( Object obj ) {
+  public boolean equals( @Nullable Object obj ) {
     if ( this == obj ) {
       return true;
     }

@@ -95,7 +95,7 @@ public class ActionResponseSerializer {
   }
 
   @Nonnull
-  public UniqueId deserialize( @Nonnull JsonParser deserializeFrom ) throws VersionException, IOException, JsonProcessingException {
+  public UniqueId deserialize( @Nonnull JsonParser deserializeFrom ) throws VersionException, IOException {
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_OK );
     AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_ID );
     String id = deserializeFrom.getText();

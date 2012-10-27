@@ -125,12 +125,12 @@ public class Options {
   }
 
   public boolean isIncludeDocs() {
-    //noinspection CallToNumericToString
+    //noinspection CallToNumericToString,CallToNumericToString
     return Boolean.TRUE.toString().equals( get( INCLUDE_DOCS ) );
   }
 
   public boolean isGroup() {
-    //noinspection CallToNumericToString
+    //noinspection CallToNumericToString,CallToNumericToString
     return Boolean.TRUE.toString().equals( get( GROUP ) );
   }
 

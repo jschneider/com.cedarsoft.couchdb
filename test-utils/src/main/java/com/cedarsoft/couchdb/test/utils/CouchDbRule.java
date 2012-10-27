@@ -281,7 +281,7 @@ public class CouchDbRule implements MethodRule {
     return CouchDatabase.create( client, uri, dbName );
   }
 
-  public void publishViews( @Nonnull CouchDatabase couchDatabase ) throws URISyntaxException, IOException, ActionFailedException {
+  public void publishViews( @Nonnull CouchDatabase couchDatabase ) throws IOException, ActionFailedException {
     try {
       DesignDocumentsProvider provider = getDesignDocumentsProvider();
       if ( provider == null ) {

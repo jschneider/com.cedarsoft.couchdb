@@ -83,19 +83,15 @@ public class RawCouchDocSerializer {
 
   @Nonnull
   public RawCouchDoc deserialize( @Nonnull InputStream in ) throws IOException {
-    try {
-      JsonParser parser = createJsonParser( in );
-      RawCouchDoc doc = deserialize( parser );
+    JsonParser parser = createJsonParser( in );
+    RawCouchDoc doc = deserialize( parser );
 
-      AbstractJacksonSerializer.ensureParserClosed( parser );
-      return doc;
-    } catch ( InvalidTypeException e ) {
-      throw new IOException( "Could not parse due to " + e.getMessage(), e );
-    }
+    AbstractJacksonSerializer.ensureParserClosed( parser );
+    return doc;
   }
 
   @Nonnull
-  public RawCouchDoc deserialize( @Nonnull JsonParser parser ) throws IOException, InvalidTypeException {
+  public RawCouchDoc deserialize( @Nonnull JsonParser parser ) throws IOException {
     AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
 
     AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_ID );
@@ -110,7 +106,7 @@ public class RawCouchDocSerializer {
     return new RawCouchDoc( new DocId( id ), new Revision( rev ) );
   }
 
-  public static void serializeIdAndRev( @Nonnull JsonGenerator serializeTo, @Nonnull RawCouchDoc doc ) throws IOException, JsonProcessingException {
+  public static void serializeIdAndRev( @Nonnull JsonGenerator serializeTo, @Nonnull RawCouchDoc doc ) throws IOException {
     serializeTo.writeStringField( PROPERTY_ID, doc.getId().asString() );
 
     Revision rev = doc.getRev();
