@@ -42,6 +42,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -77,14 +78,18 @@ public class DesignDocumentsUpdater {
         continue;
       }
 
-      LOG.info( "Updating document <" + designDocument.getId() + ">:" );
+      if ( LOG.isLoggable( Level.INFO ) ) {
+        LOG.info( "Updating document <" + designDocument.getId() + ">:" );
+      }
       String path = designDocument.getDesignDocumentPath();
       WebResource resource = database.getDbRoot().path( path );
 
 
       @Nullable Revision currentRevision = getRevision( resource );
 
-      LOG.fine( "PUT: " + resource.toString() );
+      if ( LOG.isLoggable( Level.FINE ) ) {
+        LOG.fine( "PUT: " + resource.toString() );
+      }
       ClientResponse response = resource.put( ClientResponse.class, designDocument.createJson( currentRevision ) );
       try {
         ActionResponse.verifyNoError( response );
@@ -102,10 +107,14 @@ public class DesignDocumentsUpdater {
    */
   @Nullable
   private static Revision getRevision( @Nonnull WebResource path ) throws ActionFailedException, IOException {
-    LOG.fine( "HEAD: " + path.toString() );
+    if ( LOG.isLoggable( Level.FINE ) ) {
+      LOG.fine( "HEAD: " + path.toString() );
+    }
     ClientResponse response = path.get( ClientResponse.class );
     try {
-      LOG.fine( "\tStatus: " + response.getStatus() );
+      if ( LOG.isLoggable( Level.FINE ) ) {
+        LOG.fine( "\tStatus: " + response.getStatus() );
+      }
       if ( response.getStatus() == 404 ) {
         return null;
       }
