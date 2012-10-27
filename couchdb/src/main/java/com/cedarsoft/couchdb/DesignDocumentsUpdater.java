@@ -30,27 +30,18 @@
  */
 package com.cedarsoft.couchdb;
 
-import com.cedarsoft.couchdb.io.CouchSerializerWrapper;
-import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
+import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
-import com.cedarsoft.serialization.jackson.test.compatible.JacksonParserWrapper;
-import com.cedarsoft.version.Version;
-import com.cedarsoft.version.VersionException;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.JsonToken;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.ws.rs.HEAD;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -60,7 +51,7 @@ import java.util.logging.Logger;
  */
 public class DesignDocumentsUpdater {
   @Nonnull
-  private static final Logger log = Logger.getLogger( DesignDocumentsUpdater.class.getName() );
+  private static final Logger LOG = Logger.getLogger( DesignDocumentsUpdater.class.getName() );
   @Nonnull
   private final CouchDatabase database;
 
@@ -86,15 +77,14 @@ public class DesignDocumentsUpdater {
         continue;
       }
 
-      log.info( "Updating document <" + designDocument.getId() + ">:" );
-
+      LOG.info( "Updating document <" + designDocument.getId() + ">:" );
       String path = designDocument.getDesignDocumentPath();
       WebResource resource = database.getDbRoot().path( path );
 
 
       @Nullable Revision currentRevision = getRevision( resource );
 
-      log.fine( "PUT: " + resource.toString() );
+      LOG.fine( "PUT: " + resource.toString() );
       ClientResponse response = resource.put( ClientResponse.class, designDocument.createJson( currentRevision ) );
       try {
         ActionResponse.verifyNoError( response );
@@ -111,11 +101,11 @@ public class DesignDocumentsUpdater {
    * @return the revision or null if there is no revision
    */
   @Nullable
-  private Revision getRevision( @Nonnull WebResource path ) throws ActionFailedException, IOException {
-    log.fine( "HEAD: " + path.toString() );
+  private static Revision getRevision( @Nonnull WebResource path ) throws ActionFailedException, IOException {
+    LOG.fine( "HEAD: " + path.toString() );
     ClientResponse response = path.get( ClientResponse.class );
     try {
-      log.fine( "\tStatus: " + response.getStatus() );
+      LOG.fine( "\tStatus: " + response.getStatus() );
       if ( response.getStatus() == 404 ) {
         return null;
       }
