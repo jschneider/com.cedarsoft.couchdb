@@ -43,12 +43,6 @@
       <artifactId>js</artifactId>
     </dependency>
 
-    <!--temporary - remove later-->
-    <dependency>
-      <groupId>org.easytesting</groupId>
-      <artifactId>fest-util</artifactId>
-    </dependency>
-
     <!--Test Dependencies-->
 
   </dependencies>
