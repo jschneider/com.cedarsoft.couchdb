@@ -86,8 +86,8 @@
   </dependencyManagement>
 
   <properties>
-    <serialization.version>4.1.1</serialization.version>
-    <commons.version>5.1.1</commons.version>
+    <serialization.version>4.1.2</serialization.version>
+    <commons.version>5.1.4</commons.version>
     <jersey.version>1.12</jersey.version>
   </properties>
 
