@@ -93,6 +93,11 @@ public class CouchDatabase {
   private final CouchDocSerializer couchDocSerializer = new CouchDocSerializer();
 
   @Nonnull
+  public static CouchDatabase create( @Nonnull URI uri ) {
+    return create( Client.create(), uri );
+  }
+
+  @Nonnull
   public static CouchDatabase create( @Nonnull Client client, @Nonnull URI uri ) {
     return new CouchDatabase( client.resource( uri ) );
   }
