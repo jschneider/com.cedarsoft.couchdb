@@ -46,7 +46,7 @@ import javax.annotation.Nonnull;
 import java.io.ByteArrayInputStream;
 import java.net.URISyntaxException;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 /**

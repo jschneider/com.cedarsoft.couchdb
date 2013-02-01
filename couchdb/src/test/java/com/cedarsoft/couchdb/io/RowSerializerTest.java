@@ -41,7 +41,7 @@ import com.cedarsoft.serialization.jackson.ListSerializer;
 import com.cedarsoft.serialization.jackson.NullSerializer;
 import com.cedarsoft.serialization.jackson.StringSerializer;
 import com.cedarsoft.test.utils.JsonUtils;
-import org.fest.assertions.api.Assertions;
+import org.fest.assertions.Assertions;
 import org.junit.*;
 
 import java.io.ByteArrayInputStream;

@@ -49,7 +49,7 @@ import com.sun.jersey.client.apache4.ApacheHttpClient4Handler;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.conn.AbstractPooledConnAdapter;
 import org.apache.http.impl.conn.SingleClientConnManager;
-import org.fest.assertions.api.Assertions;
+import org.fest.assertions.Assertions;
 import org.fest.reflect.core.Reflection;
 import org.fest.reflect.reference.TypeRef;
 import org.junit.rules.*;
