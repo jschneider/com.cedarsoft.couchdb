@@ -302,11 +302,8 @@ public class CouchDatabase {
       throw new IllegalArgumentException( Options.INCLUDE_DOCS + " is not supported without a doc serializer" );
     }
 
-    InputStream stream = query( viewDescriptor, options );
-    try {
+    try ( InputStream stream = query( viewDescriptor, options ) ) {
       return viewResponseSerializer.deserialize( keySerializer, valueSerializer, stream );
-    } finally {
-      stream.close();
     }
   }
 
@@ -345,11 +342,8 @@ public class CouchDatabase {
       localOptions = options;
     }
 
-    InputStream stream = query( viewDescriptor, localOptions );
-    try {
+    try ( InputStream stream = query( viewDescriptor, localOptions ) ) {
       return viewResponseSerializer.deserialize( keySerializer, valueSerializer, docSerializer, stream );
-    } finally {
-      stream.close();
     }
   }
 
