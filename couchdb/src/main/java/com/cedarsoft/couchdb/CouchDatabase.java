@@ -42,7 +42,11 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.ClientFilter;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
+import com.sun.jersey.client.apache4.config.ApacheHttpClient4Config;
+import com.sun.jersey.client.apache4.config.DefaultApacheHttpClient4Config;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -96,7 +100,11 @@ public class CouchDatabase {
 
   @Nonnull
   public static CouchDatabase create( @Nonnull URI uri, @Nullable ClientFilter... filters ) {
-    Client client = ApacheHttpClient4.create();
+    ClientConnectionManager connectionManager = new ThreadSafeClientConnManager();
+    DefaultApacheHttpClient4Config config = new DefaultApacheHttpClient4Config();
+    config.getProperties().put( ApacheHttpClient4Config.PROPERTY_CONNECTION_MANAGER, connectionManager );
+
+    Client client = ApacheHttpClient4.create( config );
 
     if ( filters != null ) {
       for ( ClientFilter filter : filters ) {
