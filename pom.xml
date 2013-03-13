@@ -15,8 +15,8 @@
   <description>Parent for CouchDB integration</description>
 
   <scm>
-    <connection>scm:git:git://git.cedarsoft.com/com.cedarsoft.couchdb</connection>
-    <developerConnection>scm:git:ssh://git.cedarsoft.com/home/git/com.cedarsoft.couchdb</developerConnection>
+    <connection>scm:git:git://github.com/jschneider/com.cedarsoft.couchdb.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:jschneider/com.cedarsoft.couchdb.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
