@@ -25,6 +25,10 @@
     <module>test-utils</module>
   </modules>
 
+  <properties>
+    <java.version>1.7</java.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
