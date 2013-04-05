@@ -187,6 +187,6 @@ public class RowSerializer {
     }
 
     wrapper.verifyCurrentToken( JsonToken.END_OBJECT );
-    return new Row<K, V, D>( id, key, value, doc );
+    return new Row<>( id, key, value, doc );
   }
 }

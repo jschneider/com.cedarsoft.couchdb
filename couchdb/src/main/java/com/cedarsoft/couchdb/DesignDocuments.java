@@ -125,9 +125,9 @@ public class DesignDocuments {
     String designDocumentId = viewDescriptors.get( 0 ).getDesignDocumentId();
 
     @Nonnull
-    Map<String, String> mappingFunctions = new HashMap<String, String>();
+    Map<String, String> mappingFunctions = new HashMap<>();
     @Nonnull
-    Map<String, String> reduceFunctions = new HashMap<String, String>();
+    Map<String, String> reduceFunctions = new HashMap<>();
 
     for ( ViewDescriptor viewDescriptor : viewDescriptors ) {
       //the mapping file
@@ -180,9 +180,9 @@ public class DesignDocuments {
   @Nonnull
   public static DesignDocument createDesignDocument( @Nonnull String id, @Nonnull Iterable<? extends File> jsFiles ) throws IOException {
     @Nonnull
-    Map<String, String> mappingFunctions = new HashMap<String, String>();
+    Map<String, String> mappingFunctions = new HashMap<>();
     @Nonnull
-    Map<String, String> reduceFunctions = new HashMap<String, String>();
+    Map<String, String> reduceFunctions = new HashMap<>();
 
     for ( File jsFile : jsFiles ) {
       String content = Files.toString( jsFile, Charsets.UTF_8 );
@@ -286,7 +286,7 @@ public class DesignDocuments {
 
   @Nonnull
   public static List<? extends DesignDocument> createDesignDocuments( @Nonnull File viewsDir ) throws IOException {
-    List<DesignDocument> designDocuments = new ArrayList<DesignDocument>();
+    List<DesignDocument> designDocuments = new ArrayList<>();
 
     @Nullable File[] files = viewsDir.listFiles();
     if ( files == null ) {

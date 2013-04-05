@@ -60,7 +60,7 @@ public class ViewResponse<TRowKey, TRowValue, TDocument> {
   public ViewResponse( int totalRows, int offset, @Nonnull List<Row<TRowKey, TRowValue, TDocument>> rows ) {
     this.totalRows = totalRows;
     this.offset = offset;
-    this.rows = new ArrayList<Row<TRowKey, TRowValue, TDocument>>( rows );
+    this.rows = new ArrayList<>( rows );
   }
 
   public int getTotalRows() {
@@ -78,7 +78,7 @@ public class ViewResponse<TRowKey, TRowValue, TDocument> {
 
   @Nonnull
   public List<? extends TDocument> getRowObjects() {
-    List<TDocument> objects = new ArrayList<TDocument>();
+    List<TDocument> objects = new ArrayList<>();
 
     for ( Row<?, ?, TDocument> row : getRows() ) {
       CouchDoc<? extends TDocument> doc = row.getDoc();
@@ -99,7 +99,7 @@ public class ViewResponse<TRowKey, TRowValue, TDocument> {
    */
   @Nonnull
   public List<? extends TRowValue> getValueObjects() {
-    List<TRowValue> objects = new ArrayList<TRowValue>();
+    List<TRowValue> objects = new ArrayList<>();
 
     for ( Row<?, TRowValue, ?> row : getRows() ) {
       @Nullable TRowValue value = row.getValue();

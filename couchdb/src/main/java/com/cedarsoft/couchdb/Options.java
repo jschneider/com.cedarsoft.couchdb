@@ -32,7 +32,7 @@ public class Options {
   public static final String INCLUSIVE_END = "inclusive_end";
   public static final String GROUP_LEVEL = "group_level";
 
-  private final Map<String, String> content = new HashMap<String, String>();
+  private final Map<String, String> content = new HashMap<>();
 
   @Nonnull
   public static Options empty() {

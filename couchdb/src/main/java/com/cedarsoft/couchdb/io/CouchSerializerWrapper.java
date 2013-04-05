@@ -123,7 +123,7 @@ public class CouchSerializerWrapper<T> extends AbstractJacksonSerializer<T> {
    * Only necessary for serialization in tests!
    */
   @Nonnull
-  private static final ThreadLocal<UniqueId> uniqueIdThreadLocal = new ThreadLocal<UniqueId>();
+  private static final ThreadLocal<UniqueId> uniqueIdThreadLocal = new ThreadLocal<>();
 
   private static void storeUniqueId( @Nonnull UniqueId uniqueId ) {
     uniqueIdThreadLocal.set( uniqueId );

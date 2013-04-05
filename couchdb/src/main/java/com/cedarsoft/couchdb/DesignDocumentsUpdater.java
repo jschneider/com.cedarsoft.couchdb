@@ -126,8 +126,7 @@ public class DesignDocumentsUpdater {
       }
 
       JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
-      InputStream entityInputStream = response.getEntityInputStream();
-      try {
+      try ( InputStream entityInputStream = response.getEntityInputStream() ) {
         JsonParser parser = jsonFactory.createJsonParser( entityInputStream );
         JacksonParserWrapper wrapper = new JacksonParserWrapper( parser );
 
@@ -136,8 +135,6 @@ public class DesignDocumentsUpdater {
         wrapper.nextFieldValue( "_id" );
         wrapper.nextFieldValue( "_rev" );
         return new Revision( wrapper.getText() );
-      } finally {
-        entityInputStream.close();
       }
     } finally {
       response.close();

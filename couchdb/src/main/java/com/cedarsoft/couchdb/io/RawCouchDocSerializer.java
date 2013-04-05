@@ -67,11 +67,8 @@ public class RawCouchDocSerializer {
   }
 
   public void serialize( @Nonnull RawCouchDoc doc, @Nonnull OutputStream out ) throws IOException {
-    JsonGenerator generator = createJsonGenerator( out );
-    try {
+    try ( JsonGenerator generator = createJsonGenerator( out ) ) {
       serialize( doc, generator );
-    } finally {
-      generator.close();
     }
   }
 

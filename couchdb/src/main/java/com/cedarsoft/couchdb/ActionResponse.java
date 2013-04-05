@@ -156,11 +156,8 @@ public class ActionResponse {
     }
 
     try {
-      InputStream inputStream = response.getEntityInputStream();
-      try {
+      try ( InputStream inputStream = response.getEntityInputStream() ) {
         throw new ActionFailedExceptionSerializer().deserialize( response.getStatus(), inputStream );
-      } finally {
-        inputStream.close();
       }
     } catch ( IOException e ) {
       throw new RuntimeException( e );

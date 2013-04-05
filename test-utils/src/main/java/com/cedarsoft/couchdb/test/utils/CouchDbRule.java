@@ -93,7 +93,7 @@ public class CouchDbRule implements MethodRule {
   /**
    * Contains all dbs that are currently active
    */
-  private final Set<CouchDatabase> dbs = new HashSet<CouchDatabase>();
+  private final Set<CouchDatabase> dbs = new HashSet<>();
 
   @Nullable
   protected Client client;

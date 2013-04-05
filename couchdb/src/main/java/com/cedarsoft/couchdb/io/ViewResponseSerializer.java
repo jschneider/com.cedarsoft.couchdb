@@ -129,12 +129,12 @@ public class ViewResponseSerializer {
     //Now the rows...
     parserWrapper.nextToken( JsonToken.START_ARRAY );
 
-    List<Row<K, V, D>> deserialized = new ArrayList<Row<K, V, D>>();
+    List<Row<K, V, D>> deserialized = new ArrayList<>();
     while ( parser.nextToken() != JsonToken.END_ARRAY ) {
       Row<K, V, D> deserializedRow = rowSerializer.deserialize( keySerializer, valueSerializer, documentSerializer, parser );
       deserialized.add( deserializedRow );
     }
 
-    return new ViewResponse<K, V, D>( totalRows, offset, deserialized );
+    return new ViewResponse<>( totalRows, offset, deserialized );
   }
 }

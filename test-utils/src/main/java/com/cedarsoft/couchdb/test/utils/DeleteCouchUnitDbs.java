@@ -17,12 +17,12 @@ public class DeleteCouchUnitDbs {
   private DeleteCouchUnitDbs() {
   }
 
-  public static void main( String[] args ) throws IOException, URISyntaxException, CouchDbException {
+  public static void main( String... args ) throws IOException, URISyntaxException, CouchDbException {
     CouchDbRule couchDbRule = new CouchDbRule();
     couchDbRule.before();
     couchDbRule.createServer();
 
-    List<String> namesToDelete = new ArrayList<String>();
+    List<String> namesToDelete = new ArrayList<>();
     for ( String dbName : couchDbRule.getCurrentServer().listDatabases() ) {
       if ( dbName.startsWith( couchDbRule.getTestDbBaseName() ) ) {
         namesToDelete.add( dbName );
