@@ -38,7 +38,7 @@ import javax.annotation.Nullable;
 /**
  * This exception is thrown if an action has failed (http error codes)
  */
-public class ActionFailedException extends CouchDbException {
+public class ActionFailedException extends CouchDbException implements HasRawData {
   @Nonnull
   private final String error;
   @Nonnull
@@ -63,6 +63,7 @@ public class ActionFailedException extends CouchDbException {
     this.raw = raw;
   }
 
+  @Override
   @Nullable
   public byte[] getRaw() {
     //noinspection ReturnOfCollectionOrArrayField
@@ -71,6 +72,7 @@ public class ActionFailedException extends CouchDbException {
 
   /**
    * Returns the html status code
+   *
    * @return the html status code
    */
   public int getStatus() {
@@ -79,6 +81,7 @@ public class ActionFailedException extends CouchDbException {
 
   /**
    * Returns the error message
+   *
    * @return the error message
    */
   @Nonnull
@@ -88,6 +91,7 @@ public class ActionFailedException extends CouchDbException {
 
   /**
    * Returns the reason
+   *
    * @return the reason
    */
   @Nonnull

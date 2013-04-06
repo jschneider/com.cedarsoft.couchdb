@@ -46,7 +46,7 @@ import java.net.URI;
 /**
  * A response for an action like put/delete
  */
-public class ActionResponse {
+public class ActionResponse implements HasRawData {
   public static final int MAX_RAW_LENGTH = 8192;
   @Nonnull
   private final UniqueId uniqueId;
@@ -101,6 +101,7 @@ public class ActionResponse {
     }
   }
 
+  @Override
   @Nullable
   public byte[] getRaw() {
     //noinspection ReturnOfCollectionOrArrayField
