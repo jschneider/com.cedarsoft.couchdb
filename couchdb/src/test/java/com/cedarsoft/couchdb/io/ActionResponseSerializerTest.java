@@ -56,7 +56,7 @@ import java.net.URISyntaxException;
 @RunWith( Theories.class )
 public class ActionResponseSerializerTest {
   @DataPoint
-  public static final Entry<? extends ActionResponse> SUCCESS() throws URISyntaxException {
+  public static Entry<? extends ActionResponse> success() throws URISyntaxException {
     return AbstractSerializerTest2.create(
       new ActionResponse( new DocId( "daid" ), new Revision( "darev" ), 200, new URI( "asdf" ) ),
       ActionResponseSerializerTest.class.getResource( "ActionResponse.json" )
