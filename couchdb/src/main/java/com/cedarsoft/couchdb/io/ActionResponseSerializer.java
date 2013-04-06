@@ -31,26 +31,24 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.couchdb.UniqueId;
-import com.cedarsoft.version.VersionException;
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
+import com.cedarsoft.couchdb.UniqueId;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
+import com.cedarsoft.version.VersionException;
 import com.sun.jersey.api.client.ClientResponse;
-import org.codehaus.jackson.JsonEncoding;
+import org.apache.commons.io.input.TeeInputStream;
 import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.JsonToken;
 
 import javax.annotation.Nonnull;
 import javax.ws.rs.core.MediaType;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 public class ActionResponseSerializer {
 
@@ -71,27 +69,32 @@ public class ActionResponseSerializer {
       throw new IllegalStateException( "Invalid media type: " + response.getType() );
     }
 
-    UniqueId uniqueId = deserialize( response.getEntityInputStream() );
+    InputStream entityInputStream = response.getEntityInputStream();
 
-    return new ActionResponse( uniqueId, response.getStatus(), response.getLocation() );
-  }
-
-  @Nonnull
-  public UniqueId deserialize( @Nonnull InputStream in ) throws VersionException {
     try {
-      JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
+      //Wrap the input stream
+      try ( MaxLengthByteArrayOutputStream teedOut = new MaxLengthByteArrayOutputStream(); TeeInputStream teeInputStream = new TeeInputStream( entityInputStream, teedOut ) ) {
+        UniqueId uniqueId = deserialize( teeInputStream );
 
-      JsonParser parser = jsonFactory.createJsonParser( in );
-      AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
-
-      UniqueId deserialized = deserialize( parser );
-
-      AbstractJacksonSerializer.ensureParserClosedObject( parser );
-
-      return deserialized;
+        return new ActionResponse( uniqueId, response.getStatus(), response.getLocation(), teedOut.toByteArray() );
+      }
     } catch ( IOException e ) {
       throw new RuntimeException( e );
     }
+  }
+
+  @Nonnull
+  public UniqueId deserialize( @Nonnull InputStream in ) throws VersionException, IOException {
+    JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
+
+    JsonParser parser = jsonFactory.createJsonParser( in );
+    AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
+
+    UniqueId deserialized = deserialize( parser );
+
+    AbstractJacksonSerializer.ensureParserClosedObject( parser );
+
+    return deserialized;
   }
 
   @Nonnull

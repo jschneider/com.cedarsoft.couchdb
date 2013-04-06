@@ -34,10 +34,15 @@ package com.cedarsoft.couchdb.io;
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
+import com.cedarsoft.couchdb.UniqueId;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
 import com.cedarsoft.serialization.test.utils.AbstractSerializerTest2;
 import com.cedarsoft.serialization.test.utils.Entry;
 import com.cedarsoft.test.utils.JsonUtils;
+import com.google.common.base.Charsets;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.core.header.InBoundHeaders;
+import com.sun.jersey.core.spi.factory.MessageBodyFactory;
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -46,11 +51,15 @@ import org.junit.experimental.theories.*;
 import org.junit.runner.*;
 
 import javax.annotation.Nonnull;
+import javax.ws.rs.core.MediaType;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 
 @RunWith( Theories.class )
@@ -64,11 +73,23 @@ public class ActionResponseSerializerTest {
   }
 
   @Theory
-  public void testName( Entry<? extends ActionResponse> entry ) throws Exception {
+  public void testEntry( Entry<? extends ActionResponse> entry ) throws Exception {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     serialize( entry.getObject(), out );
 
-    JsonUtils.assertJsonEquals( new String( entry.getExpected() ), new String( out.toByteArray() ) );
+    JsonUtils.assertJsonEquals( new String( entry.getExpected(), Charsets.UTF_8 ), new String( out.toByteArray(), Charsets.UTF_8 ) );
+
+    ClientResponse clientResponse = new ClientResponse( 200, new InBoundHeaders(), new ByteArrayInputStream( entry.getExpected() ), null ){
+      @Override
+      public MediaType getType() {
+        return MediaType.APPLICATION_JSON_TYPE;
+      }
+    };
+
+    ActionResponse response = new ActionResponseSerializer().deserialize( clientResponse );
+    assertThat( response ).isNotNull();
+    assertThat( response.getRaw() ).isNotNull();
+    JsonUtils.assertJsonEquals( new String( entry.getExpected(), Charsets.UTF_8 ), new String( response.getRaw(), Charsets.UTF_8 ) );
   }
 
   /**
