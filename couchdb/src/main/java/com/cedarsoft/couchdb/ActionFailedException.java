@@ -33,6 +33,7 @@ package com.cedarsoft.couchdb;
 
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * This exception is thrown if an action has failed (http error codes)
@@ -45,11 +46,27 @@ public class ActionFailedException extends CouchDbException {
 
   private final int status;
 
-  public ActionFailedException( int status, @Nonnull String error, @Nonnull String reason ) {
+  /**
+   * This field *may* contain the raw result - or parts of it.
+   * They should only be used for debugging purposes
+   */
+  @Nullable
+  private final byte[] raw;
+
+
+  public ActionFailedException( int status, @Nonnull String error, @Nonnull String reason, @Nullable byte[] raw ) {
     super( status + " " + error + ": " + reason );
     this.status = status;
     this.error = error;
     this.reason = reason;
+    //noinspection AssignmentToCollectionOrArrayFieldFromParameter
+    this.raw = raw;
+  }
+
+  @Nullable
+  public byte[] getRaw() {
+    //noinspection ReturnOfCollectionOrArrayField
+    return raw;
   }
 
   /**

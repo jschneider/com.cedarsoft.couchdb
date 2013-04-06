@@ -38,15 +38,21 @@ import com.cedarsoft.test.utils.JsonUtils;
 import org.junit.experimental.theories.*;
 import org.junit.runner.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
+import static org.fest.assertions.Assertions.assertThat;
 
-@RunWith( Theories.class )
+
+/**
+ * @noinspection ThrowableResultOfMethodCallIgnored
+ */
+@RunWith(Theories.class)
 public class CreationFailedExceptionSerializerTest {
   @DataPoint
   public static final Entry<? extends ActionFailedException> SUCCESS = AbstractSerializerTest2.create(
-    new ActionFailedException(409, "conflict", "Document update conflict."),
-    CreationFailedExceptionSerializerTest.class.getResource("ActionFailedException.json")
+    new ActionFailedException( 409, "conflict", "Document update conflict.", null ),
+    CreationFailedExceptionSerializerTest.class.getResource( "ActionFailedException.json" )
   );
 
   @Theory
@@ -54,6 +60,12 @@ public class CreationFailedExceptionSerializerTest {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     new ActionFailedExceptionSerializer().serialize( entry.getObject(), out );
 
-    JsonUtils.assertJsonEquals(new String(entry.getExpected()), new String(out.toByteArray()));
+    JsonUtils.assertJsonEquals( new String( entry.getExpected() ), new String( out.toByteArray() ) );
+
+    //Now deserialize
+    ActionFailedException deserialized = new ActionFailedExceptionSerializer().deserialize( 409, new ByteArrayInputStream( out.toByteArray() ) );
+    assertThat( deserialized ).isNotNull();
+    assertThat( deserialized.getRaw() ).isNotNull();
+    JsonUtils.assertJsonEquals( new String( entry.getExpected() ), new String( deserialized.getRaw() ) );
   }
 }

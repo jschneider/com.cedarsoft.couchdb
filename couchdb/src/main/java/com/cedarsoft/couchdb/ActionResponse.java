@@ -180,7 +180,7 @@ public class ActionResponse {
     }
 
     if ( !response.hasEntity() ) {
-      throw new ActionFailedException( response.getStatus(), "unknown", "unknown" );
+      throw new ActionFailedException( response.getStatus(), "unknown", "unknown", null );
     }
 
     try {
