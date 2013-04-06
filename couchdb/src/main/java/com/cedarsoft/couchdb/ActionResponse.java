@@ -76,7 +76,7 @@ public class ActionResponse implements HasRawData {
   }
 
   public ActionResponse( @Nonnull DocId docId, @Nonnull Revision rev, int status, @Nonnull URI location, @Nullable byte[] raw ) {
-    this( new UniqueId( docId, rev ), status, location );
+    this( new UniqueId( docId, rev ), status, location, raw );
   }
 
   /**
