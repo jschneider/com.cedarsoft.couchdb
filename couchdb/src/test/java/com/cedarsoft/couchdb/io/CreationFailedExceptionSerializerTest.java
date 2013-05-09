@@ -66,6 +66,7 @@ public class CreationFailedExceptionSerializerTest {
     ActionFailedException deserialized = new ActionFailedExceptionSerializer().deserialize( 409, new ByteArrayInputStream( out.toByteArray() ) );
     assertThat( deserialized ).isNotNull();
     assertThat( deserialized.getRaw() ).isNotNull();
+    assertThat( new String( deserialized.getRaw() ) ).isEqualTo( "{\"error\":\"conflict\",\"reason\":\"Document update conflict.\"}" );
     JsonUtils.assertJsonEquals( new String( entry.getExpected() ), new String( deserialized.getRaw() ) );
   }
 }
