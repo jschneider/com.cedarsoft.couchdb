@@ -9,7 +9,7 @@
 
   <groupId>com.cedarsoft.couchdb</groupId>
   <artifactId>couchdb-parent</artifactId>
-  <version>1.0.8</version>
+  <version>1.0.9-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>CouchDB Parent</name>
   <description>Parent for CouchDB integration</description>
@@ -18,7 +18,7 @@
     <connection>scm:git:git://github.com/jschneider/com.cedarsoft.couchdb.git</connection>
     <developerConnection>scm:git:git@github.com:jschneider/com.cedarsoft.couchdb.git</developerConnection>
     <url>https://github.com/jschneider/com.cedarsoft.couchdb</url>
-    <tag>1.0.8</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <modules>
