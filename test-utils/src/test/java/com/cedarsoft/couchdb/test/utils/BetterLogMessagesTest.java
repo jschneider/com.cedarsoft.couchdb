@@ -27,8 +27,18 @@ public class BetterLogMessagesTest extends CouchTest {
       assertThat( e.getError() ).isEqualTo( "not_found" );
       assertThat( e.getReason() ).isEqualTo( "missing" );
 
-      assertThat( e.getMessage() ).isEqualTo( "404 not_found: missing" );
-      assertThat( e.getLocalizedMessage() ).isEqualTo( "404 not_found: missing" );
+      assertThat( e.getMessage() ).isEqualTo( "404 not_found: missing\n" +
+                                                "\tFirst 41 bytes of response:\n" +
+                                                "-----------------------------------\n" +
+                                                "{\"error\":\"not_found\",\"reason\":\"missing\"}\n" +
+                                                "\n" +
+                                                "-----------------------------------" );
+      assertThat( e.getLocalizedMessage() ).isEqualTo( "404 not_found: missing\n" +
+                                                         "\tFirst 41 bytes of response:\n" +
+                                                         "-----------------------------------\n" +
+                                                         "{\"error\":\"not_found\",\"reason\":\"missing\"}\n" +
+                                                         "\n" +
+                                                         "-----------------------------------" );
       assertThat( new String(e.getRaw(), Charsets.UTF_8).trim() ).isEqualTo( "{\"error\":\"not_found\",\"reason\":\"missing\"}" );
     }
   }
