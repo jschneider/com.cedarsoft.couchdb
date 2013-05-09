@@ -36,6 +36,7 @@ import com.cedarsoft.couchdb.io.ActionResponseSerializer;
 import com.sun.jersey.api.client.ClientResponse;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.WillClose;
 import javax.annotation.WillNotClose;
 import java.io.IOException;
@@ -45,7 +46,8 @@ import java.net.URI;
 /**
  * A response for an action like put/delete
  */
-public class ActionResponse {
+public class ActionResponse implements HasRawData {
+  public static final int MAX_RAW_LENGTH = 8192;
   @Nonnull
   private final UniqueId uniqueId;
 
@@ -53,6 +55,13 @@ public class ActionResponse {
 
   @Nonnull
   private final URI location;
+
+  /**
+   * This field *may* contain the raw result - or parts of it.
+   * They should only be used for debugging purposes
+   */
+  @Nullable
+  private final byte[] raw;
 
   /**
    * Creates a new action response
@@ -63,7 +72,11 @@ public class ActionResponse {
    * @param location the location
    */
   public ActionResponse( @Nonnull DocId docId, @Nonnull Revision rev, int status, @Nonnull URI location ) {
-    this( new UniqueId( docId, rev ), status, location );
+    this( docId, rev, status, location, null );
+  }
+
+  public ActionResponse( @Nonnull DocId docId, @Nonnull Revision rev, int status, @Nonnull URI location, @Nullable byte[] raw ) {
+    this( new UniqueId( docId, rev ), status, location, raw );
   }
 
   /**
@@ -74,9 +87,25 @@ public class ActionResponse {
    * @param location the location
    */
   public ActionResponse( @Nonnull UniqueId uniqueId, int status, @Nonnull URI location ) {
+    this( uniqueId, status, location, null );
+  }
+
+  public ActionResponse( @Nonnull UniqueId uniqueId, int status, @Nonnull URI location, @Nullable byte[] raw ) {
     this.uniqueId = uniqueId;
     this.status = status;
     this.location = location;
+    //noinspection AssignmentToCollectionOrArrayFieldFromParameter
+    this.raw = raw;
+    if ( raw != null && raw.length > MAX_RAW_LENGTH ) {
+      throw new IllegalArgumentException( "raw bytes are too long: was <" + raw.length + "> but max length is <" + MAX_RAW_LENGTH + "" );
+    }
+  }
+
+  @Override
+  @Nullable
+  public byte[] getRaw() {
+    //noinspection ReturnOfCollectionOrArrayField
+    return raw;
   }
 
   /**
@@ -152,15 +181,12 @@ public class ActionResponse {
     }
 
     if ( !response.hasEntity() ) {
-      throw new ActionFailedException( response.getStatus(), "unknown", "unknown" );
+      throw new ActionFailedException( response.getStatus(), "unknown", "unknown", null );
     }
 
     try {
-      InputStream inputStream = response.getEntityInputStream();
-      try {
+      try ( InputStream inputStream = response.getEntityInputStream() ) {
         throw new ActionFailedExceptionSerializer().deserialize( response.getStatus(), inputStream );
-      } finally {
-        inputStream.close();
       }
     } catch ( IOException e ) {
       throw new RuntimeException( e );

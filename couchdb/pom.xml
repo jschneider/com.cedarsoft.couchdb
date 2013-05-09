@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.cedarsoft.couchdb</groupId>
     <artifactId>couchdb-parent</artifactId>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
   </parent>
 
   <groupId>com.cedarsoft</groupId>
@@ -16,6 +16,10 @@
       <groupId>com.cedarsoft.serialization</groupId>
       <artifactId>jackson</artifactId>
     </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>com.sun.jersey</groupId>
@@ -24,6 +28,11 @@
     <dependency>
       <groupId>com.sun.jersey.contribs</groupId>
       <artifactId>jersey-apache-client4</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.cedarsoft.commons</groupId>
+      <artifactId>exceptions</artifactId>
     </dependency>
 
     <!--Guava-->

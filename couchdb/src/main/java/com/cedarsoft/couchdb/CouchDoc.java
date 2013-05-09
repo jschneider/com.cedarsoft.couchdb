@@ -53,7 +53,7 @@ public class CouchDoc<T> extends RawCouchDoc {
   private final T object;
 
   @Nonnull
-  private final List<Attachment> attachments = new ArrayList<Attachment>();
+  private final List<Attachment> attachments = new ArrayList<>();
 
   /**
    * Creates a new info object without a revision

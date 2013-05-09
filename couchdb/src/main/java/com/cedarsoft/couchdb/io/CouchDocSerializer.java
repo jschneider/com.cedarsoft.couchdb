@@ -131,9 +131,7 @@ public class CouchDocSerializer {
       } finally {
         in.close();
       }
-    } catch ( InvalidTypeException e ) {
-      throw new RuntimeException( "Could not parse due to " + e.getMessage(), e );
-    } catch ( IOException e ) {
+    } catch ( InvalidTypeException | IOException e ) {
       throw new RuntimeException( "Could not parse due to " + e.getMessage(), e );
     }
   }
@@ -161,14 +159,14 @@ public class CouchDocSerializer {
     List<? extends CouchDoc.Attachment> attachments = deserializeAttachments( parserWrapper );
 
     parserWrapper.ensureObjectClosed();
-    CouchDoc<T> doc = new CouchDoc<T>( new DocId( id ), rev == null ? null : new Revision( rev ), wrapped );
+    CouchDoc<T> doc = new CouchDoc<>( new DocId( id ), rev == null ? null : new Revision( rev ), wrapped );
     doc.addAttachments( attachments );
     return doc;
   }
 
   @Nonnull
   private static List<? extends CouchDoc.Attachment> deserializeAttachments( @Nonnull JacksonParserWrapper parserWrapper ) throws IOException {
-    List<CouchDoc.Attachment> attachments = new ArrayList<CouchDoc.Attachment>();
+    List<CouchDoc.Attachment> attachments = new ArrayList<>();
 
     //check for attachments
     if ( parserWrapper.getCurrentToken() == JsonToken.FIELD_NAME && parserWrapper.getCurrentName().equals( PROPERTY_ATTACHMENTS ) ) {

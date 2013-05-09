@@ -50,7 +50,7 @@ public class DesignDocument {
   @Nonnull
   private final String id;
   @Nonnull
-  private final Collection<DesignDocuments.View> views = new ArrayList<DesignDocuments.View>();
+  private final Collection<DesignDocuments.View> views = new ArrayList<>();
 
   public DesignDocument( @Nonnull String id ) {
     this.id = id;

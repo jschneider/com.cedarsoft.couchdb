@@ -4,20 +4,21 @@
   <parent>
     <groupId>com.cedarsoft</groupId>
     <artifactId>open</artifactId>
-    <version>47</version>
+    <version>49</version>
   </parent>
 
   <groupId>com.cedarsoft.couchdb</groupId>
   <artifactId>couchdb-parent</artifactId>
-  <version>1.0.7</version>
+  <version>1.0.8</version>
   <packaging>pom</packaging>
   <name>CouchDB Parent</name>
   <description>Parent for CouchDB integration</description>
 
   <scm>
     <connection>scm:git:git://github.com/jschneider/com.cedarsoft.couchdb.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com:jschneider/com.cedarsoft.couchdb.git</developerConnection>
-    <tag>1.0.7</tag>
+    <developerConnection>scm:git:git@github.com:jschneider/com.cedarsoft.couchdb.git</developerConnection>
+    <url>https://github.com/jschneider/com.cedarsoft.couchdb</url>
+    <tag>1.0.8</tag>
   </scm>
 
   <modules>
@@ -95,7 +96,7 @@
   </dependencyManagement>
 
   <properties>
-    <serialization.version>4.1.4</serialization.version>
+    <serialization.version>4.1.5</serialization.version>
     <commons.version>5.1.7</commons.version>
     <jersey.version>1.17</jersey.version>
     <java.version>1.7</java.version>
@@ -108,14 +109,5 @@
       <post>info@cedarsoft.com</post>
     </mailingList>
   </mailingLists>
-
-  <repositories>
-    <repository>
-      <id>maven2-repository.dev.java.net</id>
-      <name>Java.net Repository for Maven</name>
-      <url>http://download.java.net/maven/2</url>
-      <layout>default</layout>
-    </repository>
-  </repositories>
 
 </project>
