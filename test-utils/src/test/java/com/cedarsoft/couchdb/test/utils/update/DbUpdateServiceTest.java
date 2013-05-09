@@ -2,6 +2,7 @@ package com.cedarsoft.couchdb.test.utils.update;
 
 import com.cedarsoft.couchdb.test.utils.CouchTest;
 import com.cedarsoft.couchdb.update.DbUpdateService;
+import com.cedarsoft.couchdb.update.DesignDocumentsVersionInfo;
 import com.cedarsoft.exceptions.NotFoundException;
 import com.cedarsoft.version.Version;
 import org.junit.*;
@@ -23,13 +24,14 @@ public class DbUpdateServiceTest extends CouchTest {
   @Test
   public void testVersion() throws Exception {
     try {
-      updateService.queryCurrentVersion();
+      updateService.queryCurrentVersionInfo();
       fail( "Where is the Exception" );
     } catch ( NotFoundException ignore ) {
     }
 
-    updateService.setCurrentVersion( new Version( 1, 2, 3 ) );
+    DesignDocumentsVersionInfo versionInfo = new DesignDocumentsVersionInfo( new Version( 1, 2, 3 ), 123123123L, "asdf" );
+    updateService.setCurrentVersion( versionInfo );
 
-    assertThat( updateService.queryCurrentVersion() ).isEqualTo( new Version( 1, 2, 3 ) );
+    assertThat( updateService.queryCurrentVersionInfo() ).isEqualTo( versionInfo );
   }
 }
