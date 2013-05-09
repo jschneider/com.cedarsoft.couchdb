@@ -95,7 +95,7 @@
   </dependencyManagement>
 
   <properties>
-    <serialization.version>4.1.4</serialization.version>
+    <serialization.version>4.1.5</serialization.version>
     <commons.version>5.1.7</commons.version>
     <jersey.version>1.17</jersey.version>
     <java.version>1.7</java.version>
