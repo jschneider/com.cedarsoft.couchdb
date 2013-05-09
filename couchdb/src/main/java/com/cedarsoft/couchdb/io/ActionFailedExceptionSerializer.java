@@ -35,6 +35,7 @@ import com.cedarsoft.version.VersionException;
 import com.cedarsoft.couchdb.ActionFailedException;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
+import org.apache.commons.io.input.TeeInputStream;
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -69,16 +70,22 @@ public class ActionFailedExceptionSerializer {
 
   @Nonnull
   public ActionFailedException deserialize( int status, @Nonnull InputStream in ) throws VersionException, IOException {
-    JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
+    try ( MaxLengthByteArrayOutputStream teedOut = new MaxLengthByteArrayOutputStream(); TeeInputStream teeInputStream = new TeeInputStream( in, teedOut ) ) {
 
-    JsonParser parser = jsonFactory.createJsonParser( in );
-    AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
+      JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
-    ActionFailedException deserialized = deserialize( status, parser );
+      JsonParser parser = jsonFactory.createJsonParser( teeInputStream );
+      AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
 
-    AbstractJacksonSerializer.ensureParserClosedObject( parser );
+      AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_ERROR );
+      String error = parser.getText();
+      AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_REASON );
+      String reason = parser.getText();
+      AbstractJacksonSerializer.closeObject( parser );
+      AbstractJacksonSerializer.ensureParserClosedObject( parser );
 
-    return deserialized;
+      return new ActionFailedException( status, error, reason, teedOut.toByteArray() );
+    }
   }
 
   public void serialize( @Nonnull JsonGenerator serializeTo, @Nonnull ActionFailedException object ) throws IOException {
@@ -86,13 +93,4 @@ public class ActionFailedExceptionSerializer {
     serializeTo.writeStringField( PROPERTY_REASON, object.getReason() );
   }
 
-  @Nonnull
-  public ActionFailedException deserialize( int status, @Nonnull JsonParser deserializeFrom ) throws VersionException, IOException {
-    AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_ERROR );
-    String error = deserializeFrom.getText();
-    AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_REASON );
-    String reason = deserializeFrom.getText();
-    AbstractJacksonSerializer.closeObject( deserializeFrom );
-    return new ActionFailedException( status, error, reason );
-  }
 }

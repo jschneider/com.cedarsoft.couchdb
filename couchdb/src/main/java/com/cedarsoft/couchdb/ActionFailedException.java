@@ -32,12 +32,15 @@
 package com.cedarsoft.couchdb;
 
 
+import com.google.common.base.Charsets;
+
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * This exception is thrown if an action has failed (http error codes)
  */
-public class ActionFailedException extends CouchDbException {
+public class ActionFailedException extends CouchDbException implements HasRawData {
   @Nonnull
   private final String error;
   @Nonnull
@@ -45,15 +48,47 @@ public class ActionFailedException extends CouchDbException {
 
   private final int status;
 
-  public ActionFailedException( int status, @Nonnull String error, @Nonnull String reason ) {
-    super( status + " " + error + ": " + reason );
+  /**
+   * This field *may* contain the raw result - or parts of it.
+   * They should only be used for debugging purposes
+   */
+  @Nullable
+  private final byte[] raw;
+
+
+  public ActionFailedException( int status, @Nonnull String error, @Nonnull String reason, @Nullable byte[] raw ) {
+    super( status + " " + error + ": " + reason + formatRaw( raw ) );
     this.status = status;
     this.error = error;
     this.reason = reason;
+    //noinspection AssignmentToCollectionOrArrayFieldFromParameter
+    this.raw = raw;
+  }
+
+  @Nonnull
+  private static String formatRaw( @Nullable byte[] raw ) {
+    if ( raw == null ) {
+      return "";
+    }
+
+    StringBuilder builder = new StringBuilder();
+    builder.append( "\n" );
+    builder.append( "\tFirst " ).append( raw.length ).append( " bytes of response:" ).append( "\n" );
+    builder.append( "-----------------------------------\n" ).append( new String( raw, Charsets.UTF_8 ) ).append( "\n-----------------------------------" );
+
+    return builder.toString();
+  }
+
+  @Override
+  @Nullable
+  public byte[] getRaw() {
+    //noinspection ReturnOfCollectionOrArrayField
+    return raw;
   }
 
   /**
    * Returns the html status code
+   *
    * @return the html status code
    */
   public int getStatus() {
@@ -62,6 +97,7 @@ public class ActionFailedException extends CouchDbException {
 
   /**
    * Returns the error message
+   *
    * @return the error message
    */
   @Nonnull
@@ -71,6 +107,7 @@ public class ActionFailedException extends CouchDbException {
 
   /**
    * Returns the reason
+   *
    * @return the reason
    */
   @Nonnull

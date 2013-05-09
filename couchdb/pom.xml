@@ -16,6 +16,10 @@
       <groupId>com.cedarsoft.serialization</groupId>
       <artifactId>jackson</artifactId>
     </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>com.sun.jersey</groupId>
