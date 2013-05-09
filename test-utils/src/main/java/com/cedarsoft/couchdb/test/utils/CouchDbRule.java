@@ -38,6 +38,7 @@ import com.cedarsoft.couchdb.CouchServer;
 import com.cedarsoft.couchdb.DesignDocument;
 import com.cedarsoft.couchdb.DesignDocumentsProvider;
 import com.cedarsoft.couchdb.DesignDocumentsUpdater;
+import com.cedarsoft.couchdb.update.DesignDocumentsUpdateService;
 import com.cedarsoft.exceptions.CanceledException;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -293,8 +294,8 @@ public class CouchDbRule implements MethodRule {
         return;
       }
 
-      DesignDocumentsUpdater updater = new DesignDocumentsUpdater( couchDatabase );
-      updater.update( designDocuments );
+      DesignDocumentsUpdateService designDocumentsUpdateService = new DesignDocumentsUpdateService( couchDatabase );
+      designDocumentsUpdateService.updateIfNecessary( provider );
     } catch ( CanceledException ignore ) {
     }
   }

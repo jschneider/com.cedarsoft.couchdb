@@ -12,6 +12,7 @@ import com.cedarsoft.serialization.jackson.ListSerializer;
 import com.cedarsoft.serialization.jackson.NullSerializer;
 import com.cedarsoft.serialization.jackson.StringSerializer;
 import com.cedarsoft.test.utils.JsonUtils;
+import com.cedarsoft.version.Version;
 import com.google.common.io.ByteStreams;
 import org.junit.*;
 
@@ -34,7 +35,7 @@ public class Foo2Test extends CouchTest {
   protected DesignDocumentsProvider getDesignDocumentsProvider() {
     @Nullable URL resource = getClass().getResource( "foo/doc1/aView.map.js" );
     assertThat( resource ).isNotNull();
-    return new FileBasedDesignDocumentsProvider( resource );
+    return new FileBasedDesignDocumentsProvider( resource, Version.valueOf( 1, 0, 0 ) );
   }
 
   @Before

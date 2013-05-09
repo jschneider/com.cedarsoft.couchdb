@@ -5,11 +5,11 @@ import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.CouchDatabase;
 import com.cedarsoft.couchdb.CouchDoc;
 import com.cedarsoft.couchdb.DesignDocument;
+import com.cedarsoft.couchdb.DesignDocumentsProvider;
 import com.cedarsoft.couchdb.DesignDocumentsUpdater;
 import com.cedarsoft.couchdb.DocId;
 import com.cedarsoft.couchdb.Revision;
 import com.cedarsoft.exceptions.NotFoundException;
-import com.cedarsoft.version.Version;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,22 +21,22 @@ import java.util.logging.Logger;
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class DbUpdateService {
+public class DesignDocumentsUpdateService {
   @Nonnull
   public static final DocId DESIGN_DOCS_VERSION_ID = new DocId( "design_documents_version" );
 
-  private static final Logger log = Logger.getLogger( DbUpdateService.class.getName() );
+  private static final Logger log = Logger.getLogger( DesignDocumentsUpdateService.class.getName() );
 
   @Nonnull
   private final DesignDocumentsVersionInfoSerializer serializer;
   @Nonnull
   private final CouchDatabase db;
 
-  public DbUpdateService( @Nonnull CouchDatabase db ) {
+  public DesignDocumentsUpdateService( @Nonnull CouchDatabase db ) {
     this( db, new DesignDocumentsVersionInfoSerializer() );
   }
 
-  public DbUpdateService( @Nonnull CouchDatabase db, @Nonnull DesignDocumentsVersionInfoSerializer serializer ) {
+  public DesignDocumentsUpdateService( @Nonnull CouchDatabase db, @Nonnull DesignDocumentsVersionInfoSerializer serializer ) {
     this.serializer = serializer;
     this.db = db;
   }
@@ -111,13 +111,5 @@ public class DbUpdateService {
   private void publishDesignDocuments( @Nonnull Iterable<? extends DesignDocument> designDocuments ) throws IOException, ActionFailedException {
     DesignDocumentsUpdater updater = new DesignDocumentsUpdater( db );
     updater.update( designDocuments );
-  }
-
-  public interface DesignDocumentsProvider {
-    @Nonnull
-    Version getVersion();
-
-    @Nonnull
-    Iterable<? extends DesignDocument> getDesignDocuments();
   }
 }
