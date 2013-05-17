@@ -37,12 +37,18 @@ import javax.annotation.Nonnull;
 
 /**
  * Represents the revision of a document
+ *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class Revision {
   @Nonnull
   private final String rev;
 
+  /**
+   * Creates a new revision
+   *
+   * @param rev the revision string
+   */
   public Revision( @Nonnull String rev ) {
     this.rev = rev;
   }

@@ -74,6 +74,13 @@ public class Row<K, V, D> {
     this( null, key, value, doc );
   }
 
+  /**
+   * Creates a new row
+   * @param id the document id
+   * @param key the key
+   * @param value the value
+   * @param doc the document
+   */
   public Row( @Nullable  DocId id, @Nonnull K key, @Nullable V value, @Nullable CouchDoc<? extends D> doc ) {
     this.id = id;
     this.key = key;

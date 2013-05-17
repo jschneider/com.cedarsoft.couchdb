@@ -47,14 +47,30 @@ public class RawCouchDoc {
   @Nullable
   protected Revision rev;
 
+  /**
+   * Creates a new document
+   *
+   * @param id the document id
+   */
   public RawCouchDoc( @Nonnull DocId id ) {
     this( id, null );
   }
 
-  public RawCouchDoc(@Nonnull UniqueId uniqueId) {
+  /**
+   * Creates a new document for the given unique id
+   *
+   * @param uniqueId the unique id (contains a revision)
+   */
+  public RawCouchDoc( @Nonnull UniqueId uniqueId ) {
     this( uniqueId.getId(), uniqueId.getRevision() );
   }
 
+  /**
+   * Creates a new couch document
+   *
+   * @param id  the id
+   * @param rev the revision
+   */
   public RawCouchDoc( @Nonnull DocId id, @Nullable Revision rev ) {
     this.id = id;
     this.rev = rev;

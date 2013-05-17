@@ -65,6 +65,11 @@ public class ActionFailedException extends CouchDbException implements HasRawDat
     this.raw = raw;
   }
 
+  /**
+   * Formats the raw data
+   * @param raw the raw data
+   * @return an empty string if raw is null, otherwise a textual representation.
+   */
   @Nonnull
   private static String formatRaw( @Nullable byte[] raw ) {
     if ( raw == null ) {

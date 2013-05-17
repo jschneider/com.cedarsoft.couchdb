@@ -52,7 +52,7 @@ public class DocId {
   public DocId( @Nonnull UUID uuid ) {
     this( uuid.toString() );
   }
-  
+
   /**
    * Creates a new document id
    *
@@ -66,6 +66,11 @@ public class DocId {
     }
   }
 
+  /**
+   * Returns the string representation
+   *
+   * @return the string representation
+   */
   @Nonnull
   public String asString() {
     return id;
