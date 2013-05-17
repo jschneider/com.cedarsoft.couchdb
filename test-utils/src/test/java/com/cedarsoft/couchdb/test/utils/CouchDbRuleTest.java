@@ -32,6 +32,7 @@
 package com.cedarsoft.couchdb.test.utils;
 
 import com.cedarsoft.couchdb.ActionFailedException;
+import com.cedarsoft.couchdb.CouchUtils;
 import org.junit.*;
 import org.junit.runners.model.*;
 
@@ -65,7 +66,7 @@ public class CouchDbRuleTest {
                     assertThat( rule.getCurrentDb() ).isNotNull();
 
                     dbName[0] = rule.getCurrentDb().getDbName();
-                    assertThat( rule.getCurrentServer().listDatabases().contains( dbName[0] ) );
+                    assertThat( CouchUtils.listDatabases( rule.getCurrentServer() ).contains( dbName[0] ) );
 
                     assertThat( rule.createDb( COUCH_DB_RULE_TEST_SECOND ).getDbName() ).isEqualTo( COUCH_DB_RULE_TEST_SECOND );
                     assertThat( rule.createDb( COUCH_DB_RULE_TEST_THIRD ).getDbName() ).isEqualTo( COUCH_DB_RULE_TEST_THIRD );
@@ -74,9 +75,9 @@ public class CouchDbRuleTest {
     assertThat( called[0] ).isTrue();
 
     assertRuleValuesAreNull( rule );
-    assertThat( rule.getCurrentServer().listDatabases().contains( dbName[0] ) ).isFalse();
-    assertThat( rule.getCurrentServer().listDatabases().contains( COUCH_DB_RULE_TEST_SECOND ) ).isFalse();
-    assertThat( rule.getCurrentServer().listDatabases().contains( COUCH_DB_RULE_TEST_THIRD ) ).isFalse();
+    assertThat( CouchUtils.listDatabases( rule.getCurrentServer() ).contains( dbName[0] ) ).isFalse();
+    assertThat( CouchUtils.listDatabases( rule.getCurrentServer() ).contains( COUCH_DB_RULE_TEST_SECOND ) ).isFalse();
+    assertThat( CouchUtils.listDatabases( rule.getCurrentServer() ).contains( COUCH_DB_RULE_TEST_THIRD ) ).isFalse();
   }
 
   @Test

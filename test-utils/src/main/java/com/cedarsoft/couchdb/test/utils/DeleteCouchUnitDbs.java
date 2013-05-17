@@ -2,11 +2,11 @@ package com.cedarsoft.couchdb.test.utils;
 
 import com.cedarsoft.couchdb.CouchDbException;
 import com.cedarsoft.couchdb.CouchServer;
+import com.cedarsoft.couchdb.CouchUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -23,7 +23,7 @@ public class DeleteCouchUnitDbs {
     couchDbRule.createServer();
 
     List<String> namesToDelete = new ArrayList<>();
-    for ( String dbName : couchDbRule.getCurrentServer().listDatabases() ) {
+    for ( String dbName : CouchUtils.listDatabases( couchDbRule.getCurrentServer() ) ) {
       if ( dbName.startsWith( couchDbRule.getTestDbBaseName() ) ) {
         namesToDelete.add( dbName );
       }

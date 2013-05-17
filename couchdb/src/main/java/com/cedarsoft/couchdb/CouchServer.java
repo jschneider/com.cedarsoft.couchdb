@@ -30,15 +30,10 @@
  */
 package com.cedarsoft.couchdb;
 
-import com.cedarsoft.serialization.jackson.ListSerializer;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
@@ -76,17 +71,6 @@ public class CouchServer {
       response.close();
     }
     return false;
-  }
-
-  @Nonnull
-  public Collection<? extends String> listDatabases( ) throws IOException {
-
-    try ( InputStream in = root.path( ALL_DBS ).get( InputStream.class ) ) {
-      ListSerializer listSerializer = new ListSerializer();
-      List<? extends Object> dbs = listSerializer.deserialize( in );
-
-      return ( Collection<? extends String> ) dbs;
-    }
   }
 
   @Nonnull
