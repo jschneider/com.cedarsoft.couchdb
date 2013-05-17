@@ -48,6 +48,11 @@
     <dependencies>
       <dependency>
         <groupId>com.cedarsoft</groupId>
+        <artifactId>core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.cedarsoft</groupId>
         <artifactId>couchdb</artifactId>
         <version>${project.version}</version>
       </dependency>
