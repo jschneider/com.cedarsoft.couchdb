@@ -47,7 +47,7 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>com.cedarsoft</groupId>
+        <groupId>com.cedarsoft.couchdb</groupId>
         <artifactId>core</artifactId>
         <version>${project.version}</version>
       </dependency>
