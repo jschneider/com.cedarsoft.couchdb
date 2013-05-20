@@ -30,9 +30,9 @@
  */
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.couchdb.DocId;
-import com.cedarsoft.couchdb.Revision;
-import com.cedarsoft.couchdb.UniqueId;
+import com.cedarsoft.couchdb.core.DocId;
+import com.cedarsoft.couchdb.core.Revision;
+import com.cedarsoft.couchdb.core.UniqueId;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.InvalidTypeException;
 import com.cedarsoft.serialization.jackson.JacksonParserWrapper;

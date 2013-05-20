@@ -31,6 +31,15 @@
 
 package com.cedarsoft.couchdb;
 
+import com.cedarsoft.couchdb.core.ActionFailedException;
+import com.cedarsoft.couchdb.core.AttachmentId;
+import com.cedarsoft.couchdb.core.BasicCouchDatabase;
+import com.cedarsoft.couchdb.core.CouchDoc;
+import com.cedarsoft.couchdb.core.DocId;
+import com.cedarsoft.couchdb.core.Options;
+import com.cedarsoft.couchdb.core.Revision;
+import com.cedarsoft.couchdb.core.ViewDescriptor;
+import com.cedarsoft.couchdb.core.ViewResponse;
 import com.cedarsoft.couchdb.io.CouchDocSerializer;
 import com.cedarsoft.couchdb.io.RowSerializer;
 import com.cedarsoft.couchdb.io.ViewResponseSerializer;

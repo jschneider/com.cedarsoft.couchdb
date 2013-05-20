@@ -30,6 +30,8 @@
  */
 package com.cedarsoft.couchdb;
 
+import com.cedarsoft.couchdb.core.ActionFailedException;
+import com.cedarsoft.couchdb.core.BasicCouchServer;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 

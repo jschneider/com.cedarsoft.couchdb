@@ -31,8 +31,8 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.couchdb.Row;
-import com.cedarsoft.couchdb.ViewResponse;
+import com.cedarsoft.couchdb.core.Row;
+import com.cedarsoft.couchdb.core.ViewResponse;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.InvalidTypeException;
 import com.cedarsoft.serialization.jackson.JacksonParserWrapper;

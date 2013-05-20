@@ -28,46 +28,26 @@
  * or visit www.cedarsoft.com if you need additional information or
  * have any questions.
  */
-package com.cedarsoft.couchdb;
 
-import junit.framework.TestCase;
-import org.fest.assertions.Assertions;
-
-import javax.script.ScriptEngineManager;
-
-import static org.fest.assertions.Assertions.assertThat;
+package com.cedarsoft.couchdb.core;
 
 /**
+ * Base class for couchdb related exceptions
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class KeyTest extends TestCase {
-  public void testDefault() throws Exception {
-    Assertions.assertThat( new Key( "asdf" ) ).isEqualTo( new Key( "asdf" ) );
+public class CouchDbException extends Exception {
+  public CouchDbException() {
   }
 
-  public void testArray() throws Exception {
-    Assertions.assertThat( Key.array().getJson() ).isEqualTo( "[]" );
-    Assertions.assertThat( Key.array( "a", "b", "c" ).getJson() ).isEqualTo( "[\"a\",\"b\",\"c\"]" );
-    Assertions.assertThat( Key.array( "a", "b\"", "c" ).getJson() ).isEqualTo( "[\"a\",\"b\\\"\",\"c\"]" );
+  public CouchDbException( String message ) {
+    super( message );
   }
 
-  public void testEndKey() throws Exception {
-    try {
-      Key.endArray();
-      fail( "Where is the Exception" );
-    } catch ( IllegalArgumentException e ) {
-      Assertions.assertThat( e ).hasMessage( "Need at least one element" );
-    }
-
-    Assertions.assertThat( Key.endArray( "a" ).getJson() ).isEqualTo( "[\"a\",{}]" );
+  public CouchDbException( String message, Throwable cause ) {
+    super( message, cause );
   }
 
-  public void testIntegers() throws Exception {
-    Assertions.assertThat( Key.array( "a", 1, "c" ).getJson() ).isEqualTo( "[\"a\",1,\"c\"]" );
-  }
-
-  public void testString() throws Exception {
-    Assertions.assertThat( Key.string( "asdf" ).getJson() ).isEqualTo( "\"asdf\"" );
-    Assertions.assertThat( Key.string( "as\"df" ).getJson() ).isEqualTo( "\"as\\\"df\"" );
+  public CouchDbException( Throwable cause ) {
+    super( cause );
   }
 }

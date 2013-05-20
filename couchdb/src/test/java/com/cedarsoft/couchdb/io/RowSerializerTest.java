@@ -31,10 +31,10 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.couchdb.CouchDoc;
-import com.cedarsoft.couchdb.DocId;
-import com.cedarsoft.couchdb.Revision;
-import com.cedarsoft.couchdb.Row;
+import com.cedarsoft.couchdb.core.CouchDoc;
+import com.cedarsoft.couchdb.core.DocId;
+import com.cedarsoft.couchdb.core.Revision;
+import com.cedarsoft.couchdb.core.Row;
 import com.cedarsoft.couchdb.test.Foo;
 import com.cedarsoft.serialization.jackson.JacksonSerializer;
 import com.cedarsoft.serialization.jackson.ListSerializer;

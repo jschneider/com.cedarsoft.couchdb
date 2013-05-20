@@ -29,7 +29,7 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.core;
 
 import com.google.common.io.ByteStreams;
 

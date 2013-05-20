@@ -1,4 +1,4 @@
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.core;
 
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -16,13 +16,13 @@ public class OptionsTest {
   @Test
   public void testBasic() throws Exception {
     Options options = new Options();
-    Assertions.assertThat( options.limit( 10 ).toQuery() ).isEqualTo( "?limit=10" );
+    assertThat( options.limit( 10 ).toQuery() ).isEqualTo( "?limit=10" );
   }
 
   @Test
   public void testWithKeys() throws Exception {
     Key key = Key.array( "a", "b", "c" );
-    Assertions.assertThat( key.getJson() ).isEqualTo( "[\"a\",\"b\",\"c\"]" );
-    Assertions.assertThat( new Options().startKey( key ).toQuery() ).isEqualTo( "?startkey=%5B%22a%22%2C%22b%22%2C%22c%22%5D" );
+    assertThat( key.getJson() ).isEqualTo( "[\"a\",\"b\",\"c\"]" );
+    assertThat( new Options().startKey( key ).toQuery() ).isEqualTo( "?startkey=%5B%22a%22%2C%22b%22%2C%22c%22%5D" );
   }
 }

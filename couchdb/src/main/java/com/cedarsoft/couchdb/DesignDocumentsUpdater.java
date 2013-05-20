@@ -30,6 +30,8 @@
  */
 package com.cedarsoft.couchdb;
 
+import com.cedarsoft.couchdb.core.ActionFailedException;
+import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
 import com.sun.jersey.api.client.ClientResponse;

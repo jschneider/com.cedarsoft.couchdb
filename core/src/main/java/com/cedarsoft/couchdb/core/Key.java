@@ -28,7 +28,7 @@
  * or visit www.cedarsoft.com if you need additional information or
  * have any questions.
  */
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.core;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;

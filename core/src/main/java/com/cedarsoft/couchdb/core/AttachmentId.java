@@ -29,55 +29,31 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.core;
 
-
-import com.google.common.base.Charsets;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.UUID;
 
 /**
- * Represents a document id (without a revision)
+ * Identifies an attachment for a document
  *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class DocId {
+public class AttachmentId {
   @Nonnull
   private final String id;
 
-  public DocId( @Nonnull UUID uuid ) {
-    this( uuid.toString() );
+  public AttachmentId( @Nonnull String id ) {
+    this.id = id;
   }
 
-  /**
-   * Creates a new document id
-   *
-   * @param id the id as string
-   */
-  public DocId( @Nonnull String id ) {
-    try {
-      this.id = URLEncoder.encode( id, Charsets.UTF_8.name() );
-    } catch ( UnsupportedEncodingException e ) {
-      throw new RuntimeException( e );
-    }
-  }
-
-  /**
-   * Returns the string representation
-   *
-   * @return the string representation
-   */
   @Nonnull
   public String asString() {
     return id;
   }
 
   @Override
-  public boolean equals( @Nullable Object obj ) {
+  public boolean equals( Object obj ) {
     if ( this == obj ) {
       return true;
     }
@@ -85,7 +61,7 @@ public class DocId {
       return false;
     }
 
-    DocId docId = ( DocId ) obj;
+    AttachmentId docId = ( AttachmentId ) obj;
 
     if ( !id.equals( docId.id ) ) {
       return false;

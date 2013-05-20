@@ -28,72 +28,39 @@
  * or visit www.cedarsoft.com if you need additional information or
  * have any questions.
  */
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.core;
 
 import javax.annotation.Nonnull;
 
 /**
- * a unique id describes the exact revision for a exact id
+ * Describes a view
  *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class UniqueId {
+public class ViewDescriptor {
   @Nonnull
-  private final DocId id;
-  @Nonnull
-  private final Revision revision;
+  private final String designDocumentId;
 
-  public UniqueId( @Nonnull DocId id, @Nonnull Revision revision ) {
-    this.id = id;
-    this.revision = revision;
+  @Nonnull
+  private final String viewId;
+
+  public ViewDescriptor( @Nonnull String designDocumentId, @Nonnull String viewId ) {
+    this.designDocumentId = designDocumentId;
+    this.viewId = viewId;
   }
 
   @Nonnull
-  public DocId getId() {
-    return id;
+  public String getDesignDocumentId() {
+    return designDocumentId;
   }
 
   @Nonnull
-  public Revision getRevision() {
-    return revision;
-  }
-
-  @Override
-  public boolean equals( Object obj ) {
-    if ( this == obj ) {
-      return true;
-    }
-    if ( !( obj instanceof UniqueId ) ) {
-      return false;
-    }
-
-    UniqueId uniqueId = ( UniqueId ) obj;
-
-    if ( !id.equals( uniqueId.id ) ) {
-      return false;
-    }
-    if ( !revision.equals( uniqueId.revision ) ) {
-      return false;
-    }
-
-    return true;
-  }
-
-  @Override
-  public int hashCode() {
-    int result = id.hashCode();
-    result = 31 * result + revision.hashCode();
-    return result;
-  }
-
-  @Deprecated
-  @Nonnull
-  public Revision getRev() {
-    return getRevision();
+  public String getViewId() {
+    return viewId;
   }
 
   @Override
   public String toString() {
-    return "<" + id + "::" + revision + ">";
+    return designDocumentId + " | " + viewId;
   }
 }

@@ -30,6 +30,7 @@
  */
 package com.cedarsoft.couchdb;
 
+import com.cedarsoft.couchdb.core.Revision;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 

@@ -30,6 +30,7 @@
  */
 package com.cedarsoft.couchdb;
 
+import com.cedarsoft.couchdb.core.ViewDescriptor;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;

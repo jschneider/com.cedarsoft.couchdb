@@ -1,4 +1,4 @@
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.core;
 
 import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;

@@ -29,27 +29,43 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.core;
 
 
 import javax.annotation.Nonnull;
 
+
 /**
- * Identifies an attachment for a document
+ * Represents the revision of a document
  *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class AttachmentId {
+public class Revision {
   @Nonnull
-  private final String id;
+  private final String rev;
 
-  public AttachmentId( @Nonnull String id ) {
-    this.id = id;
+  /**
+   * Creates a new revision
+   *
+   * @param rev the revision string
+   */
+  public Revision( @Nonnull String rev ) {
+    this.rev = rev;
+  }
+
+  @Nonnull
+  public String getRev() {
+    return rev;
   }
 
   @Nonnull
   public String asString() {
-    return id;
+    return rev;
+  }
+
+  @Override
+  public String toString() {
+    return rev;
   }
 
   @Override
@@ -61,9 +77,9 @@ public class AttachmentId {
       return false;
     }
 
-    AttachmentId docId = ( AttachmentId ) obj;
+    Revision revision = ( Revision ) obj;
 
-    if ( !id.equals( docId.id ) ) {
+    if ( !rev.equals( revision.rev ) ) {
       return false;
     }
 
@@ -72,11 +88,6 @@ public class AttachmentId {
 
   @Override
   public int hashCode() {
-    return id.hashCode();
-  }
-
-  @Override
-  public String toString() {
-    return id;
+    return rev.hashCode();
   }
 }

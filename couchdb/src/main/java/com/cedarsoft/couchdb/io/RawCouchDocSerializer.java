@@ -31,9 +31,9 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.couchdb.DocId;
-import com.cedarsoft.couchdb.RawCouchDoc;
-import com.cedarsoft.couchdb.Revision;
+import com.cedarsoft.couchdb.core.DocId;
+import com.cedarsoft.couchdb.core.RawCouchDoc;
+import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.InvalidTypeException;
 import com.cedarsoft.serialization.jackson.JacksonSupport;

@@ -28,39 +28,80 @@
  * or visit www.cedarsoft.com if you need additional information or
  * have any questions.
  */
-package com.cedarsoft.couchdb;
+
+package com.cedarsoft.couchdb.core;
+
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 
 /**
- * Describes a view
+ * A raw couch document - without any further informations
  *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class ViewDescriptor {
+public class RawCouchDoc {
   @Nonnull
-  private final String designDocumentId;
+  protected final DocId id;
+  @Nullable
+  protected Revision rev;
 
-  @Nonnull
-  private final String viewId;
-
-  public ViewDescriptor( @Nonnull String designDocumentId, @Nonnull String viewId ) {
-    this.designDocumentId = designDocumentId;
-    this.viewId = viewId;
+  /**
+   * Creates a new document
+   *
+   * @param id the document id
+   */
+  public RawCouchDoc( @Nonnull DocId id ) {
+    this( id, null );
   }
 
-  @Nonnull
-  public String getDesignDocumentId() {
-    return designDocumentId;
+  /**
+   * Creates a new document for the given unique id
+   *
+   * @param uniqueId the unique id (contains a revision)
+   */
+  public RawCouchDoc( @Nonnull UniqueId uniqueId ) {
+    this( uniqueId.getId(), uniqueId.getRevision() );
   }
 
-  @Nonnull
-  public String getViewId() {
-    return viewId;
+  /**
+   * Creates a new couch document
+   *
+   * @param id  the id
+   * @param rev the revision
+   */
+  public RawCouchDoc( @Nonnull DocId id, @Nullable Revision rev ) {
+    this.id = id;
+    this.rev = rev;
   }
 
-  @Override
-  public String toString() {
-    return designDocumentId + " | " + viewId;
+  /**
+   * Returns the id
+   *
+   * @return the id
+   */
+  @Nonnull
+  public DocId getId() {
+    return id;
+  }
+
+  /**
+   * Sets the revision. Should only be called when the doc has been updated
+   *
+   * @param rev the revision
+   */
+  public void setRev( @Nullable Revision rev ) {
+    this.rev = rev;
+  }
+
+  /**
+   * Returns the revision
+   *
+   * @return the revision
+   */
+  @Nullable
+  public Revision getRev() {
+    return rev;
   }
 }

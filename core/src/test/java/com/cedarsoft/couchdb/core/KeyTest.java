@@ -28,66 +28,46 @@
  * or visit www.cedarsoft.com if you need additional information or
  * have any questions.
  */
+package com.cedarsoft.couchdb.core;
 
-package com.cedarsoft.couchdb;
+import junit.framework.TestCase;
+import org.fest.assertions.Assertions;
 
+import javax.script.ScriptEngineManager;
 
-import javax.annotation.Nonnull;
-
+import static org.fest.assertions.Assertions.assertThat;
 
 /**
- * Represents the revision of a document
- *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class Revision {
-  @Nonnull
-  private final String rev;
-
-  /**
-   * Creates a new revision
-   *
-   * @param rev the revision string
-   */
-  public Revision( @Nonnull String rev ) {
-    this.rev = rev;
+public class KeyTest extends TestCase {
+  public void testDefault() throws Exception {
+    assertThat( new Key( "asdf" ) ).isEqualTo( new Key( "asdf" ) );
   }
 
-  @Nonnull
-  public String getRev() {
-    return rev;
+  public void testArray() throws Exception {
+    assertThat( Key.array().getJson() ).isEqualTo( "[]" );
+    assertThat( Key.array( "a", "b", "c" ).getJson() ).isEqualTo( "[\"a\",\"b\",\"c\"]" );
+    assertThat( Key.array( "a", "b\"", "c" ).getJson() ).isEqualTo( "[\"a\",\"b\\\"\",\"c\"]" );
   }
 
-  @Nonnull
-  public String asString() {
-    return rev;
-  }
-
-  @Override
-  public String toString() {
-    return rev;
-  }
-
-  @Override
-  public boolean equals( Object obj ) {
-    if ( this == obj ) {
-      return true;
-    }
-    if ( obj == null || getClass() != obj.getClass() ) {
-      return false;
+  public void testEndKey() throws Exception {
+    try {
+      Key.endArray();
+      fail( "Where is the Exception" );
+    } catch ( IllegalArgumentException e ) {
+      Assertions.assertThat( e ).hasMessage( "Need at least one element" );
     }
 
-    Revision revision = ( Revision ) obj;
-
-    if ( !rev.equals( revision.rev ) ) {
-      return false;
-    }
-
-    return true;
+    assertThat( Key.endArray( "a" ).getJson() ).isEqualTo( "[\"a\",{}]" );
   }
 
-  @Override
-  public int hashCode() {
-    return rev.hashCode();
+  public void testIntegers() throws Exception {
+    assertThat( Key.array( "a", 1, "c" ).getJson() ).isEqualTo( "[\"a\",1,\"c\"]" );
+  }
+
+  public void testString() throws Exception {
+    assertThat( Key.string( "asdf" ).getJson() ).isEqualTo( "\"asdf\"" );
+    assertThat( Key.string( "as\"df" ).getJson() ).isEqualTo( "\"as\\\"df\"" );
   }
 }

@@ -1,4 +1,4 @@
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.core;
 
 import javax.annotation.Nullable;
 

@@ -28,80 +28,72 @@
  * or visit www.cedarsoft.com if you need additional information or
  * have any questions.
  */
-
-package com.cedarsoft.couchdb;
-
+package com.cedarsoft.couchdb.core;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 
 /**
- * A raw couch document - without any further informations
+ * a unique id describes the exact revision for a exact id
  *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class RawCouchDoc {
+public class UniqueId {
   @Nonnull
-  protected final DocId id;
-  @Nullable
-  protected Revision rev;
+  private final DocId id;
+  @Nonnull
+  private final Revision revision;
 
-  /**
-   * Creates a new document
-   *
-   * @param id the document id
-   */
-  public RawCouchDoc( @Nonnull DocId id ) {
-    this( id, null );
-  }
-
-  /**
-   * Creates a new document for the given unique id
-   *
-   * @param uniqueId the unique id (contains a revision)
-   */
-  public RawCouchDoc( @Nonnull UniqueId uniqueId ) {
-    this( uniqueId.getId(), uniqueId.getRevision() );
-  }
-
-  /**
-   * Creates a new couch document
-   *
-   * @param id  the id
-   * @param rev the revision
-   */
-  public RawCouchDoc( @Nonnull DocId id, @Nullable Revision rev ) {
+  public UniqueId( @Nonnull DocId id, @Nonnull Revision revision ) {
     this.id = id;
-    this.rev = rev;
+    this.revision = revision;
   }
 
-  /**
-   * Returns the id
-   *
-   * @return the id
-   */
   @Nonnull
   public DocId getId() {
     return id;
   }
 
-  /**
-   * Sets the revision. Should only be called when the doc has been updated
-   *
-   * @param rev the revision
-   */
-  void setRev( @Nullable Revision rev ) {
-    this.rev = rev;
+  @Nonnull
+  public Revision getRevision() {
+    return revision;
   }
 
-  /**
-   * Returns the revision
-   *
-   * @return the revision
-   */
-  @Nullable
+  @Override
+  public boolean equals( Object obj ) {
+    if ( this == obj ) {
+      return true;
+    }
+    if ( !( obj instanceof UniqueId ) ) {
+      return false;
+    }
+
+    UniqueId uniqueId = ( UniqueId ) obj;
+
+    if ( !id.equals( uniqueId.id ) ) {
+      return false;
+    }
+    if ( !revision.equals( uniqueId.revision ) ) {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = id.hashCode();
+    result = 31 * result + revision.hashCode();
+    return result;
+  }
+
+  @Deprecated
+  @Nonnull
   public Revision getRev() {
-    return rev;
+    return getRevision();
+  }
+
+  @Override
+  public String toString() {
+    return "<" + id + "::" + revision + ">";
   }
 }

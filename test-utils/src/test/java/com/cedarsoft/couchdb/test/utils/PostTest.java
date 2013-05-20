@@ -31,7 +31,7 @@
 package com.cedarsoft.couchdb.test.utils;
 
 import com.cedarsoft.couchdb.ActionResponse;
-import com.cedarsoft.couchdb.DocId;
+import com.cedarsoft.couchdb.core.DocId;
 import org.junit.*;
 
 import java.io.ByteArrayInputStream;

@@ -1,4 +1,4 @@
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.core;
 
 import com.google.common.io.ByteStreams;
 import com.sun.jersey.api.client.Client;
