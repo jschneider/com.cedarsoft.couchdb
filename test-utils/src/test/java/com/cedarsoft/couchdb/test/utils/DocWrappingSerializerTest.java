@@ -35,7 +35,7 @@ import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.couchdb.io.CouchSerializerWrapper;
 import com.cedarsoft.test.utils.JsonUtils;
 import com.cedarsoft.version.VersionException;
-import org.codehaus.jackson.JsonParseException;
+import com.fasterxml.jackson.core.JsonParseException;
 import org.junit.*;
 
 import java.io.ByteArrayOutputStream;
