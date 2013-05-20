@@ -34,6 +34,7 @@ import com.cedarsoft.couchdb.core.ActionFailedException;
 import com.cedarsoft.couchdb.core.DesignDocument;
 import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.couchdb.core.View;
+import com.cedarsoft.couchdb.io.ActionResponseSerializer;
 import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
 import com.sun.jersey.api.client.ClientResponse;
@@ -136,7 +137,7 @@ public class DesignDocumentsUpdater {
       }
       ClientResponse response = resource.put( ClientResponse.class, createJson( designDocument, currentRevision ) );
       try {
-        ActionResponse.verifyNoError( response );
+        ActionResponseSerializer.verifyNoError( response );
       } finally {
         response.close();
       }
@@ -163,7 +164,7 @@ public class DesignDocumentsUpdater {
         return null;
       }
 
-      ActionResponse.verifyNoError( response );
+      ActionResponseSerializer.verifyNoError( response );
 
       if ( response.getClientResponseStatus() != ClientResponse.Status.OK ) {
         throw new IllegalStateException( "Invalid response: " + response.getStatus() + ": " + response.getEntity( String.class ) );

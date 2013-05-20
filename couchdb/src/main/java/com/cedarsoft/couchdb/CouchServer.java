@@ -32,6 +32,7 @@ package com.cedarsoft.couchdb;
 
 import com.cedarsoft.couchdb.core.ActionFailedException;
 import com.cedarsoft.couchdb.core.BasicCouchServer;
+import com.cedarsoft.couchdb.io.ActionResponseSerializer;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
@@ -48,7 +49,7 @@ public class CouchServer extends BasicCouchServer {
   public void deleteDatabase( @Nonnull String dbName ) throws ActionFailedException {
     ClientResponse response = deleteDb( dbName );
     try {
-      ActionResponse.verifyNoError( response );
+      ActionResponseSerializer.verifyNoError( response );
     } finally {
       response.close();
     }
@@ -61,7 +62,7 @@ public class CouchServer extends BasicCouchServer {
         return true;
       }
 
-      ActionResponse.verifyNoError( response );
+      ActionResponseSerializer.verifyNoError( response );
     } finally {
       response.close();
     }

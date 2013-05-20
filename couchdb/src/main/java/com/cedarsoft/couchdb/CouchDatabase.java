@@ -32,6 +32,7 @@
 package com.cedarsoft.couchdb;
 
 import com.cedarsoft.couchdb.core.ActionFailedException;
+import com.cedarsoft.couchdb.core.ActionResponse;
 import com.cedarsoft.couchdb.core.AttachmentId;
 import com.cedarsoft.couchdb.core.BasicCouchDatabase;
 import com.cedarsoft.couchdb.core.CouchDoc;
@@ -40,6 +41,7 @@ import com.cedarsoft.couchdb.core.Options;
 import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.couchdb.core.ViewDescriptor;
 import com.cedarsoft.couchdb.core.ViewResponse;
+import com.cedarsoft.couchdb.io.ActionResponseSerializer;
 import com.cedarsoft.couchdb.io.CouchDocSerializer;
 import com.cedarsoft.couchdb.io.RowSerializer;
 import com.cedarsoft.couchdb.io.ViewResponseSerializer;
@@ -133,7 +135,7 @@ public class CouchDatabase extends BasicCouchDatabase {
 
     ClientResponse response = path
       .type( JSON_TYPE ).accept( JSON_TYPE ).put( ClientResponse.class, content );
-    return ActionResponse.create( response );
+    return ActionResponseSerializer.create( response );
   }
 
   /**
@@ -155,7 +157,7 @@ public class CouchDatabase extends BasicCouchDatabase {
     }
 
     ClientResponse clientResponse = path.type( JSON_TYPE ).accept( JSON_TYPE ).put( ClientResponse.class, couchDocSerializer.serialize( doc, serializer ) );
-    ActionResponse actionResponse = ActionResponse.create( clientResponse );
+    ActionResponse actionResponse = ActionResponseSerializer.create( clientResponse );
 
     //Update the rev
     doc.setRev( actionResponse.getRev() );
@@ -190,7 +192,7 @@ public class CouchDatabase extends BasicCouchDatabase {
     WebResource.Builder path = resource.type( mediaType ).accept( JSON_TYPE );
 
     ClientResponse clientResponse = path.put( ClientResponse.class, content );
-    return ActionResponse.create( clientResponse );
+    return ActionResponseSerializer.create( clientResponse );
   }
 
   /**
@@ -221,7 +223,7 @@ public class CouchDatabase extends BasicCouchDatabase {
     }
 
     ClientResponse clientResponse = resource.type( mediaType ).accept( JSON_TYPE ).put( ClientResponse.class, attachment );
-    return ActionResponse.create( clientResponse );
+    return ActionResponseSerializer.create( clientResponse );
   }
 
   /**
@@ -242,7 +244,7 @@ public class CouchDatabase extends BasicCouchDatabase {
     }
 
     ClientResponse response = path.post( ClientResponse.class, content );
-    return ActionResponse.create( response );
+    return ActionResponseSerializer.create( response );
   }
 
   /**
@@ -369,7 +371,7 @@ public class CouchDatabase extends BasicCouchDatabase {
     }
 
     ClientResponse response = path.delete( ClientResponse.class );
-    return ActionResponse.create( response );
+    return ActionResponseSerializer.create( response );
   }
 
   /**
@@ -395,7 +397,7 @@ public class CouchDatabase extends BasicCouchDatabase {
     }
 
     ClientResponse response = path.delete( ClientResponse.class );
-    return ActionResponse.create( response );
+    return ActionResponseSerializer.create( response );
   }
 
   /**
@@ -419,7 +421,7 @@ public class CouchDatabase extends BasicCouchDatabase {
 
     ClientResponse response = path.head();
     try {
-      ActionResponse.verifyNoError( response );
+      ActionResponseSerializer.verifyNoError( response );
 
       EntityTag entityTag = response.getEntityTag();
       if ( entityTag == null ) {
@@ -452,7 +454,7 @@ public class CouchDatabase extends BasicCouchDatabase {
       LOG.fine( "Took: " + ( end - start ) + " ms" );
     }
 
-    ActionResponse.verifyNoError( response );
+    ActionResponseSerializer.verifyNoError( response );
 
     if ( LOG.isLoggable( Level.FINER ) ) {
       try {

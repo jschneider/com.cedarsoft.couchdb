@@ -37,7 +37,7 @@ import com.cedarsoft.version.Version;
 import com.cedarsoft.version.VersionException;
 import com.cedarsoft.version.VersionRange;
 import com.cedarsoft.couchdb.core.ActionFailedException;
-import com.cedarsoft.couchdb.ActionResponse;
+import com.cedarsoft.couchdb.core.ActionResponse;
 import com.cedarsoft.couchdb.core.AttachmentId;
 import com.cedarsoft.couchdb.core.CouchDoc;
 import com.cedarsoft.couchdb.core.DocId;

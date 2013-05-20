@@ -29,15 +29,13 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.core;
 
 import com.cedarsoft.couchdb.core.ActionFailedException;
 import com.cedarsoft.couchdb.core.DocId;
 import com.cedarsoft.couchdb.core.HasRawData;
 import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.couchdb.core.UniqueId;
-import com.cedarsoft.couchdb.io.ActionFailedExceptionSerializer;
-import com.cedarsoft.couchdb.io.ActionResponseSerializer;
 import com.sun.jersey.api.client.ClientResponse;
 
 import javax.annotation.Nonnull;
@@ -52,7 +50,23 @@ import java.net.URI;
  * A response for an action like put/delete
  */
 public class ActionResponse implements HasRawData {
+  /**
+   * Returns true if the response has not been successful (does not contain a status code of 200-299)
+   *
+   * @param response the response
+   * @return true if the response has not been successful
+   */
+  public static boolean isNotSuccessful( @WillNotClose @Nonnull ClientResponse response ) {
+    return !isSuccessful( response );
+  }
+
+  public static boolean isSuccessful( @WillNotClose @Nonnull ClientResponse response ) {
+    //noinspection MagicNumber
+    return response.getStatus() >= 200 && response.getStatus() <= 299;
+  }
+
   public static final int MAX_RAW_LENGTH = 8192;
+
   @Nonnull
   private final UniqueId uniqueId;
 
@@ -154,62 +168,5 @@ public class ActionResponse implements HasRawData {
       ", status=" + status +
       ", location=" + location +
       '}';
-  }
-
-  /**
-   * Creates a new action response based on the given client response
-   *
-   * @param response the client response
-   * @return the action response
-   *
-   * @throws ActionFailedException if there has been an error
-   */
-  @Nonnull
-  public static ActionResponse create( @WillClose @Nonnull ClientResponse response ) throws ActionFailedException {
-    try {
-      verifyNoError( response );
-      return new ActionResponseSerializer().deserialize( response );
-    } finally {
-      response.close();
-    }
-  }
-
-  /**
-   * Throws an exception if the response contains a value
-   *
-   * @param response the response
-   * @throws ActionFailedException
-   */
-  public static void verifyNoError( @WillNotClose @Nonnull ClientResponse response ) throws ActionFailedException {
-    if ( !isNotSuccessful( response ) ) {
-      return;
-    }
-
-    if ( !response.hasEntity() ) {
-      throw new ActionFailedException( response.getStatus(), "unknown", "unknown", null );
-    }
-
-    try {
-      try ( InputStream inputStream = response.getEntityInputStream() ) {
-        throw new ActionFailedExceptionSerializer().deserialize( response.getStatus(), inputStream );
-      }
-    } catch ( IOException e ) {
-      throw new RuntimeException( e );
-    }
-  }
-
-  /**
-   * Returns true if the response has not been successful (does not contain a status code of 200-299)
-   *
-   * @param response the response
-   * @return true if the response has not been successful
-   */
-  public static boolean isNotSuccessful( @WillNotClose @Nonnull ClientResponse response ) {
-    return !isSuccessful( response );
-  }
-
-  public static boolean isSuccessful( @WillNotClose @Nonnull ClientResponse response ) {
-    //noinspection MagicNumber
-    return response.getStatus() >= 200 && response.getStatus() <= 299;
   }
 }

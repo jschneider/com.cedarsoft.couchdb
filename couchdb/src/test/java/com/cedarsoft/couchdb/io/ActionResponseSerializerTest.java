@@ -31,7 +31,7 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.couchdb.ActionResponse;
+import com.cedarsoft.couchdb.core.ActionResponse;
 import com.cedarsoft.couchdb.core.DocId;
 import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.couchdb.core.UniqueId;

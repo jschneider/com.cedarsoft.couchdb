@@ -1,7 +1,7 @@
 package com.cedarsoft.couchdb.update;
 
 import com.cedarsoft.couchdb.core.ActionFailedException;
-import com.cedarsoft.couchdb.ActionResponse;
+import com.cedarsoft.couchdb.core.ActionResponse;
 import com.cedarsoft.couchdb.CouchDatabase;
 import com.cedarsoft.couchdb.core.CouchDoc;
 import com.cedarsoft.couchdb.core.DesignDocument;
