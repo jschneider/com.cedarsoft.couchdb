@@ -38,16 +38,9 @@ import javax.annotation.Nonnull;
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class CouchServer {
-  @Nonnull
-  public static final String ALL_DBS = "_all_dbs";
-
-  @Nonnull
-  private final WebResource root;
-
-
+public class CouchServer extends BasicCouchServer {
   public CouchServer( @Nonnull WebResource root ) {
-    this.root = root;
+    super( root );
   }
 
   public void deleteDatabase( @Nonnull String dbName ) throws ActionFailedException {
@@ -71,15 +64,5 @@ public class CouchServer {
       response.close();
     }
     return false;
-  }
-
-  @Nonnull
-  public ClientResponse get( @Nonnull String uri ) {
-    return root.path( uri ).get( ClientResponse.class );
-  }
-
-  @Nonnull
-  public ClientResponse put( @Nonnull String uri, @Nonnull byte[] bytes, @Nonnull String mediaType ) {
-    return root.path( uri ).type( mediaType ).put( ClientResponse.class, bytes );
   }
 }
