@@ -44,12 +44,12 @@ import com.cedarsoft.couchdb.core.DocId;
 import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.couchdb.io.RawCouchDocSerializer;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.io.ByteStreams;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
 import org.junit.*;
 
 import javax.annotation.Nonnull;

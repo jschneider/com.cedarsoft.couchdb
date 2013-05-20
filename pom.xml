@@ -102,8 +102,8 @@
   </dependencyManagement>
 
   <properties>
-    <serialization.version>4.1.5</serialization.version>
-    <commons.version>5.1.7</commons.version>
+    <serialization.version>5.0.0-SNAPSHOT</serialization.version>
+    <commons.version>6.0.0-SNAPSHOT</commons.version>
     <jersey.version>1.17</jersey.version>
     <java.version>1.7</java.version>
   </properties>

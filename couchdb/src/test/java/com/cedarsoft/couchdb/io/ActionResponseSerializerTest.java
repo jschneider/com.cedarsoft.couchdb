@@ -39,14 +39,14 @@ import com.cedarsoft.serialization.jackson.JacksonSupport;
 import com.cedarsoft.serialization.test.utils.AbstractSerializerTest2;
 import com.cedarsoft.serialization.test.utils.Entry;
 import com.cedarsoft.test.utils.JsonUtils;
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Charsets;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.core.header.InBoundHeaders;
 import com.sun.jersey.core.spi.factory.MessageBodyFactory;
-import org.codehaus.jackson.JsonEncoding;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
 import org.junit.experimental.theories.*;
 import org.junit.runner.*;
 

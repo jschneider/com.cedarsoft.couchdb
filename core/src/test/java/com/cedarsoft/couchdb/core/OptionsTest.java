@@ -1,7 +1,5 @@
 package com.cedarsoft.couchdb.core;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
 import org.fest.assertions.Assertions;
 import org.junit.*;
 
