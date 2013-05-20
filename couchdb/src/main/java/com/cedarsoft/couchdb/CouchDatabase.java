@@ -116,15 +116,7 @@ public class CouchDatabase extends BasicCouchDatabase {
     viewResponseSerializer = new ViewResponseSerializer( new RowSerializer( couchDocSerializer ) );
   }
 
-  /**
-   * Puts the document
-   *
-   * @param id      the document id
-   * @param content the content
-   * @return the response
-   *
-   * @throws ActionFailedException
-   */
+  @Override
   @Nonnull
   public ActionResponse put( @Nonnull DocId id, @Nonnull InputStream content ) throws ActionFailedException {
     WebResource path = getDbRoot().path( id.asString() );
@@ -165,17 +157,7 @@ public class CouchDatabase extends BasicCouchDatabase {
     return actionResponse;
   }
 
-  /**
-   * Puts a document
-   *
-   * @param docId     the doc id
-   * @param revision  the (optional) revision
-   * @param mediaType the media type
-   * @param content   the content
-   * @return the response
-   *
-   * @throws ActionFailedException
-   */
+  @Override
   @Nonnull
   public ActionResponse put( @Nonnull DocId docId, @Nullable Revision revision, @Nonnull MediaType mediaType, @Nonnull InputStream content ) throws ActionFailedException {
     WebResource resource = getDbRoot().path( docId.asString() );
@@ -195,18 +177,7 @@ public class CouchDatabase extends BasicCouchDatabase {
     return ActionResponseSerializer.create( clientResponse );
   }
 
-  /**
-   * Puts an attachment
-   *
-   * @param docId        the doc id
-   * @param revision     the (optional) revision
-   * @param attachmentId the attachment id
-   * @param mediaType    the media type
-   * @param attachment   the attachment
-   * @return the response
-   *
-   * @throws ActionFailedException
-   */
+  @Override
   @Nonnull
   public ActionResponse put( @Nonnull DocId docId, @Nullable Revision revision, @Nonnull AttachmentId attachmentId, @Nonnull MediaType mediaType, @Nonnull InputStream attachment ) throws ActionFailedException {
     WebResource resource = getDbRoot()
@@ -226,14 +197,7 @@ public class CouchDatabase extends BasicCouchDatabase {
     return ActionResponseSerializer.create( clientResponse );
   }
 
-  /**
-   * Posts the given stream to the db
-   *
-   * @param content the content
-   * @return the action response
-   *
-   * @throws ActionFailedException
-   */
+  @Override
   @Nonnull
   public ActionResponse post( @Nonnull InputStream content ) throws ActionFailedException {
     WebResource.Builder path = getDbRoot()
@@ -351,15 +315,7 @@ public class CouchDatabase extends BasicCouchDatabase {
     return couchDocSerializer.deserialize( serializer, get( id ) );
   }
 
-  /**
-   * Deletes a given document
-   *
-   * @param id       the id
-   * @param revision the revision
-   * @return the response
-   *
-   * @throws ActionFailedException
-   */
+  @Override
   @Nonnull
   public ActionResponse delete( @Nonnull DocId id, @Nonnull Revision revision ) throws ActionFailedException {
     WebResource.Builder path = getDbRoot().path( id.asString() )
@@ -374,16 +330,7 @@ public class CouchDatabase extends BasicCouchDatabase {
     return ActionResponseSerializer.create( response );
   }
 
-  /**
-   * Deletes the given attachment
-   *
-   * @param id           the id
-   * @param revision     the revision
-   * @param attachmentId the attachment id
-   * @return the response
-   *
-   * @throws ActionFailedException
-   */
+  @Override
   @Nonnull
   public ActionResponse delete( @Nonnull DocId id, @Nonnull Revision revision, @Nonnull AttachmentId attachmentId ) throws ActionFailedException {
     WebResource.Builder path = getDbRoot()
@@ -400,14 +347,6 @@ public class CouchDatabase extends BasicCouchDatabase {
     return ActionResponseSerializer.create( response );
   }
 
-  /**
-   * Returns the revision using HEAD
-   *
-   * @param docId the doc id
-   * @return the current revision for the given doc id
-   *
-   * @throws ActionFailedException
-   */
   @Override
   @Nonnull
   public Revision getRev( @Nonnull DocId docId ) throws ActionFailedException {
@@ -433,14 +372,6 @@ public class CouchDatabase extends BasicCouchDatabase {
     }
   }
 
-  /**
-   * Returns the content for the given resource
-   *
-   * @param resource the resources
-   * @return the input stream
-   *
-   * @throws ActionFailedException
-   */
   @Override
   @Nonnull
   public InputStream get( @Nonnull WebResource resource ) throws ActionFailedException {

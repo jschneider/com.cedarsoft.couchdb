@@ -168,9 +168,102 @@ public abstract class BasicCouchDatabase {
   @Nonnull
   public abstract InputStream query( @Nonnull ViewDescriptor viewDescriptor, @Nullable Options options ) throws ActionFailedException;
 
+  /**
+   * Returns the content for the given resource
+   *
+   * @param resource the resources
+   * @return the input stream
+   *
+   * @throws ActionFailedException
+   */
   @Nonnull
   public abstract InputStream get( @Nonnull WebResource resource ) throws ActionFailedException;
 
+  /**
+   * Returns the revision using HEAD
+   *
+   * @param docId the doc id
+   * @return the current revision for the given doc id
+   *
+   * @throws ActionFailedException
+   */
   @Nonnull
   public abstract Revision getRev( @Nonnull DocId docId ) throws ActionFailedException;
+
+  /**
+   * Puts the document
+   *
+   * @param id      the document id
+   * @param content the content
+   * @return the response
+   *
+   * @throws ActionFailedException
+   */
+  @Nonnull
+  public abstract ActionResponse put( @Nonnull DocId id, @Nonnull InputStream content ) throws ActionFailedException;
+
+  /**
+   * Puts a document
+   *
+   * @param docId     the doc id
+   * @param revision  the (optional) revision
+   * @param mediaType the media type
+   * @param content   the content
+   * @return the response
+   *
+   * @throws ActionFailedException
+   */
+  @Nonnull
+  public abstract ActionResponse put( @Nonnull DocId docId, @Nullable Revision revision, @Nonnull MediaType mediaType, @Nonnull InputStream content ) throws ActionFailedException;
+
+  /**
+   * Puts an attachment
+   *
+   * @param docId        the doc id
+   * @param revision     the (optional) revision
+   * @param attachmentId the attachment id
+   * @param mediaType    the media type
+   * @param attachment   the attachment
+   * @return the response
+   *
+   * @throws ActionFailedException
+   */
+  @Nonnull
+  public abstract ActionResponse put( @Nonnull DocId docId, @Nullable Revision revision, @Nonnull AttachmentId attachmentId, @Nonnull MediaType mediaType, @Nonnull InputStream attachment ) throws ActionFailedException;
+
+  /**
+   * Posts the given stream to the db
+   *
+   * @param content the content
+   * @return the action response
+   *
+   * @throws ActionFailedException
+   */
+  @Nonnull
+  public abstract ActionResponse post( @Nonnull InputStream content ) throws ActionFailedException;
+
+  /**
+   * Deletes a given document
+   *
+   * @param id       the id
+   * @param revision the revision
+   * @return the response
+   *
+   * @throws ActionFailedException
+   */
+  @Nonnull
+  public abstract ActionResponse delete( @Nonnull DocId id, @Nonnull Revision revision ) throws ActionFailedException;
+
+  /**
+   * Deletes the given attachment
+   *
+   * @param id           the id
+   * @param revision     the revision
+   * @param attachmentId the attachment id
+   * @return the response
+   *
+   * @throws ActionFailedException
+   */
+  @Nonnull
+  public abstract ActionResponse delete( @Nonnull DocId id, @Nonnull Revision revision, @Nonnull AttachmentId attachmentId ) throws ActionFailedException;
 }
