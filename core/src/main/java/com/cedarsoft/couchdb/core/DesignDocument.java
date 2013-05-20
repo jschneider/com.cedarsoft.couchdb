@@ -28,16 +28,9 @@
  * or visit www.cedarsoft.com if you need additional information or
  * have any questions.
  */
-package com.cedarsoft.couchdb;
-
-import com.cedarsoft.couchdb.core.Revision;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
+package com.cedarsoft.couchdb.core;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -51,63 +44,24 @@ public class DesignDocument {
   @Nonnull
   private final String id;
   @Nonnull
-  private final Collection<DesignDocuments.View> views = new ArrayList<>();
+  private final Collection<View> views = new ArrayList<>();
 
   public DesignDocument( @Nonnull String id ) {
     this.id = id;
   }
 
-  public void add( @Nonnull DesignDocuments.View view ) {
+  public void add( @Nonnull View view ) {
     this.views.add( view );
   }
 
   @Nonnull
-  public Collection<? extends DesignDocuments.View> getViews() {
+  public Collection<? extends View> getViews() {
     return Collections.unmodifiableCollection( views );
   }
 
   @Nonnull
   public String getId() {
     return id;
-  }
-
-  /**
-   * Creates the json content for the design document
-   *
-   * @return a string containing the json content for this design document
-   *
-   * @throws IOException
-   */
-  public String createJson(@Nullable Revision revision) throws IOException {
-    //noinspection TypeMayBeWeakened
-    StringWriter writer = new StringWriter();
-    JsonGenerator generator = new JsonFactory().createJsonGenerator( writer );
-    generator.writeStartObject();
-
-    generator.writeStringField( "_id", id );
-    if ( revision != null ) {
-      generator.writeStringField( "_rev", revision.asString() );
-    }
-    generator.writeStringField( "language", "javascript" );
-
-    generator.writeObjectFieldStart( "views" );
-
-    for ( DesignDocuments.View view : views ) {
-      generator.writeObjectFieldStart( view.getName() );
-
-      generator.writeStringField( "map", view.getMappingFunction() );
-      @Nullable String reduceFunction = view.getReduceFunction();
-      if ( reduceFunction != null ) {
-        generator.writeStringField( "reduce", reduceFunction );
-      }
-      generator.writeEndObject();
-    }
-
-
-    generator.writeEndObject();
-    generator.writeEndObject();
-    generator.flush();
-    return writer.toString();
   }
 
   public boolean hasViews() {

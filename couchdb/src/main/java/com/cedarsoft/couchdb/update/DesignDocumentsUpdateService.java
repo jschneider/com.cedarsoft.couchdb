@@ -4,7 +4,7 @@ import com.cedarsoft.couchdb.core.ActionFailedException;
 import com.cedarsoft.couchdb.ActionResponse;
 import com.cedarsoft.couchdb.CouchDatabase;
 import com.cedarsoft.couchdb.core.CouchDoc;
-import com.cedarsoft.couchdb.DesignDocument;
+import com.cedarsoft.couchdb.core.DesignDocument;
 import com.cedarsoft.couchdb.DesignDocumentsProvider;
 import com.cedarsoft.couchdb.DesignDocumentsUpdater;
 import com.cedarsoft.couchdb.core.DocId;

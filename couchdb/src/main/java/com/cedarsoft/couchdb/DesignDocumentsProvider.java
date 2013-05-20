@@ -1,5 +1,6 @@
 package com.cedarsoft.couchdb;
 
+import com.cedarsoft.couchdb.core.DesignDocument;
 import com.cedarsoft.version.Version;
 
 import javax.annotation.Nonnull;

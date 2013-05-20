@@ -28,9 +28,8 @@
  * or visit www.cedarsoft.com if you need additional information or
  * have any questions.
  */
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.core;
 
-import com.cedarsoft.couchdb.core.ViewDescriptor;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
@@ -42,7 +41,6 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -303,37 +301,4 @@ public class DesignDocuments {
 
     return designDocuments;
   }
-
-  public static class View {
-    @Nonnull
-    private final String name;
-
-    @Nonnull
-    private final String mappingFunction;
-
-    @Nullable
-    private final String reduceFunction;
-
-    public View( @Nonnull String name, @Nonnull String mappingFunction, @Nullable String reduceFunction ) {
-      this.name = name;
-      this.mappingFunction = mappingFunction;
-      this.reduceFunction = reduceFunction;
-    }
-
-    @Nonnull
-    public String getName() {
-      return name;
-    }
-
-    @Nonnull
-    public String getMappingFunction() {
-      return mappingFunction;
-    }
-
-    @Nullable
-    public String getReduceFunction() {
-      return reduceFunction;
-    }
-  }
-
 }
