@@ -91,15 +91,27 @@ public class CouchDoc<T> extends RawCouchDoc {
     return object;
   }
 
+  /**
+   * Adds an attachment
+   * @param attachment the attachment
+   */
   public void addAttachment( @Nonnull Attachment attachment ) {
     this.attachments.add( attachment );
   }
 
+  /**
+   * Returns the attachments
+   * @return the attachments
+   */
   @Nonnull
   public List<? extends Attachment> getAttachments() {
     return Collections.unmodifiableList( attachments );
   }
 
+  /**
+   * Returns whether the document has any attachments
+   * @return the attachments
+   */
   public boolean hasAttachments() {
     return !attachments.isEmpty();
   }
@@ -117,6 +129,10 @@ public class CouchDoc<T> extends RawCouchDoc {
     return false;
   }
 
+  /**
+   * Adds attachments
+   * @param additionalAttachments the additional attachments
+   */
   public void addAttachments( @Nonnull Collection<? extends Attachment> additionalAttachments ) {
     this.attachments.addAll( additionalAttachments );
   }
@@ -136,22 +152,42 @@ public class CouchDoc<T> extends RawCouchDoc {
       this.contentType = contentType;
     }
 
+    /**
+     * Returns the attachment id
+     * @return the attachment id
+     */
     @Nonnull
     public AttachmentId getId() {
       return id;
     }
 
+    /**
+     * Returns the content type
+     * @return the content type
+     */
     @Nonnull
     public MediaType getContentType() {
       return contentType;
     }
 
+    /**
+     * Whether this is an inline attachment
+     * @return true if this is an inline attachment, false otherwise
+     */
     public boolean isInline() {
       return false;
     }
 
+    /**
+     * Returns the length of the attachment
+     * @return the length
+     */
     public abstract long getLength();
 
+    /**
+     * Returns the data
+     * @return the data
+     */
     @Nonnull
     public abstract byte[] getData();
   }
@@ -176,6 +212,9 @@ public class CouchDoc<T> extends RawCouchDoc {
     }
   }
 
+  /**
+   * An inline attachment
+   */
   public static class InlineAttachment extends Attachment {
     @Nonnull
     private final byte[] data;
