@@ -5,12 +5,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.ClientFilter;
-import com.sun.jersey.client.apache4.ApacheHttpClient4;
-import com.sun.jersey.client.apache4.config.ApacheHttpClient4Config;
-import com.sun.jersey.client.apache4.config.DefaultApacheHttpClient4Config;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

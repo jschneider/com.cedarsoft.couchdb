@@ -31,10 +31,10 @@
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-client</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.sun.jersey.contribs</groupId>
-      <artifactId>jersey-apache-client4</artifactId>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>com.sun.jersey.contribs</groupId>-->
+      <!--<artifactId>jersey-apache-client4</artifactId>-->
+    <!--</dependency>-->
 
     <!--Test Dependencies-->
     <dependency>
