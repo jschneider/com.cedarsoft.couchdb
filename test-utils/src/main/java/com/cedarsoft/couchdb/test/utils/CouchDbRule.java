@@ -32,27 +32,23 @@
 package com.cedarsoft.couchdb.test.utils;
 
 import com.cedarsoft.couchdb.ActionFailedException;
+import com.cedarsoft.couchdb.BasicCouchDatabase;
 import com.cedarsoft.couchdb.CouchDatabase;
 import com.cedarsoft.couchdb.CouchDbException;
 import com.cedarsoft.couchdb.CouchServer;
 import com.cedarsoft.couchdb.DesignDocument;
 import com.cedarsoft.couchdb.DesignDocumentsProvider;
-import com.cedarsoft.couchdb.DesignDocumentsUpdater;
 import com.cedarsoft.couchdb.update.DesignDocumentsUpdateService;
 import com.cedarsoft.exceptions.CanceledException;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.client.filter.ClientFilter;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
 import com.sun.jersey.client.apache4.ApacheHttpClient4Handler;
-import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.conn.AbstractPooledConnAdapter;
 import org.apache.http.impl.conn.SingleClientConnManager;
 import org.fest.assertions.Assertions;
 import org.fest.reflect.core.Reflection;
-import org.fest.reflect.reference.TypeRef;
 import org.junit.rules.*;
 import org.junit.runners.model.*;
 

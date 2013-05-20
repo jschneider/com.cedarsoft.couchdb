@@ -31,6 +31,9 @@
 package com.cedarsoft.couchdb;
 
 import junit.framework.TestCase;
+import org.fest.assertions.Assertions;
+
+import javax.script.ScriptEngineManager;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -39,13 +42,13 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 public class KeyTest extends TestCase {
   public void testDefault() throws Exception {
-    assertThat( new Key( "asdf" ) ).isEqualTo( new Key( "asdf" ) );
+    Assertions.assertThat( new Key( "asdf" ) ).isEqualTo( new Key( "asdf" ) );
   }
 
   public void testArray() throws Exception {
-    assertThat( Key.array().getJson() ).isEqualTo( "[]" );
-    assertThat( Key.array( "a", "b", "c" ).getJson() ).isEqualTo( "[\"a\",\"b\",\"c\"]" );
-    assertThat( Key.array( "a", "b\"", "c" ).getJson() ).isEqualTo( "[\"a\",\"b\\\"\",\"c\"]" );
+    Assertions.assertThat( Key.array().getJson() ).isEqualTo( "[]" );
+    Assertions.assertThat( Key.array( "a", "b", "c" ).getJson() ).isEqualTo( "[\"a\",\"b\",\"c\"]" );
+    Assertions.assertThat( Key.array( "a", "b\"", "c" ).getJson() ).isEqualTo( "[\"a\",\"b\\\"\",\"c\"]" );
   }
 
   public void testEndKey() throws Exception {
@@ -53,18 +56,18 @@ public class KeyTest extends TestCase {
       Key.endArray();
       fail( "Where is the Exception" );
     } catch ( IllegalArgumentException e ) {
-      assertThat( e ).hasMessage( "Need at least one element" );
+      Assertions.assertThat( e ).hasMessage( "Need at least one element" );
     }
 
-    assertThat( Key.endArray( "a" ).getJson() ).isEqualTo( "[\"a\",{}]" );
+    Assertions.assertThat( Key.endArray( "a" ).getJson() ).isEqualTo( "[\"a\",{}]" );
   }
 
   public void testIntegers() throws Exception {
-    assertThat( Key.array( "a", 1, "c" ).getJson() ).isEqualTo( "[\"a\",1,\"c\"]" );
+    Assertions.assertThat( Key.array( "a", 1, "c" ).getJson() ).isEqualTo( "[\"a\",1,\"c\"]" );
   }
 
   public void testString() throws Exception {
-    assertThat( Key.string( "asdf" ).getJson() ).isEqualTo( "\"asdf\"" );
-    assertThat( Key.string( "as\"df" ).getJson() ).isEqualTo( "\"as\\\"df\"" );
+    Assertions.assertThat( Key.string( "asdf" ).getJson() ).isEqualTo( "\"asdf\"" );
+    Assertions.assertThat( Key.string( "as\"df" ).getJson() ).isEqualTo( "\"as\\\"df\"" );
   }
 }

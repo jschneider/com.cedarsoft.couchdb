@@ -60,44 +60,11 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Offers access methods for a couch database
  */
-public class CouchDatabase {
-  @Nonnull
-  private static final Logger LOG = Logger.getLogger( CouchDatabase.class.getName() );
-
-  /**
-   * The path segment used to access design documents
-   */
-  @Nonnull
-  public static final String PATH_SEGMENT_DESIGN = "_design";
-  /**
-   * The path segment used to access a view
-   */
-  @Nonnull
-  public static final String PATH_SEGMENT_VIEW = "_view";
-  /**
-   * Param for revision
-   */
-  @Nonnull
-  public static final String PARAM_REV = "rev";
-  /**
-   * JSON type
-   */
-  @Nonnull
-  public static final MediaType JSON_TYPE = MediaType.APPLICATION_JSON_TYPE;
-  public static final int DEBUG_MAX_LENGTH = 1024;
-
-  @Nonnull
-  private final WebResource dbRoot;
-  @Nonnull
-  private final ViewResponseSerializer viewResponseSerializer;
-  @Nonnull
-  private final CouchDocSerializer couchDocSerializer = new CouchDocSerializer();
-
+public class CouchDatabase extends BasicCouchDatabase {
   @Nonnull
   public static CouchDatabase create( @Nonnull URI uri, @Nullable ClientFilter... filters ) {
     ClientConnectionManager connectionManager = new ThreadSafeClientConnManager();
@@ -124,12 +91,17 @@ public class CouchDatabase {
     return create( client, serverUri.resolve( "/" + dbName ) );
   }
 
+  @Nonnull
+  private final ViewResponseSerializer viewResponseSerializer;
+  @Nonnull
+  private final CouchDocSerializer couchDocSerializer = new CouchDocSerializer();
+
   /**
    * Creates a new database for the given db root
    * @param dbRoot the db root
    */
   public CouchDatabase(@Nonnull WebResource dbRoot) {
-    this.dbRoot = dbRoot;
+    super( dbRoot );
     viewResponseSerializer = new ViewResponseSerializer( new RowSerializer( couchDocSerializer ) );
   }
 
@@ -144,7 +116,7 @@ public class CouchDatabase {
    */
   @Nonnull
   public ActionResponse put( @Nonnull DocId id, @Nonnull InputStream content ) throws ActionFailedException {
-    WebResource path = dbRoot.path( id.asString() );
+    WebResource path = getDbRoot().path( id.asString() );
 
     if ( LOG.isLoggable( Level.FINE ) ) {
       LOG.fine( "PUT " + path.toString() );
@@ -167,7 +139,7 @@ public class CouchDatabase {
    */
   @Nonnull
   public <T> ActionResponse put( @Nonnull CouchDoc<T> doc, @Nonnull JacksonSerializer<? super T> serializer ) throws ActionFailedException, IOException {
-    WebResource path = dbRoot.path( doc.getId().asString() );
+    WebResource path = getDbRoot().path( doc.getId().asString() );
 
     if ( LOG.isLoggable( Level.FINE ) ) {
       LOG.fine( "PUT " + path.toString() );
@@ -195,7 +167,7 @@ public class CouchDatabase {
    */
   @Nonnull
   public ActionResponse put( @Nonnull DocId docId, @Nullable Revision revision, @Nonnull MediaType mediaType, @Nonnull InputStream content ) throws ActionFailedException {
-    WebResource resource = dbRoot.path( docId.asString() );
+    WebResource resource = getDbRoot().path( docId.asString() );
 
     //Add the revision is necessary
     if ( revision != null ) {
@@ -226,7 +198,7 @@ public class CouchDatabase {
    */
   @Nonnull
   public ActionResponse put( @Nonnull DocId docId, @Nullable Revision revision, @Nonnull AttachmentId attachmentId, @Nonnull MediaType mediaType, @Nonnull InputStream attachment ) throws ActionFailedException {
-    WebResource resource = dbRoot
+    WebResource resource = getDbRoot()
       .path( docId.asString() )
       .path( attachmentId.asString() );
 
@@ -253,7 +225,7 @@ public class CouchDatabase {
    */
   @Nonnull
   public ActionResponse post( @Nonnull InputStream content ) throws ActionFailedException {
-    WebResource.Builder path = dbRoot
+    WebResource.Builder path = getDbRoot()
       .type( JSON_TYPE ).accept( JSON_TYPE );
 
     if ( LOG.isLoggable( Level.FINE ) ) {
@@ -356,28 +328,97 @@ public class CouchDatabase {
   }
 
   /**
-   * Executes a query to the given view
+   * Returns the document
    *
-   * @param viewDescriptor the view descriptor
-   * @param options        the (optional) options
-   * @return the input stream
+   * @param id         the id
+   * @param serializer the serializer
+   * @param <T>        the object type
+   * @return the doc
+   */
+  @Nonnull
+  public <T> CouchDoc<T> get( @Nonnull DocId id, @Nonnull JacksonSerializer<T> serializer ) throws ActionFailedException {
+    return couchDocSerializer.deserialize( serializer, get( id ) );
+  }
+
+  /**
+   * Deletes a given document
+   *
+   * @param id       the id
+   * @param revision the revision
+   * @return the response
    *
    * @throws ActionFailedException
    */
   @Nonnull
-  public InputStream query( @Nonnull ViewDescriptor viewDescriptor, @Nullable Options options ) throws ActionFailedException {
-    WebResource viewPath = dbRoot.path( PATH_SEGMENT_DESIGN ).path( viewDescriptor.getDesignDocumentId() ).path( PATH_SEGMENT_VIEW ).path( viewDescriptor.getViewId() );
+  public ActionResponse delete( @Nonnull DocId id, @Nonnull Revision revision ) throws ActionFailedException {
+    WebResource.Builder path = getDbRoot().path( id.asString() )
+      .queryParam( PARAM_REV, revision.asString() )
+      .type( JSON_TYPE ).accept( JSON_TYPE );
 
-    if ( options != null ) {
-      MultivaluedMap<String, String> params = new MultivaluedMapImpl();
-      for ( Map.Entry<String, String> paramEntry : options.getParams().entrySet() ) {
-        params.putSingle( paramEntry.getKey(), paramEntry.getValue() );
-      }
-
-      viewPath = viewPath.queryParams( params );
+    if ( LOG.isLoggable( Level.FINE ) ) {
+      LOG.fine( "DELETE " + path.toString() );
     }
 
-    return get( viewPath );
+    ClientResponse response = path.delete( ClientResponse.class );
+    return ActionResponse.create( response );
+  }
+
+  /**
+   * Deletes the given attachment
+   *
+   * @param id           the id
+   * @param revision     the revision
+   * @param attachmentId the attachment id
+   * @return the response
+   *
+   * @throws ActionFailedException
+   */
+  @Nonnull
+  public ActionResponse delete( @Nonnull DocId id, @Nonnull Revision revision, @Nonnull AttachmentId attachmentId ) throws ActionFailedException {
+    WebResource.Builder path = getDbRoot()
+      .path( id.asString() )
+      .path( attachmentId.asString() )
+      .queryParam( PARAM_REV, revision.asString() )
+      .type( JSON_TYPE ).accept( JSON_TYPE );
+
+    if ( LOG.isLoggable( Level.FINE ) ) {
+      LOG.fine( "DELETE " + path.toString() );
+    }
+
+    ClientResponse response = path.delete( ClientResponse.class );
+    return ActionResponse.create( response );
+  }
+
+  /**
+   * Returns the revision using HEAD
+   *
+   * @param docId the doc id
+   * @return the current revision for the given doc id
+   *
+   * @throws ActionFailedException
+   */
+  @Nonnull
+  public Revision getRev( @Nonnull DocId docId ) throws ActionFailedException {
+    WebResource.Builder path = getDbRoot()
+      .path( docId.asString() )
+      .type( JSON_TYPE ).accept( JSON_TYPE );
+
+    if ( LOG.isLoggable( Level.FINE ) ) {
+      LOG.fine( "HEAD " + path.toString() );
+    }
+
+    ClientResponse response = path.head();
+    try {
+      ActionResponse.verifyNoError( response );
+
+      EntityTag entityTag = response.getEntityTag();
+      if ( entityTag == null ) {
+        throw new IllegalArgumentException( "No Etag found" );
+      }
+      return new Revision( entityTag.getValue() );
+    } finally {
+      response.close();
+    }
   }
 
   /**
@@ -430,186 +471,24 @@ public class CouchDatabase {
     return response.getEntityInputStream();
   }
 
-  /**
-   * Returns the document
-   *
-   * @param id         the id
-   * @param serializer the serializer
-   * @param <T>        the object type
-   * @return the doc
-   */
-  @Nonnull
-  public <T> CouchDoc<T> get( @Nonnull DocId id, @Nonnull JacksonSerializer<T> serializer ) throws ActionFailedException {
-    return couchDocSerializer.deserialize( serializer, get( id ) );
-  }
-
-  /**
-   * Returns the content of the given attachment
-   *
-   * @param docId        the document id
-   * @param attachmentId the attachment id
-   * @return the content of the attachment
-   *
-   * @throws ActionFailedException
-   */
   @Nonnull
   public InputStream get( @Nonnull DocId docId, @Nonnull AttachmentId attachmentId ) throws ActionFailedException {
-    return get( dbRoot.path( docId.asString() ).path( attachmentId.asString() ) );
+    return get( getDbRoot().path( docId.asString() ).path( attachmentId.asString() ) );
   }
 
-  /**
-   * Returns the URI
-   *
-   * @return the URI
-   */
   @Nonnull
-  public URI getURI() {
-    return dbRoot.getURI();
-  }
+  public InputStream query( @Nonnull ViewDescriptor viewDescriptor, @Nullable Options options ) throws ActionFailedException {
+    WebResource viewPath = getDbRoot().path( PATH_SEGMENT_DESIGN ).path( viewDescriptor.getDesignDocumentId() ).path( PATH_SEGMENT_VIEW ).path( viewDescriptor.getViewId() );
 
-  /**
-   * Returns the db root for this database
-   *
-   * @return the db root for this database
-   */
-  @Nonnull
-  public WebResource getDbRoot() {
-    return dbRoot;
-  }
-
-  /**
-   * This implementation only works for the basic use cases
-   *
-   * @return the db name
-   */
-  @Nonnull
-  public String getDbName() {
-    return getURI().getPath().substring( 1 );
-  }
-
-  /**
-   * Deletes a given document
-   *
-   * @param id       the id
-   * @param revision the revision
-   * @return the response
-   *
-   * @throws ActionFailedException
-   */
-  @Nonnull
-  public ActionResponse delete( @Nonnull DocId id, @Nonnull Revision revision ) throws ActionFailedException {
-    WebResource.Builder path = dbRoot.path( id.asString() )
-      .queryParam( PARAM_REV, revision.asString() )
-      .type( JSON_TYPE ).accept( JSON_TYPE );
-
-    if ( LOG.isLoggable( Level.FINE ) ) {
-      LOG.fine( "DELETE " + path.toString() );
-    }
-
-    ClientResponse response = path.delete( ClientResponse.class );
-    return ActionResponse.create( response );
-  }
-
-  /**
-   * Deletes the given attachment
-   *
-   * @param id           the id
-   * @param revision     the revision
-   * @param attachmentId the attachment id
-   * @return the response
-   *
-   * @throws ActionFailedException
-   */
-  @Nonnull
-  public ActionResponse delete( @Nonnull DocId id, @Nonnull Revision revision, @Nonnull AttachmentId attachmentId ) throws ActionFailedException {
-    WebResource.Builder path = dbRoot
-      .path( id.asString() )
-      .path( attachmentId.asString() )
-      .queryParam( PARAM_REV, revision.asString() )
-      .type( JSON_TYPE ).accept( JSON_TYPE );
-
-    if ( LOG.isLoggable( Level.FINE ) ) {
-      LOG.fine( "DELETE " + path.toString() );
-    }
-
-    ClientResponse response = path.delete( ClientResponse.class );
-    return ActionResponse.create( response );
-  }
-
-  /**
-   * Returns the revision using HEAD
-   *
-   * @param docId the doc id
-   * @return the current revision for the given doc id
-   *
-   * @throws ActionFailedException
-   */
-  @Nonnull
-  public Revision getRev( @Nonnull DocId docId ) throws ActionFailedException {
-    WebResource.Builder path = dbRoot
-      .path( docId.asString() )
-      .type( JSON_TYPE ).accept( JSON_TYPE );
-
-    if ( LOG.isLoggable( Level.FINE ) ) {
-      LOG.fine( "HEAD " + path.toString() );
-    }
-
-    ClientResponse response = path.head();
-    try {
-      ActionResponse.verifyNoError( response );
-
-      EntityTag entityTag = response.getEntityTag();
-      if ( entityTag == null ) {
-        throw new IllegalArgumentException( "No Etag found" );
+    if ( options != null ) {
+      MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+      for ( Map.Entry<String, String> paramEntry : options.getParams().entrySet() ) {
+        params.putSingle( paramEntry.getKey(), paramEntry.getValue() );
       }
-      return new Revision( entityTag.getValue() );
-    } finally {
-      response.close();
-    }
-  }
 
-  /**
-   * Returns the head for the given doc
-   *
-   * @param docId the doc
-   * @return the head for the given doc id
-   */
-  @Nonnull
-  public ClientResponse getHead( @Nonnull DocId docId ) {
-    WebResource.Builder path = dbRoot.path( docId.asString() ).type( JSON_TYPE ).accept( JSON_TYPE );
-
-    if ( LOG.isLoggable( Level.FINE ) ) {
-      LOG.fine( "HEAD " + path.toString() );
+      viewPath = viewPath.queryParams( params );
     }
 
-    return path.head();
-  }
-
-  /**
-   * Returns the head for the given attachment
-   *
-   * @param docId        the doc id
-   * @param attachmentId the attachment id
-   * @return the  response
-   */
-  @Nonnull
-  public ClientResponse getHead( @Nonnull DocId docId, @Nonnull AttachmentId attachmentId ) {
-    WebResource.Builder path = dbRoot
-      .path( docId.asString() )
-      .path( attachmentId.asString() )
-      .type( JSON_TYPE ).accept( JSON_TYPE );
-
-    if ( LOG.isLoggable( Level.FINE ) ) {
-      LOG.fine( "HEAD " + path.toString() );
-    }
-
-    return path.head();
-  }
-
-  @Override
-  public String toString() {
-    return "CouchDatabase{" +
-      "dbRoot=" + dbRoot +
-      '}';
+    return get( viewPath );
   }
 }
