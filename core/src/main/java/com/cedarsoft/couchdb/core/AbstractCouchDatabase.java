@@ -1,28 +1,20 @@
 package com.cedarsoft.couchdb.core;
 
-import com.google.common.io.ByteStreams;
-import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.filter.ClientFilter;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public abstract class BasicCouchDatabase {
+public abstract class AbstractCouchDatabase {
   /**
    * The path segment used to access design documents
    */
@@ -45,11 +37,11 @@ public abstract class BasicCouchDatabase {
   public static final MediaType JSON_TYPE = MediaType.APPLICATION_JSON_TYPE;
   public static final int DEBUG_MAX_LENGTH = 1024;
   @Nonnull
-  protected static final Logger LOG = Logger.getLogger( BasicCouchDatabase.class.getName() );
+  protected static final Logger LOG = Logger.getLogger( AbstractCouchDatabase.class.getName() );
   @Nonnull
   protected final WebResource dbRoot;
 
-  public BasicCouchDatabase( @Nonnull WebResource dbRoot ) {
+  public AbstractCouchDatabase( @Nonnull WebResource dbRoot ) {
     this.dbRoot = dbRoot;
   }
 

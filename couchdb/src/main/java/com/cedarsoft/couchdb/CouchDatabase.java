@@ -31,10 +31,10 @@
 
 package com.cedarsoft.couchdb;
 
+import com.cedarsoft.couchdb.core.AbstractCouchDatabase;
 import com.cedarsoft.couchdb.core.ActionFailedException;
 import com.cedarsoft.couchdb.core.ActionResponse;
 import com.cedarsoft.couchdb.core.AttachmentId;
-import com.cedarsoft.couchdb.core.BasicCouchDatabase;
 import com.cedarsoft.couchdb.core.CouchDoc;
 import com.cedarsoft.couchdb.core.DocId;
 import com.cedarsoft.couchdb.core.Options;
@@ -75,7 +75,7 @@ import java.util.logging.Level;
 /**
  * Offers access methods for a couch database
  */
-public class CouchDatabase extends BasicCouchDatabase {
+public class CouchDatabase extends AbstractCouchDatabase {
   @Nonnull
   public static CouchDatabase create( @Nonnull URI uri, @Nullable ClientFilter... filters ) {
     ClientConnectionManager connectionManager = new ThreadSafeClientConnManager();
