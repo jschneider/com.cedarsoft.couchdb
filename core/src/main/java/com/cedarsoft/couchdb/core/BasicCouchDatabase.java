@@ -134,6 +134,17 @@ public abstract class BasicCouchDatabase {
   }
 
   /**
+   * Returns the document
+   *
+   * @param id the id
+   * @return the view as stream
+   */
+  @Nonnull
+  public InputStream get( @Nonnull DocId id ) throws ActionFailedException{
+    return get( dbRoot.path( id.asString() ) );
+  }
+
+  /**
    * Returns the content of the given attachment
    *
    * @param docId        the document id
@@ -156,4 +167,10 @@ public abstract class BasicCouchDatabase {
    */
   @Nonnull
   public abstract InputStream query( @Nonnull ViewDescriptor viewDescriptor, @Nullable Options options ) throws ActionFailedException;
+
+  @Nonnull
+  public abstract InputStream get( @Nonnull WebResource resource ) throws ActionFailedException;
+
+  @Nonnull
+  public abstract Revision getRev( @Nonnull DocId docId ) throws ActionFailedException;
 }

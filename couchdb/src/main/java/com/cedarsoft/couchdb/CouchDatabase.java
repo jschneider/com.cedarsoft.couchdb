@@ -406,6 +406,7 @@ public class CouchDatabase extends BasicCouchDatabase {
    *
    * @throws ActionFailedException
    */
+  @Override
   @Nonnull
   public Revision getRev( @Nonnull DocId docId ) throws ActionFailedException {
     WebResource.Builder path = getDbRoot()
@@ -431,17 +432,6 @@ public class CouchDatabase extends BasicCouchDatabase {
   }
 
   /**
-   * Returns the document
-   *
-   * @param id the id
-   * @return the view as stream
-   */
-  @Nonnull
-  public InputStream get( @Nonnull DocId id ) throws ActionFailedException {
-    return get( dbRoot.path( id.asString() ) );
-  }
-
-  /**
    * Returns the content for the given resource
    *
    * @param resource the resources
@@ -449,8 +439,9 @@ public class CouchDatabase extends BasicCouchDatabase {
    *
    * @throws ActionFailedException
    */
+  @Override
   @Nonnull
-  protected InputStream get( @Nonnull WebResource resource ) throws ActionFailedException {
+  public InputStream get( @Nonnull WebResource resource ) throws ActionFailedException {
     long start = System.currentTimeMillis();
     if ( LOG.isLoggable( Level.FINE ) ) {
       LOG.fine( "GET " + resource.toString() );
