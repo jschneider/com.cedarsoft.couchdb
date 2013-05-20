@@ -31,10 +31,10 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.couchdb.ActionResponse;
-import com.cedarsoft.couchdb.DocId;
-import com.cedarsoft.couchdb.Revision;
-import com.cedarsoft.couchdb.UniqueId;
+import com.cedarsoft.couchdb.core.ActionResponse;
+import com.cedarsoft.couchdb.core.DocId;
+import com.cedarsoft.couchdb.core.Revision;
+import com.cedarsoft.couchdb.core.UniqueId;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
 import com.cedarsoft.serialization.test.utils.AbstractSerializerTest2;
 import com.cedarsoft.serialization.test.utils.Entry;

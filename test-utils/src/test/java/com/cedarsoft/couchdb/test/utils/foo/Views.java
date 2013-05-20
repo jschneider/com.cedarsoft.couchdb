@@ -1,6 +1,6 @@
 package com.cedarsoft.couchdb.test.utils.foo;
 
-import com.cedarsoft.couchdb.ViewDescriptor;
+import com.cedarsoft.couchdb.core.ViewDescriptor;
 
 import javax.annotation.Nonnull;
 

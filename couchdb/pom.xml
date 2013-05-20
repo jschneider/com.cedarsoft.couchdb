@@ -13,6 +13,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.cedarsoft.couchdb</groupId>
+      <artifactId>core</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>com.cedarsoft.serialization</groupId>
       <artifactId>jackson</artifactId>
     </dependency>

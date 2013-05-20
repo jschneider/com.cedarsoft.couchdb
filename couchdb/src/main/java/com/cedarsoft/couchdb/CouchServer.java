@@ -30,72 +30,42 @@
  */
 package com.cedarsoft.couchdb;
 
-import com.cedarsoft.serialization.jackson.ListSerializer;
+import com.cedarsoft.couchdb.core.ActionFailedException;
+import com.cedarsoft.couchdb.core.BasicCouchServer;
+import com.cedarsoft.couchdb.io.ActionResponseSerializer;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class CouchServer {
-  @Nonnull
-  public static final String ALL_DBS = "_all_dbs";
-
-  @Nonnull
-  private final WebResource root;
-
-
+public class CouchServer extends BasicCouchServer {
   public CouchServer( @Nonnull WebResource root ) {
-    this.root = root;
+    super( root );
   }
 
   public void deleteDatabase( @Nonnull String dbName ) throws ActionFailedException {
-    ClientResponse response = root.path( dbName ).delete( ClientResponse.class );
+    ClientResponse response = deleteDb( dbName );
     try {
-      ActionResponse.verifyNoError( response );
+      ActionResponseSerializer.verifyNoError( response );
     } finally {
       response.close();
     }
   }
 
   public boolean createDatabase( @Nonnull String dbName ) throws ActionFailedException {
-    ClientResponse response = root.path( dbName ).put( ClientResponse.class );
+    ClientResponse response = createDb( dbName );
     try {
       if ( response.getClientResponseStatus() == ClientResponse.Status.CREATED ) {
         return true;
       }
 
-      ActionResponse.verifyNoError( response );
+      ActionResponseSerializer.verifyNoError( response );
     } finally {
       response.close();
     }
     return false;
-  }
-
-  @Nonnull
-  public Collection<? extends String> listDatabases( ) throws IOException {
-
-    try ( InputStream in = root.path( ALL_DBS ).get( InputStream.class ) ) {
-      ListSerializer listSerializer = new ListSerializer();
-      List<? extends Object> dbs = listSerializer.deserialize( in );
-
-      return ( Collection<? extends String> ) dbs;
-    }
-  }
-
-  @Nonnull
-  public ClientResponse get( @Nonnull String uri ) {
-    return root.path( uri ).get( ClientResponse.class );
-  }
-
-  @Nonnull
-  public ClientResponse put( @Nonnull String uri, @Nonnull byte[] bytes, @Nonnull String mediaType ) {
-    return root.path( uri ).type( mediaType ).put( ClientResponse.class, bytes );
   }
 }

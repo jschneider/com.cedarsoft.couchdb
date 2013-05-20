@@ -31,7 +31,7 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.couchdb.ActionFailedException;
+import com.cedarsoft.couchdb.core.ActionFailedException;
 import com.cedarsoft.serialization.test.utils.AbstractSerializerTest2;
 import com.cedarsoft.serialization.test.utils.Entry;
 import com.cedarsoft.test.utils.JsonUtils;

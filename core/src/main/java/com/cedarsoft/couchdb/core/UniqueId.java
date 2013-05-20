@@ -28,38 +28,34 @@
  * or visit www.cedarsoft.com if you need additional information or
  * have any questions.
  */
-
-package com.cedarsoft.couchdb;
-
+package com.cedarsoft.couchdb.core;
 
 import javax.annotation.Nonnull;
 
-
 /**
- * Represents the revision of a document
+ * a unique id describes the exact revision for a exact id
+ *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class Revision {
+public class UniqueId {
   @Nonnull
-  private final String rev;
+  private final DocId id;
+  @Nonnull
+  private final Revision revision;
 
-  public Revision( @Nonnull String rev ) {
-    this.rev = rev;
+  public UniqueId( @Nonnull DocId id, @Nonnull Revision revision ) {
+    this.id = id;
+    this.revision = revision;
   }
 
   @Nonnull
-  public String getRev() {
-    return rev;
+  public DocId getId() {
+    return id;
   }
 
   @Nonnull
-  public String asString() {
-    return rev;
-  }
-
-  @Override
-  public String toString() {
-    return rev;
+  public Revision getRevision() {
+    return revision;
   }
 
   @Override
@@ -67,13 +63,16 @@ public class Revision {
     if ( this == obj ) {
       return true;
     }
-    if ( obj == null || getClass() != obj.getClass() ) {
+    if ( !( obj instanceof UniqueId ) ) {
       return false;
     }
 
-    Revision revision = ( Revision ) obj;
+    UniqueId uniqueId = ( UniqueId ) obj;
 
-    if ( !rev.equals( revision.rev ) ) {
+    if ( !id.equals( uniqueId.id ) ) {
+      return false;
+    }
+    if ( !revision.equals( uniqueId.revision ) ) {
       return false;
     }
 
@@ -82,6 +81,19 @@ public class Revision {
 
   @Override
   public int hashCode() {
-    return rev.hashCode();
+    int result = id.hashCode();
+    result = 31 * result + revision.hashCode();
+    return result;
+  }
+
+  @Deprecated
+  @Nonnull
+  public Revision getRev() {
+    return getRevision();
+  }
+
+  @Override
+  public String toString() {
+    return "<" + id + "::" + revision + ">";
   }
 }

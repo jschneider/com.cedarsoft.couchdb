@@ -1,12 +1,12 @@
 package com.cedarsoft.couchdb.test.utils;
 
-import com.cedarsoft.couchdb.ActionResponse;
-import com.cedarsoft.couchdb.CouchDoc;
-import com.cedarsoft.couchdb.DesignDocumentsProvider;
-import com.cedarsoft.couchdb.DocId;
-import com.cedarsoft.couchdb.Key;
-import com.cedarsoft.couchdb.Options;
-import com.cedarsoft.couchdb.ViewResponse;
+import com.cedarsoft.couchdb.core.ActionResponse;
+import com.cedarsoft.couchdb.core.CouchDoc;
+import com.cedarsoft.couchdb.update.DesignDocumentsProvider;
+import com.cedarsoft.couchdb.core.DocId;
+import com.cedarsoft.couchdb.core.Key;
+import com.cedarsoft.couchdb.core.Options;
+import com.cedarsoft.couchdb.core.ViewResponse;
 import com.cedarsoft.couchdb.test.utils.foo.Views;
 import com.cedarsoft.serialization.jackson.ListSerializer;
 import com.cedarsoft.serialization.jackson.NullSerializer;

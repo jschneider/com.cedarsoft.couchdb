@@ -32,7 +32,7 @@
 package com.cedarsoft.couchdb.io;
 
 import com.cedarsoft.version.VersionException;
-import com.cedarsoft.couchdb.ActionFailedException;
+import com.cedarsoft.couchdb.core.ActionFailedException;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
 import org.apache.commons.io.input.TeeInputStream;

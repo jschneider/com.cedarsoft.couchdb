@@ -29,63 +29,65 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.core;
 
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 
 /**
- * A raw couch document - without any further informations
+ * Represents the revision of a document
  *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class RawCouchDoc {
+public class Revision {
   @Nonnull
-  protected final DocId id;
-  @Nullable
-  protected Revision rev;
+  private final String rev;
 
-  public RawCouchDoc( @Nonnull DocId id ) {
-    this( id, null );
-  }
-
-  public RawCouchDoc(@Nonnull UniqueId uniqueId) {
-    this( uniqueId.getId(), uniqueId.getRevision() );
-  }
-
-  public RawCouchDoc( @Nonnull DocId id, @Nullable Revision rev ) {
-    this.id = id;
+  /**
+   * Creates a new revision
+   *
+   * @param rev the revision string
+   */
+  public Revision( @Nonnull String rev ) {
     this.rev = rev;
   }
 
-  /**
-   * Returns the id
-   *
-   * @return the id
-   */
   @Nonnull
-  public DocId getId() {
-    return id;
-  }
-
-  /**
-   * Sets the revision. Should only be called when the doc has been updated
-   *
-   * @param rev the revision
-   */
-  void setRev( @Nullable Revision rev ) {
-    this.rev = rev;
-  }
-
-  /**
-   * Returns the revision
-   *
-   * @return the revision
-   */
-  @Nullable
-  public Revision getRev() {
+  public String getRev() {
     return rev;
+  }
+
+  @Nonnull
+  public String asString() {
+    return rev;
+  }
+
+  @Override
+  public String toString() {
+    return rev;
+  }
+
+  @Override
+  public boolean equals( Object obj ) {
+    if ( this == obj ) {
+      return true;
+    }
+    if ( obj == null || getClass() != obj.getClass() ) {
+      return false;
+    }
+
+    Revision revision = ( Revision ) obj;
+
+    if ( !rev.equals( revision.rev ) ) {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    return rev.hashCode();
   }
 }

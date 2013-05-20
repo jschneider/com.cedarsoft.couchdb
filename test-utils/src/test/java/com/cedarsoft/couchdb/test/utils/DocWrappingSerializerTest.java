@@ -30,8 +30,8 @@
  */
 package com.cedarsoft.couchdb.test.utils;
 
-import com.cedarsoft.couchdb.DocId;
-import com.cedarsoft.couchdb.Revision;
+import com.cedarsoft.couchdb.core.DocId;
+import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.couchdb.io.CouchSerializerWrapper;
 import com.cedarsoft.test.utils.JsonUtils;
 import com.cedarsoft.version.VersionException;

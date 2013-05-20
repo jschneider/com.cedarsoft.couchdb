@@ -31,10 +31,11 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.couchdb.ActionResponse;
-import com.cedarsoft.couchdb.DocId;
-import com.cedarsoft.couchdb.Revision;
-import com.cedarsoft.couchdb.UniqueId;
+import com.cedarsoft.couchdb.core.ActionResponse;
+import com.cedarsoft.couchdb.core.ActionFailedException;
+import com.cedarsoft.couchdb.core.DocId;
+import com.cedarsoft.couchdb.core.Revision;
+import com.cedarsoft.couchdb.core.UniqueId;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
 import com.cedarsoft.version.VersionException;
@@ -45,12 +46,55 @@ import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 
 import javax.annotation.Nonnull;
+import javax.annotation.WillClose;
+import javax.annotation.WillNotClose;
 import javax.ws.rs.core.MediaType;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class ActionResponseSerializer {
+
+  /**
+   * Creates a new action response based on the given client response
+   *
+   * @param response the client response
+   * @return the action response
+   *
+   * @throws ActionFailedException if there has been an error
+   */
+  @Nonnull
+  public static ActionResponse create( @WillClose @Nonnull ClientResponse response ) throws ActionFailedException {
+    try {
+      verifyNoError( response );
+      return new ActionResponseSerializer().deserialize( response );
+    } finally {
+      response.close();
+    }
+  }
+
+  /**
+   * Throws an exception if the response contains a value
+   *
+   * @param response the response
+   * @throws ActionFailedException
+   */
+  public static void verifyNoError( @WillNotClose @Nonnull ClientResponse response ) throws ActionFailedException {
+    if ( !ActionResponse.isNotSuccessful( response ) ) {
+      return;
+    }
+
+    if ( !response.hasEntity() ) {
+      throw new ActionFailedException( response.getStatus(), "unknown", "unknown", null );
+    }
+
+    try {
+      try ( InputStream inputStream = response.getEntityInputStream() ) {
+        throw new ActionFailedExceptionSerializer().deserialize( response.getStatus(), inputStream );
+      }
+    } catch ( IOException e ) {
+      throw new RuntimeException( e );
+    }
+  }
 
   public static final String PROPERTY_ID = "id";
 

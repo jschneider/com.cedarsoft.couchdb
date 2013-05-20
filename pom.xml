@@ -22,6 +22,7 @@
   </scm>
 
   <modules>
+    <module>core</module>
     <module>couchdb</module>
     <module>test-utils</module>
   </modules>
@@ -45,6 +46,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.cedarsoft.couchdb</groupId>
+        <artifactId>core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <dependency>
         <groupId>com.cedarsoft</groupId>
         <artifactId>couchdb</artifactId>
