@@ -1,4 +1,4 @@
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.update;
 
 import com.cedarsoft.couchdb.core.DesignDocument;
 import com.cedarsoft.version.Version;

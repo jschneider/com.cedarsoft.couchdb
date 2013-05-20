@@ -1,7 +1,7 @@
 package com.cedarsoft.couchdb.test.utils.update;
 
 import com.cedarsoft.couchdb.core.DesignDocument;
-import com.cedarsoft.couchdb.DesignDocumentsProvider;
+import com.cedarsoft.couchdb.update.DesignDocumentsProvider;
 import com.cedarsoft.couchdb.test.utils.CouchTest;
 import com.cedarsoft.couchdb.update.DesignDocumentsUpdateService;
 import com.cedarsoft.couchdb.update.DesignDocumentsVersionInfo;
