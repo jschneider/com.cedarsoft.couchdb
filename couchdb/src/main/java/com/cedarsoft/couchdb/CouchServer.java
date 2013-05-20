@@ -44,7 +44,7 @@ public class CouchServer extends BasicCouchServer {
   }
 
   public void deleteDatabase( @Nonnull String dbName ) throws ActionFailedException {
-    ClientResponse response = root.path( dbName ).delete( ClientResponse.class );
+    ClientResponse response = deleteDb( dbName );
     try {
       ActionResponse.verifyNoError( response );
     } finally {
@@ -53,7 +53,7 @@ public class CouchServer extends BasicCouchServer {
   }
 
   public boolean createDatabase( @Nonnull String dbName ) throws ActionFailedException {
-    ClientResponse response = root.path( dbName ).put( ClientResponse.class );
+    ClientResponse response = createDb( dbName );
     try {
       if ( response.getClientResponseStatus() == ClientResponse.Status.CREATED ) {
         return true;

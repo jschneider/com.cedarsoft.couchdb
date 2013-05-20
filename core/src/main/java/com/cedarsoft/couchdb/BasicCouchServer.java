@@ -1,6 +1,8 @@
 package com.cedarsoft.couchdb;
 
+import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
 import javax.annotation.Nonnull;
@@ -26,5 +28,15 @@ public class BasicCouchServer {
   @Nonnull
   public ClientResponse put( @Nonnull String uri, @Nonnull byte[] bytes, @Nonnull String mediaType ) {
     return root.path( uri ).type( mediaType ).put( ClientResponse.class, bytes );
+  }
+
+  @Nonnull
+  public ClientResponse deleteDb( @Nonnull String dbName ) throws UniformInterfaceException, ClientHandlerException {
+    return root.path( dbName ).delete( ClientResponse.class );
+  }
+
+  @Nonnull
+  public ClientResponse createDb( @Nonnull String dbName ) throws UniformInterfaceException, ClientHandlerException {
+    return root.path( dbName ).put( ClientResponse.class );
   }
 }
