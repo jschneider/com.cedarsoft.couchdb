@@ -80,11 +80,33 @@ public class ActionFailedExceptionSerializer {
 
       parserWrapper.nextToken(  JsonToken.START_OBJECT );
 
-      parserWrapper.nextFieldValue(  PROPERTY_ERROR );
-      String error = parser.getText();
-      parserWrapper.nextFieldValue(  PROPERTY_REASON );
-      String reason = parser.getText();
-      parserWrapper.closeObject();
+
+      String error = null;
+      String reason = null;
+
+      while ( parser.nextToken() == JsonToken.FIELD_NAME ) {
+        String currentName = parser.getCurrentName();
+
+        if ( currentName.equals( PROPERTY_ERROR ) ) {
+          parserWrapper.nextToken( JsonToken.VALUE_STRING );
+          error = parser.getText();
+          continue;
+        }
+
+        if ( currentName.equals( PROPERTY_REASON ) ) {
+          parserWrapper.nextToken( JsonToken.VALUE_STRING );
+          reason = parser.getText();
+          continue;
+        }
+
+        throw new IllegalStateException( "Unexpected field reached <" + currentName + ">" );
+      }
+
+      parserWrapper.verifyDeserialized( error, PROPERTY_ERROR );
+      parserWrapper.verifyDeserialized( reason, PROPERTY_REASON );
+      assert reason != null;
+      assert error != null;
+
       parserWrapper.ensureObjectClosed();
 
       return new ActionFailedException( status, error, reason, teedOut.toByteArray() );

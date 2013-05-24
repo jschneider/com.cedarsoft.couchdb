@@ -148,24 +148,31 @@ public class ActionResponseSerializer {
       if ( currentName.equals( PROPERTY_OK ) ) {
         parser.nextToken( JsonToken.VALUE_TRUE );
         //we don't need that value
+        continue;
       }
 
       if ( currentName.equals( PROPERTY_ID ) ) {
         parser.nextToken( JsonToken.VALUE_STRING );
         id = deserializeFrom.getText();
+        continue;
       }
 
       if ( currentName.equals( PROPERTY_REV ) ) {
         parser.nextToken( JsonToken.VALUE_STRING );
         rev = deserializeFrom.getText();
+        continue;
       }
+
+      throw new IllegalStateException( "Unexpected field reached <" + currentName + ">" );
     }
 
     parser.verifyDeserialized( id, PROPERTY_ID );
     parser.verifyDeserialized( rev, PROPERTY_REV );
+    assert rev != null;
+    assert id != null;
 
     parser.ensureObjectClosed();
-    //noinspection ConstantConditions
+
     return new UniqueId( new DocId( id ), new Revision( rev ) );
 
     //    AbstractJacksonSerializer.nextToken( deserializeFrom, JsonToken.FIELD_NAME );
