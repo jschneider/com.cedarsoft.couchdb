@@ -82,7 +82,6 @@ public class CouchSerializerWrapper<T> extends AbstractJacksonSerializer<T> {
    * @param formatVersion the format version
    * @throws IOException
    * @throws VersionException
-   * @throws JsonProcessingException
    */
   @Override
   public void serialize( @Nonnull JsonGenerator serializeTo, @Nonnull T object, @Nonnull Version formatVersion ) throws IOException, VersionException {
