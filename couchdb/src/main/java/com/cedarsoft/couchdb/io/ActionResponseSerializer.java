@@ -97,15 +97,8 @@ public class ActionResponseSerializer {
   }
 
   public static final String PROPERTY_ID = "id";
-
   public static final String PROPERTY_REV = "rev";
-
-  public static final String PROPERTY_ERROR = "error";
-
-  public static final String PROPERTY_REASON = "reason";
-
   public static final String PROPERTY_OK = "ok";
-
 
   @Nonnull
   public ActionResponse deserialize( @Nonnull ClientResponse response ) throws VersionException {
@@ -144,13 +137,35 @@ public class ActionResponseSerializer {
 
   @Nonnull
   public UniqueId deserialize( @Nonnull JsonParser deserializeFrom ) throws VersionException, IOException {
-    JacksonParserWrapper parserWrapper = new JacksonParserWrapper( deserializeFrom );
-    parserWrapper.nextFieldValue( PROPERTY_OK );
-    parserWrapper.nextFieldValue( PROPERTY_ID );
-    String id = deserializeFrom.getText();
-    parserWrapper.nextFieldValue( PROPERTY_REV );
-    String rev = deserializeFrom.getText();
-    parserWrapper.closeObject();
+    JacksonParserWrapper parser = new JacksonParserWrapper( deserializeFrom );
+
+    String id = null;
+    String rev = null;
+
+    while ( parser.nextToken() == JsonToken.FIELD_NAME ) {
+      String currentName = parser.getCurrentName();
+
+      if ( currentName.equals( PROPERTY_OK ) ) {
+        parser.nextToken( JsonToken.VALUE_TRUE );
+        //we don't need that value
+      }
+
+      if ( currentName.equals( PROPERTY_ID ) ) {
+        parser.nextToken( JsonToken.VALUE_STRING );
+        id = deserializeFrom.getText();
+      }
+
+      if ( currentName.equals( PROPERTY_REV ) ) {
+        parser.nextToken( JsonToken.VALUE_STRING );
+        rev = deserializeFrom.getText();
+      }
+    }
+
+    parser.verifyDeserialized( id, PROPERTY_ID );
+    parser.verifyDeserialized( rev, PROPERTY_REV );
+
+    parser.ensureObjectClosed();
+    //noinspection ConstantConditions
     return new UniqueId( new DocId( id ), new Revision( rev ) );
 
     //    AbstractJacksonSerializer.nextToken( deserializeFrom, JsonToken.FIELD_NAME );
