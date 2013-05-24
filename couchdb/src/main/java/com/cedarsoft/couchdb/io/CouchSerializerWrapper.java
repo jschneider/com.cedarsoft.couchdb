@@ -36,15 +36,21 @@ import com.cedarsoft.couchdb.core.UniqueId;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.InvalidTypeException;
 import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
+import com.cedarsoft.serialization.jackson.filter.Filter;
+import com.cedarsoft.serialization.jackson.filter.FilteredParserListener;
+import com.cedarsoft.serialization.jackson.filter.FilteringJsonParser;
 import com.cedarsoft.version.Version;
 import com.cedarsoft.version.VersionException;
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.WillNotClose;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -138,39 +144,22 @@ public class CouchSerializerWrapper<T> extends AbstractJacksonSerializer<T> {
     return resolved;
   }
 
+  @Nonnull
   @Override
-  protected void beforeTypeAndVersion( @Nonnull JacksonParserWrapper wrapper ) throws IOException, InvalidTypeException {
-    super.beforeTypeAndVersion( wrapper );
-
-    wrapper.nextFieldValue( "_id" );
-    final DocId id = new DocId( wrapper.getText() );
-    wrapper.nextFieldValue( "_rev" );
-    final Revision revision = new Revision( wrapper.getText() );
-
-    current = new UniqueId( id, revision );
+  protected JsonParser createJsonParser( @Nonnull JsonFactory jsonFactory, @Nonnull InputStream in ) throws IOException {
+    JsonParser parser = super.createJsonParser( jsonFactory, in );
+    return new FilteringJsonParser( parser, new Filter() {
+      @Override
+      public boolean shallFilterOut( @Nonnull JsonParser parser ) throws IOException, JsonParseException {
+        @Nullable String currentName = parser.getCurrentName();
+        return currentName.startsWith( "_" );
+      }
+    } );
   }
 
   @Nonnull
   @Override
   public T deserialize( @Nonnull JsonParser deserializeFrom, @Nonnull Version formatVersion ) throws IOException, VersionException {
     return delegate.deserialize( deserializeFrom, formatVersion );
-  }
-
-  @Nullable
-  private UniqueId current;
-
-  /**
-   * Returns the current unique id
-   *
-   * @return the current unique id
-   *
-   */
-  @Nonnull
-  public UniqueId getCurrent() throws IllegalStateException {
-    @Nullable final UniqueId copy = current;
-    if ( copy == null ) {
-      throw new IllegalStateException( "No current id available" );
-    }
-    return copy;
   }
 }
