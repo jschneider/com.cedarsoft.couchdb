@@ -9,6 +9,7 @@ import com.cedarsoft.version.VersionRange;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -39,19 +40,47 @@ public class DesignDocumentsVersionInfoSerializer extends AbstractJacksonSeriali
   public DesignDocumentsVersionInfo deserialize( @Nonnull JsonParser deserializeFrom, @Nonnull Version formatVersion ) throws VersionException, IOException, JsonProcessingException {
     verifyVersionReadable( formatVersion );
     JacksonParserWrapper parser = new JacksonParserWrapper( deserializeFrom );
-    //version
-    parser.nextFieldValue( PROPERTY_DOCS_VERSION );
-    Version version = Version.parse( deserializeFrom.getText() );
-    //updatedAt
-    parser.nextFieldValue( PROPERTY_UPDATEDAT );
-    long updatedAt = deserializeFrom.getLongValue();
-    //updatedBy
-    parser.nextFieldValue( PROPERTY_UPDATEDBY );
-    String updatedBy = deserializeFrom.getText();
+
+    long updatedAt=-1;
+    Version version = null;
+    String updatedBy = null;
+
+    while ( parser.nextToken() == JsonToken.FIELD_NAME ) {
+      String currentName = parser.getCurrentName();
+
+      if ( currentName.equals( PROPERTY_DOCS_VERSION ) ) {
+        parser.nextToken( JsonToken.VALUE_STRING );
+        version = Version.parse( deserializeFrom.getText() );
+        continue;
+      }
+
+      if ( currentName.equals( PROPERTY_UPDATEDAT ) ) {
+        parser.nextToken( JsonToken.VALUE_NUMBER_INT );
+        updatedAt = deserializeFrom.getLongValue();
+        continue;
+      }
+
+      if ( currentName.equals( PROPERTY_UPDATEDBY ) ) {
+        parser.nextToken( JsonToken.VALUE_STRING );
+        updatedBy = deserializeFrom.getText();
+        continue;
+      }
+
+      throw new IllegalStateException( "Unexpected field reached <" + currentName + ">" );
+    }
+
+    parser.verifyDeserialized( version, PROPERTY_VERSION );
+    parser.verifyDeserialized( updatedBy, PROPERTY_UPDATEDBY );
+    parser.verifyDeserialized( updatedAt, PROPERTY_UPDATEDAT );
+
+    assert updatedBy != null;
+    assert version != null;
+
+    parser.ensureObjectClosed();
+
     //Finally closing element
-    parser.closeObject();
+    parser.ensureObjectClosed();
     //Constructing the deserialized object
     return new DesignDocumentsVersionInfo( version, updatedAt, updatedBy );
   }
-
 }
