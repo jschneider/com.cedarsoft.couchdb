@@ -118,6 +118,7 @@ public class CouchSerializerWrapper<T> extends AbstractJacksonSerializer<T> {
    * @param id       the document id
    * @param revision the revision
    */
+  @Deprecated
   public void serialize( @Nonnull T object, @WillNotClose @Nonnull OutputStream out, @Nonnull DocId id, @Nonnull Revision revision ) throws IOException {
     storeUniqueId( new UniqueId( id, revision ) );
     super.serialize( object, out );
@@ -127,12 +128,15 @@ public class CouchSerializerWrapper<T> extends AbstractJacksonSerializer<T> {
    * Only necessary for serialization in tests!
    */
   @Nonnull
+  @Deprecated
   private static final ThreadLocal<UniqueId> uniqueIdThreadLocal = new ThreadLocal<>();
 
+  @Deprecated
   private static void storeUniqueId( @Nonnull UniqueId uniqueId ) {
     uniqueIdThreadLocal.set( uniqueId );
   }
 
+  @Deprecated
   @Nonnull
   private static UniqueId getUniqueId() {
     @Nullable UniqueId resolved = uniqueIdThreadLocal.get();
