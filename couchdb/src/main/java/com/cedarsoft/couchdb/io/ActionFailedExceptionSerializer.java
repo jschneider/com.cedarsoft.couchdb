@@ -31,6 +31,7 @@
 
 package com.cedarsoft.couchdb.io;
 
+import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.version.VersionException;
 import com.cedarsoft.couchdb.core.ActionFailedException;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
@@ -75,14 +76,16 @@ public class ActionFailedExceptionSerializer {
       JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
       JsonParser parser = jsonFactory.createJsonParser( teeInputStream );
-      AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
+      JacksonParserWrapper parserWrapper = new JacksonParserWrapper( parser );
 
-      AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_ERROR );
+      parserWrapper.nextToken(  JsonToken.START_OBJECT );
+
+      parserWrapper.nextFieldValue(  PROPERTY_ERROR );
       String error = parser.getText();
-      AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_REASON );
+      parserWrapper.nextFieldValue(  PROPERTY_REASON );
       String reason = parser.getText();
-      AbstractJacksonSerializer.closeObject( parser );
-      AbstractJacksonSerializer.ensureParserClosedObject( parser );
+      parserWrapper.closeObject();
+      parserWrapper.ensureObjectClosed();
 
       return new ActionFailedException( status, error, reason, teedOut.toByteArray() );
     }

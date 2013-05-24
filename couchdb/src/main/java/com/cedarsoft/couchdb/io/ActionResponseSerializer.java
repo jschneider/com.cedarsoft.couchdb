@@ -31,12 +31,12 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.couchdb.core.ActionResponse;
 import com.cedarsoft.couchdb.core.ActionFailedException;
+import com.cedarsoft.couchdb.core.ActionResponse;
 import com.cedarsoft.couchdb.core.DocId;
 import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.couchdb.core.UniqueId;
-import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
+import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
 import com.cedarsoft.version.VersionException;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -132,23 +132,25 @@ public class ActionResponseSerializer {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
     JsonParser parser = jsonFactory.createJsonParser( in );
-    AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
+    JacksonParserWrapper parserWrapper = new JacksonParserWrapper( parser );
+    parserWrapper.nextToken( JsonToken.START_OBJECT );
 
     UniqueId deserialized = deserialize( parser );
 
-    AbstractJacksonSerializer.ensureParserClosedObject( parser );
+    parserWrapper.ensureObjectClosed();
 
     return deserialized;
   }
 
   @Nonnull
   public UniqueId deserialize( @Nonnull JsonParser deserializeFrom ) throws VersionException, IOException {
-    AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_OK );
-    AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_ID );
+    JacksonParserWrapper parserWrapper = new JacksonParserWrapper( deserializeFrom );
+    parserWrapper.nextFieldValue( PROPERTY_OK );
+    parserWrapper.nextFieldValue( PROPERTY_ID );
     String id = deserializeFrom.getText();
-    AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_REV );
+    parserWrapper.nextFieldValue( PROPERTY_REV );
     String rev = deserializeFrom.getText();
-    AbstractJacksonSerializer.closeObject( deserializeFrom );
+    parserWrapper.closeObject();
     return new UniqueId( new DocId( id ), new Revision( rev ) );
 
     //    AbstractJacksonSerializer.nextToken( deserializeFrom, JsonToken.FIELD_NAME );

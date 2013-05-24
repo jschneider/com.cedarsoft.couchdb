@@ -135,7 +135,8 @@ public class RowSerializer {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
     JsonParser parser = jsonFactory.createJsonParser( in );
-    AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
+    JacksonParserWrapper parserWrapper = new JacksonParserWrapper( parser );
+    parserWrapper.nextToken( JsonToken.START_OBJECT );
 
     return deserialize( keySerializer, valueSerializer, documentSerializer, parser );
   }

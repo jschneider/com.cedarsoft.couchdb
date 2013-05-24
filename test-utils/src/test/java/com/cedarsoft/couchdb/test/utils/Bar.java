@@ -31,6 +31,7 @@
 
 package com.cedarsoft.couchdb.test.utils;
 
+import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.version.Version;
 import com.cedarsoft.version.VersionException;
 import com.cedarsoft.version.VersionRange;
@@ -84,13 +85,14 @@ public class Bar {
     @Nonnull
     @Override
     public Bar deserialize( @Nonnull JsonParser deserializeFrom, @Nonnull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
-      nextFieldValue( deserializeFrom, "value" );
+      JacksonParserWrapper parserWrapper = new JacksonParserWrapper( deserializeFrom );
+      parserWrapper.nextFieldValue( "value" );
       int value = deserializeFrom.getIntValue();
 
-      nextFieldValue( deserializeFrom, "description" );
+      parserWrapper.nextFieldValue( "description" );
       String description = deserializeFrom.getText();
 
-      closeObject( deserializeFrom );
+      parserWrapper.closeObject();
       return new Bar( value, description );
     }
   }
