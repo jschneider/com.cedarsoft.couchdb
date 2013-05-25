@@ -1,8 +1,8 @@
 package com.cedarsoft.couchdb.test.utils;
 
-import com.cedarsoft.couchdb.core.CouchDbException;
 import com.cedarsoft.couchdb.CouchServer;
 import com.cedarsoft.couchdb.CouchUtils;
+import com.cedarsoft.couchdb.core.CouchDbException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

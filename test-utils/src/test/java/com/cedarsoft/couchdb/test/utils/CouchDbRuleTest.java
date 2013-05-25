@@ -31,8 +31,8 @@
 
 package com.cedarsoft.couchdb.test.utils;
 
-import com.cedarsoft.couchdb.core.ActionFailedException;
 import com.cedarsoft.couchdb.CouchUtils;
+import com.cedarsoft.couchdb.core.ActionFailedException;
 import org.junit.*;
 import org.junit.runners.model.*;
 

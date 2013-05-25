@@ -31,15 +31,15 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
-import com.cedarsoft.version.Version;
 import com.cedarsoft.couchdb.core.AttachmentId;
 import com.cedarsoft.couchdb.core.CouchDoc;
 import com.cedarsoft.couchdb.core.DocId;
 import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.InvalidTypeException;
+import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.serialization.jackson.JacksonSerializer;
+import com.cedarsoft.version.Version;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;

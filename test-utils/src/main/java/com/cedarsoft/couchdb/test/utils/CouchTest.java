@@ -32,8 +32,8 @@
 package com.cedarsoft.couchdb.test.utils;
 
 import com.cedarsoft.couchdb.CouchDatabase;
-import com.cedarsoft.couchdb.core.CouchDbException;
 import com.cedarsoft.couchdb.CouchServer;
+import com.cedarsoft.couchdb.core.CouchDbException;
 import com.cedarsoft.couchdb.update.DesignDocumentsProvider;
 import org.junit.*;
 

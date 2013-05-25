@@ -34,7 +34,6 @@ package com.cedarsoft.couchdb.io;
 import com.cedarsoft.couchdb.core.ActionResponse;
 import com.cedarsoft.couchdb.core.DocId;
 import com.cedarsoft.couchdb.core.Revision;
-import com.cedarsoft.couchdb.core.UniqueId;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
 import com.cedarsoft.serialization.test.utils.AbstractSerializerTest2;
 import com.cedarsoft.serialization.test.utils.Entry;
@@ -46,7 +45,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Charsets;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.core.header.InBoundHeaders;
-import com.sun.jersey.core.spi.factory.MessageBodyFactory;
 import org.junit.experimental.theories.*;
 import org.junit.runner.*;
 

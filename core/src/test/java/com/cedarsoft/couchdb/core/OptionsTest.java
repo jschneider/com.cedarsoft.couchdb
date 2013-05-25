@@ -1,9 +1,6 @@
 package com.cedarsoft.couchdb.core;
 
-import org.fest.assertions.Assertions;
 import org.junit.*;
-
-import java.io.StringWriter;
 
 import static org.fest.assertions.Assertions.assertThat;
 

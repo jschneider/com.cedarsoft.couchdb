@@ -1,11 +1,11 @@
 package com.cedarsoft.couchdb.update;
 
+import com.cedarsoft.couchdb.CouchDatabase;
+import com.cedarsoft.couchdb.DesignDocumentsUpdater;
 import com.cedarsoft.couchdb.core.ActionFailedException;
 import com.cedarsoft.couchdb.core.ActionResponse;
-import com.cedarsoft.couchdb.CouchDatabase;
 import com.cedarsoft.couchdb.core.CouchDoc;
 import com.cedarsoft.couchdb.core.DesignDocument;
-import com.cedarsoft.couchdb.DesignDocumentsUpdater;
 import com.cedarsoft.couchdb.core.DocId;
 import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.exceptions.NotFoundException;

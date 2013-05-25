@@ -31,8 +31,6 @@
 package com.cedarsoft.couchdb.core;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.io.StringWriter;
 
 /**
  * Represents a key that can be used for queries

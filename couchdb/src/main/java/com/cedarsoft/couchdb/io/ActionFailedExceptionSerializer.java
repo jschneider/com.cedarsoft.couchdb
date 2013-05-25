@@ -31,11 +31,10 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
-import com.cedarsoft.version.VersionException;
 import com.cedarsoft.couchdb.core.ActionFailedException;
-import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
+import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
+import com.cedarsoft.version.VersionException;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;

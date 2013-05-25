@@ -5,7 +5,6 @@ import com.cedarsoft.serialization.Serializer;
 import com.cedarsoft.serialization.test.utils.AbstractJsonVersionTest2;
 import com.cedarsoft.serialization.test.utils.VersionEntry;
 import com.cedarsoft.version.Version;
-import org.junit.*;
 import org.junit.experimental.theories.*;
 
 import javax.annotation.Nonnull;

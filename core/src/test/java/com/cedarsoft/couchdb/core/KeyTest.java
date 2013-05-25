@@ -33,8 +33,6 @@ package com.cedarsoft.couchdb.core;
 import junit.framework.TestCase;
 import org.fest.assertions.Assertions;
 
-import javax.script.ScriptEngineManager;
-
 import static org.fest.assertions.Assertions.assertThat;
 
 /**

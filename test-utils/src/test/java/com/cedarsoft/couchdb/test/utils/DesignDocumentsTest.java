@@ -30,9 +30,9 @@
  */
 package com.cedarsoft.couchdb.test.utils;
 
+import com.cedarsoft.couchdb.DesignDocumentsUpdater;
 import com.cedarsoft.couchdb.core.DesignDocument;
 import com.cedarsoft.couchdb.core.DesignDocuments;
-import com.cedarsoft.couchdb.DesignDocumentsUpdater;
 import com.cedarsoft.couchdb.core.ViewDescriptor;
 import com.cedarsoft.couchdb.test.utils.views.Views;
 import com.cedarsoft.test.utils.JsonUtils;

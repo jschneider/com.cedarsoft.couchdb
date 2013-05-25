@@ -30,9 +30,9 @@
  */
 package com.cedarsoft.couchdb.test.utils;
 
+import com.cedarsoft.couchdb.DesignDocumentsUpdater;
 import com.cedarsoft.couchdb.core.DesignDocument;
 import com.cedarsoft.couchdb.core.DesignDocuments;
-import com.cedarsoft.couchdb.DesignDocumentsUpdater;
 import com.sun.jersey.api.client.ClientResponse;
 import org.junit.*;
 

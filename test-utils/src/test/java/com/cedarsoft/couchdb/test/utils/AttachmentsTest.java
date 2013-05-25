@@ -31,11 +31,6 @@
 
 package com.cedarsoft.couchdb.test.utils;
 
-import com.cedarsoft.test.utils.AssertUtils;
-import com.cedarsoft.test.utils.JsonUtils;
-import com.cedarsoft.version.Version;
-import com.cedarsoft.version.VersionException;
-import com.cedarsoft.version.VersionRange;
 import com.cedarsoft.couchdb.core.ActionFailedException;
 import com.cedarsoft.couchdb.core.ActionResponse;
 import com.cedarsoft.couchdb.core.AttachmentId;
@@ -44,6 +39,11 @@ import com.cedarsoft.couchdb.core.DocId;
 import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.couchdb.io.RawCouchDocSerializer;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
+import com.cedarsoft.test.utils.AssertUtils;
+import com.cedarsoft.test.utils.JsonUtils;
+import com.cedarsoft.version.Version;
+import com.cedarsoft.version.VersionException;
+import com.cedarsoft.version.VersionRange;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

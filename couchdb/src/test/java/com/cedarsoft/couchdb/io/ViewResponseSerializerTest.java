@@ -39,8 +39,6 @@ import com.cedarsoft.serialization.jackson.ListSerializer;
 import com.cedarsoft.serialization.jackson.NullSerializer;
 import com.cedarsoft.serialization.jackson.StringSerializer;
 import com.cedarsoft.test.utils.JsonUtils;
-import com.google.common.io.ByteStreams;
-import org.fest.assertions.Assertions;
 import org.junit.*;
 
 import java.io.ByteArrayInputStream;
@@ -50,7 +48,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  *

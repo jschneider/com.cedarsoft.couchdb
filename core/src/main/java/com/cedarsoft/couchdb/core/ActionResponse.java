@@ -31,19 +31,11 @@
 
 package com.cedarsoft.couchdb.core;
 
-import com.cedarsoft.couchdb.core.ActionFailedException;
-import com.cedarsoft.couchdb.core.DocId;
-import com.cedarsoft.couchdb.core.HasRawData;
-import com.cedarsoft.couchdb.core.Revision;
-import com.cedarsoft.couchdb.core.UniqueId;
 import com.sun.jersey.api.client.ClientResponse;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.WillClose;
 import javax.annotation.WillNotClose;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 
 /**

@@ -36,7 +36,6 @@ import com.cedarsoft.couchdb.core.DocId;
 import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.couchdb.core.Row;
 import com.cedarsoft.couchdb.test.Foo;
-import com.cedarsoft.serialization.jackson.JacksonSerializer;
 import com.cedarsoft.serialization.jackson.ListSerializer;
 import com.cedarsoft.serialization.jackson.NullSerializer;
 import com.cedarsoft.serialization.jackson.StringSerializer;
