@@ -31,13 +31,15 @@
 
 package com.cedarsoft.couchdb.test.utils;
 
+import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
+import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.version.Version;
 import com.cedarsoft.version.VersionException;
 import com.cedarsoft.version.VersionRange;
-import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -71,26 +73,49 @@ public class Bar {
   }
 
   public static class Serializer extends AbstractJacksonSerializer<Bar> {
+    public static final String PROPERTY_VALUE = "value";
+    public static final String PROPERTY_DESCRIPTION = "description";
+
     public Serializer() {
       super( "bar", VersionRange.single( 1, 0, 0 ) );
     }
 
     @Override
     public void serialize( @Nonnull JsonGenerator serializeTo, @Nonnull Bar object, @Nonnull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
-      serializeTo.writeNumberField( "value", object.getValue() );
-      serializeTo.writeStringField( "description", object.getDescription() );
+      serializeTo.writeNumberField( PROPERTY_VALUE, object.getValue() );
+      serializeTo.writeStringField( PROPERTY_DESCRIPTION, object.getDescription() );
     }
 
     @Nonnull
     @Override
     public Bar deserialize( @Nonnull JsonParser deserializeFrom, @Nonnull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
-      nextFieldValue( deserializeFrom, "value" );
-      int value = deserializeFrom.getIntValue();
+      int value = -1;
+      String description = null;
 
-      nextFieldValue( deserializeFrom, "description" );
-      String description = deserializeFrom.getText();
+      JacksonParserWrapper parser = new JacksonParserWrapper( deserializeFrom );
+      while ( parser.nextToken() == JsonToken.FIELD_NAME ) {
+        String currentName = parser.getCurrentName();
 
-      closeObject( deserializeFrom );
+        if ( currentName.equals( PROPERTY_VALUE ) ) {
+          parser.nextToken( JsonToken.VALUE_NUMBER_INT );
+          value = deserializeFrom.getIntValue();
+          continue;
+        }
+        if ( currentName.equals( PROPERTY_DESCRIPTION ) ) {
+          parser.nextToken( JsonToken.VALUE_STRING );
+          description = deserializeFrom.getValueAsString();
+          continue;
+        }
+
+        throw new IllegalStateException( "Unexpected field reached <" + currentName + ">" );
+      }
+
+      parser.verifyDeserialized( value, PROPERTY_VALUE );
+      parser.verifyDeserialized( description, PROPERTY_DESCRIPTION );
+
+      assert description != null;
+
+      parser.ensureObjectClosed();
       return new Bar( value, description );
     }
   }

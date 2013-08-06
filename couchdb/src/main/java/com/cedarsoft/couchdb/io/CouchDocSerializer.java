@@ -31,19 +31,19 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
-import com.cedarsoft.version.Version;
-import com.cedarsoft.couchdb.AttachmentId;
-import com.cedarsoft.couchdb.CouchDoc;
-import com.cedarsoft.couchdb.DocId;
-import com.cedarsoft.couchdb.Revision;
+import com.cedarsoft.couchdb.core.AttachmentId;
+import com.cedarsoft.couchdb.core.CouchDoc;
+import com.cedarsoft.couchdb.core.DocId;
+import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
 import com.cedarsoft.serialization.jackson.InvalidTypeException;
+import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.serialization.jackson.JacksonSerializer;
+import com.cedarsoft.version.Version;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.sun.jersey.core.util.Base64;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
 
 import javax.annotation.Nonnull;
 import javax.annotation.WillClose;

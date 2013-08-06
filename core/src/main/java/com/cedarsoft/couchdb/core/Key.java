@@ -28,14 +28,9 @@
  * or visit www.cedarsoft.com if you need additional information or
  * have any questions.
  */
-package com.cedarsoft.couchdb;
-
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
+package com.cedarsoft.couchdb.core;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.io.StringWriter;
 
 /**
  * Represents a key that can be used for queries
@@ -170,15 +165,89 @@ public class Key {
 
   @Nonnull
   private static String escape( @Nonnull String value ) {
-    try {
-      //noinspection TypeMayBeWeakened
-      StringWriter out = new StringWriter();
-      JsonGenerator generator = new JsonFactory().createJsonGenerator( out );
-      generator.writeString( value );
-      generator.close();
-      return out.toString();
-    } catch ( IOException e ) {
-      throw new IllegalArgumentException( "Invalid value: <" + value + ">", e );
+    return quote( value );
+  }
+
+
+  /*
+  Copied from
+  http://svn.codehaus.org/jettison/trunk/src/main/java/org/codehaus/jettison/json/JSONObject.java
+
+  Copyright (c) 2002 JSON.org
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  */
+
+  /**
+   * Produce a string in double quotes with backslash sequences in all the
+   * right places. A backslash will be inserted within </, allowing JSON
+   * text to be delivered in HTML. In JSON text, a string cannot contain a
+   * control character or an unescaped quote or backslash.
+   *
+   * @param string A String
+   * @return A String correctly formatted for insertion in a JSON text.
+   */
+  public static String quote( String string ) {
+    if ( string == null || string.length() == 0 ) {
+      return "\"\"";
     }
+
+    char c = 0;
+    int i;
+    int len = string.length();
+    StringBuilder sb = new StringBuilder( len + 4 );
+    String t;
+
+    sb.append( '"' );
+    for ( i = 0; i < len; i += 1 ) {
+      c = string.charAt( i );
+      switch ( c ) {
+        case '\\':
+        case '"':
+          sb.append( '\\' );
+          sb.append( c );
+          break;
+        case '/':
+          //                if (b == '<') {
+          sb.append( '\\' );
+          //                }
+          sb.append( c );
+          break;
+        case '\b':
+          sb.append( "\\b" );
+          break;
+        case '\t':
+          sb.append( "\\t" );
+          break;
+        case '\n':
+          sb.append( "\\n" );
+          break;
+        case '\f':
+          sb.append( "\\f" );
+          break;
+        case '\r':
+          sb.append( "\\r" );
+          break;
+        default:
+          if ( c < ' ' ) {
+            t = "000" + Integer.toHexString( c );
+            sb.append( "\\u" + t.substring( t.length() - 4 ) );
+          } else {
+            sb.append( c );
+          }
+      }
+    }
+    sb.append( '"' );
+    return sb.toString();
   }
 }

@@ -31,18 +31,16 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.couchdb.DocId;
-import com.cedarsoft.couchdb.RawCouchDoc;
-import com.cedarsoft.couchdb.Revision;
-import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
-import com.cedarsoft.serialization.jackson.InvalidTypeException;
+import com.cedarsoft.couchdb.core.DocId;
+import com.cedarsoft.couchdb.core.RawCouchDoc;
+import com.cedarsoft.couchdb.core.Revision;
+import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
-import org.codehaus.jackson.JsonEncoding;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.JsonToken;
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 
 import javax.annotation.Nonnull;
 import java.io.ByteArrayOutputStream;
@@ -83,23 +81,25 @@ public class RawCouchDocSerializer {
     JsonParser parser = createJsonParser( in );
     RawCouchDoc doc = deserialize( parser );
 
-    AbstractJacksonSerializer.ensureParserClosed( parser );
+    JacksonParserWrapper parserWrapper = new JacksonParserWrapper( parser );
+    parserWrapper.ensureParserClosed();
     return doc;
   }
 
   @Nonnull
   public RawCouchDoc deserialize( @Nonnull JsonParser parser ) throws IOException {
-    AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
+    JacksonParserWrapper parserWrapper = new JacksonParserWrapper( parser );
+    parserWrapper.nextToken( JsonToken.START_OBJECT );
 
-    AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_ID );
+    parserWrapper.nextFieldValue( PROPERTY_ID );
     String id = parser.getText();
 
-    AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_REV );
+    parserWrapper.nextFieldValue( PROPERTY_REV );
     String rev = parser.getText();
 
     parser.nextToken();
 
-    AbstractJacksonSerializer.ensureObjectClosed( parser );
+    parserWrapper.ensureObjectClosed();
     return new RawCouchDoc( new DocId( id ), new Revision( rev ) );
   }
 

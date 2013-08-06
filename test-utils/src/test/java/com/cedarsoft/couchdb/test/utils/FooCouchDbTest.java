@@ -31,14 +31,14 @@
 
 package com.cedarsoft.couchdb.test.utils;
 
-import com.cedarsoft.couchdb.ActionFailedException;
-import com.cedarsoft.couchdb.ActionResponse;
-import com.cedarsoft.couchdb.CouchDoc;
-import com.cedarsoft.couchdb.DocId;
-import com.cedarsoft.couchdb.UniqueId;
+import com.cedarsoft.couchdb.core.ActionFailedException;
+import com.cedarsoft.couchdb.core.ActionResponse;
+import com.cedarsoft.couchdb.core.CouchDoc;
+import com.cedarsoft.couchdb.core.DocId;
+import com.cedarsoft.couchdb.core.UniqueId;
 import com.cedarsoft.couchdb.io.ActionFailedExceptionSerializer;
-import com.cedarsoft.couchdb.io.CouchDocSerializer;
 import com.cedarsoft.couchdb.io.ActionResponseSerializer;
+import com.cedarsoft.couchdb.io.CouchDocSerializer;
 import com.cedarsoft.test.utils.JsonUtils;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;

@@ -28,39 +28,26 @@
  * or visit www.cedarsoft.com if you need additional information or
  * have any questions.
  */
-package com.cedarsoft.couchdb;
 
-import javax.annotation.Nonnull;
+package com.cedarsoft.couchdb.core;
 
 /**
- * Describes a view
- *
+ * Base class for couchdb related exceptions
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class ViewDescriptor {
-  @Nonnull
-  private final String designDocumentId;
-
-  @Nonnull
-  private final String viewId;
-
-  public ViewDescriptor( @Nonnull String designDocumentId, @Nonnull String viewId ) {
-    this.designDocumentId = designDocumentId;
-    this.viewId = viewId;
+public class CouchDbException extends Exception {
+  public CouchDbException() {
   }
 
-  @Nonnull
-  public String getDesignDocumentId() {
-    return designDocumentId;
+  public CouchDbException( String message ) {
+    super( message );
   }
 
-  @Nonnull
-  public String getViewId() {
-    return viewId;
+  public CouchDbException( String message, Throwable cause ) {
+    super( message, cause );
   }
 
-  @Override
-  public String toString() {
-    return designDocumentId + " | " + viewId;
+  public CouchDbException( Throwable cause ) {
+    super( cause );
   }
 }

@@ -1,8 +1,8 @@
 package com.cedarsoft.couchdb.test.utils.update;
 
-import com.cedarsoft.couchdb.DesignDocument;
-import com.cedarsoft.couchdb.DesignDocumentsProvider;
+import com.cedarsoft.couchdb.core.DesignDocument;
 import com.cedarsoft.couchdb.test.utils.CouchTest;
+import com.cedarsoft.couchdb.update.DesignDocumentsProvider;
 import com.cedarsoft.couchdb.update.DesignDocumentsUpdateService;
 import com.cedarsoft.couchdb.update.DesignDocumentsVersionInfo;
 import com.cedarsoft.exceptions.NotFoundException;
@@ -11,7 +11,6 @@ import com.google.common.collect.ImmutableList;
 import org.junit.*;
 
 import javax.annotation.Nonnull;
-
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;

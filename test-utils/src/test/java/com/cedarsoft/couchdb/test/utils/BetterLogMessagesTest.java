@@ -1,7 +1,7 @@
 package com.cedarsoft.couchdb.test.utils;
 
-import com.cedarsoft.couchdb.ActionFailedException;
-import com.cedarsoft.couchdb.DocId;
+import com.cedarsoft.couchdb.core.ActionFailedException;
+import com.cedarsoft.couchdb.core.DocId;
 import com.google.common.base.Charsets;
 import org.apache.commons.io.input.TeeInputStream;
 import org.junit.*;

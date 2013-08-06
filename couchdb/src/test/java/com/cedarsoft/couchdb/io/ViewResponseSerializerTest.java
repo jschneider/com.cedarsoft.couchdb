@@ -31,16 +31,14 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.couchdb.DocId;
-import com.cedarsoft.couchdb.Row;
-import com.cedarsoft.couchdb.ViewResponse;
+import com.cedarsoft.couchdb.core.DocId;
+import com.cedarsoft.couchdb.core.Row;
+import com.cedarsoft.couchdb.core.ViewResponse;
 import com.cedarsoft.couchdb.test.Foo;
 import com.cedarsoft.serialization.jackson.ListSerializer;
 import com.cedarsoft.serialization.jackson.NullSerializer;
 import com.cedarsoft.serialization.jackson.StringSerializer;
 import com.cedarsoft.test.utils.JsonUtils;
-import com.google.common.io.ByteStreams;
-import org.fest.assertions.Assertions;
 import org.junit.*;
 
 import java.io.ByteArrayInputStream;
@@ -50,7 +48,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  *

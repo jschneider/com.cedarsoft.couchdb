@@ -4,12 +4,12 @@
   <parent>
     <groupId>com.cedarsoft</groupId>
     <artifactId>open</artifactId>
-    <version>49</version>
+    <version>55</version>
   </parent>
 
   <groupId>com.cedarsoft.couchdb</groupId>
   <artifactId>couchdb-parent</artifactId>
-  <version>1.0.8</version>
+  <version>2.0.0</version>
   <packaging>pom</packaging>
   <name>CouchDB Parent</name>
   <description>Parent for CouchDB integration</description>
@@ -18,10 +18,11 @@
     <connection>scm:git:git://github.com/jschneider/com.cedarsoft.couchdb.git</connection>
     <developerConnection>scm:git:git@github.com:jschneider/com.cedarsoft.couchdb.git</developerConnection>
     <url>https://github.com/jschneider/com.cedarsoft.couchdb</url>
-    <tag>1.0.8</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <modules>
+    <module>core</module>
     <module>couchdb</module>
     <module>test-utils</module>
   </modules>
@@ -45,6 +46,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.cedarsoft.couchdb</groupId>
+        <artifactId>core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <dependency>
         <groupId>com.cedarsoft</groupId>
         <artifactId>couchdb</artifactId>
@@ -96,9 +102,9 @@
   </dependencyManagement>
 
   <properties>
-    <serialization.version>4.1.5</serialization.version>
-    <commons.version>5.1.7</commons.version>
-    <jersey.version>1.17</jersey.version>
+    <serialization.version>5.0.0</serialization.version>
+    <commons.version>6.0.0</commons.version>
+    <jersey.version>1.17.1</jersey.version>
     <java.version>1.7</java.version>
   </properties>
 

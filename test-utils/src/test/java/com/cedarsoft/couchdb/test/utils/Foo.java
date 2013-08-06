@@ -31,13 +31,14 @@
 
 package com.cedarsoft.couchdb.test.utils;
 
+import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
+import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.version.Version;
 import com.cedarsoft.version.VersionException;
 import com.cedarsoft.version.VersionRange;
-import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -96,10 +97,11 @@ public class Foo {
     @Nonnull
     @Override
     public Foo deserialize( @Nonnull JsonParser deserializeFrom, @Nonnull Version formatVersion ) throws IOException, VersionException, JsonProcessingException {
-      nextFieldValue( deserializeFrom, "aValue" );
+      JacksonParserWrapper parser = new JacksonParserWrapper( deserializeFrom );
+      parser.nextFieldValue( "aValue" );
       int value = deserializeFrom.getIntValue();
 
-      nextFieldValue( deserializeFrom, "description" );
+      parser.nextFieldValue( "description" );
       String description = deserializeFrom.getText();
 
       //Close it

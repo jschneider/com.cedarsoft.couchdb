@@ -29,73 +29,79 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.core;
 
-
-import com.google.common.base.Charsets;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.UUID;
+
 
 /**
- * Represents a document id (without a revision)
+ * A raw couch document - without any further informations
  *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class DocId {
+public class RawCouchDoc {
   @Nonnull
-  private final String id;
+  protected final DocId id;
+  @Nullable
+  protected Revision rev;
 
-  public DocId( @Nonnull UUID uuid ) {
-    this( uuid.toString() );
-  }
-  
   /**
-   * Creates a new document id
+   * Creates a new document
    *
-   * @param id the id as string
+   * @param id the document id
    */
-  public DocId( @Nonnull String id ) {
-    try {
-      this.id = URLEncoder.encode( id, Charsets.UTF_8.name() );
-    } catch ( UnsupportedEncodingException e ) {
-      throw new RuntimeException( e );
-    }
+  public RawCouchDoc( @Nonnull DocId id ) {
+    this( id, null );
   }
 
+  /**
+   * Creates a new document for the given unique id
+   *
+   * @param uniqueId the unique id (contains a revision)
+   */
+  public RawCouchDoc( @Nonnull UniqueId uniqueId ) {
+    this( uniqueId.getId(), uniqueId.getRevision() );
+  }
+
+  /**
+   * Creates a new couch document
+   *
+   * @param id  the id
+   * @param rev the revision
+   */
+  public RawCouchDoc( @Nonnull DocId id, @Nullable Revision rev ) {
+    this.id = id;
+    this.rev = rev;
+  }
+
+  /**
+   * Returns the id
+   *
+   * @return the id
+   */
   @Nonnull
-  public String asString() {
+  public DocId getId() {
     return id;
   }
 
-  @Override
-  public boolean equals( @Nullable Object obj ) {
-    if ( this == obj ) {
-      return true;
-    }
-    if ( obj == null || getClass() != obj.getClass() ) {
-      return false;
-    }
-
-    DocId docId = ( DocId ) obj;
-
-    if ( !id.equals( docId.id ) ) {
-      return false;
-    }
-
-    return true;
+  /**
+   * Sets the revision. Should only be called when the doc has been updated
+   *
+   * @param rev the revision
+   */
+  public void setRev( @Nullable Revision rev ) {
+    this.rev = rev;
   }
 
-  @Override
-  public int hashCode() {
-    return id.hashCode();
-  }
-
-  @Override
-  public String toString() {
-    return id;
+  /**
+   * Returns the revision
+   *
+   * @return the revision
+   */
+  @Nullable
+  public Revision getRev() {
+    return rev;
   }
 }

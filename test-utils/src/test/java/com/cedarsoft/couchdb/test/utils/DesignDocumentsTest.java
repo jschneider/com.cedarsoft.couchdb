@@ -30,9 +30,10 @@
  */
 package com.cedarsoft.couchdb.test.utils;
 
-import com.cedarsoft.couchdb.DesignDocument;
-import com.cedarsoft.couchdb.DesignDocuments;
-import com.cedarsoft.couchdb.ViewDescriptor;
+import com.cedarsoft.couchdb.DesignDocumentsUpdater;
+import com.cedarsoft.couchdb.core.DesignDocument;
+import com.cedarsoft.couchdb.core.DesignDocuments;
+import com.cedarsoft.couchdb.core.ViewDescriptor;
 import com.cedarsoft.couchdb.test.utils.views.Views;
 import com.cedarsoft.test.utils.JsonUtils;
 import org.junit.*;
@@ -86,7 +87,7 @@ public class DesignDocumentsTest {
     DesignDocument designDocument = DesignDocuments.createDesignDocument( "doc1", DesignDocuments.listJsFiles( dir ) );
     assertThat( designDocument.getViews( ) ).hasSize( 2 );
 
-    JsonUtils.assertJsonEquals( getClass( ).getResource( "designDoc.json" ), designDocument.createJson( null ) );
+    JsonUtils.assertJsonEquals( getClass( ).getResource( "designDoc.json" ), DesignDocumentsUpdater.createJson( designDocument, null ) );
   }
 
   @Test
@@ -136,12 +137,12 @@ public class DesignDocumentsTest {
 
   private void verifyDoc1( @Nonnull DesignDocument designDocument ) throws SAXException, IOException {
     assertThat( designDocument.getId( ) ).isEqualTo( "doc1" );
-    JsonUtils.assertJsonEquals( getClass( ).getResource( "designDoc.json" ), designDocument.createJson( null ) );
+    JsonUtils.assertJsonEquals( getClass( ).getResource( "designDoc.json" ), DesignDocumentsUpdater.createJson( designDocument, null ) );
   }
 
   private void verifyDoc2( @Nonnull DesignDocument designDocument ) throws SAXException, IOException {
     assertThat( designDocument.getId( ) ).isEqualTo( "doc2" );
-    JsonUtils.assertJsonEquals( getClass( ).getResource( "designDoc2.json" ), designDocument.createJson( null ) );
+    JsonUtils.assertJsonEquals( getClass( ).getResource( "designDoc2.json" ), DesignDocumentsUpdater.createJson( designDocument, null ) );
   }
 
 }

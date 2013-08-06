@@ -1,10 +1,6 @@
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.core;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
 import org.junit.*;
-
-import java.io.StringWriter;
 
 import static org.fest.assertions.Assertions.assertThat;
 

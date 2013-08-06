@@ -31,16 +31,16 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.version.VersionException;
-import com.cedarsoft.couchdb.ActionFailedException;
-import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
+import com.cedarsoft.couchdb.core.ActionFailedException;
+import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
+import com.cedarsoft.version.VersionException;
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import org.apache.commons.io.input.TeeInputStream;
-import org.codehaus.jackson.JsonEncoding;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -75,14 +75,38 @@ public class ActionFailedExceptionSerializer {
       JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
       JsonParser parser = jsonFactory.createJsonParser( teeInputStream );
-      AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
+      JacksonParserWrapper parserWrapper = new JacksonParserWrapper( parser );
 
-      AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_ERROR );
-      String error = parser.getText();
-      AbstractJacksonSerializer.nextFieldValue( parser, PROPERTY_REASON );
-      String reason = parser.getText();
-      AbstractJacksonSerializer.closeObject( parser );
-      AbstractJacksonSerializer.ensureParserClosedObject( parser );
+      parserWrapper.nextToken(  JsonToken.START_OBJECT );
+
+
+      String error = null;
+      String reason = null;
+
+      while ( parser.nextToken() == JsonToken.FIELD_NAME ) {
+        String currentName = parser.getCurrentName();
+
+        if ( currentName.equals( PROPERTY_ERROR ) ) {
+          parserWrapper.nextToken( JsonToken.VALUE_STRING );
+          error = parser.getText();
+          continue;
+        }
+
+        if ( currentName.equals( PROPERTY_REASON ) ) {
+          parserWrapper.nextToken( JsonToken.VALUE_STRING );
+          reason = parser.getText();
+          continue;
+        }
+
+        throw new IllegalStateException( "Unexpected field reached <" + currentName + ">" );
+      }
+
+      parserWrapper.verifyDeserialized( error, PROPERTY_ERROR );
+      parserWrapper.verifyDeserialized( reason, PROPERTY_REASON );
+      assert reason != null;
+      assert error != null;
+
+      parserWrapper.ensureObjectClosed();
 
       return new ActionFailedException( status, error, reason, teedOut.toByteArray() );
     }

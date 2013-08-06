@@ -31,19 +31,18 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.couchdb.CouchDoc;
-import com.cedarsoft.couchdb.DocId;
-import com.cedarsoft.couchdb.Row;
-import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
+import com.cedarsoft.couchdb.core.CouchDoc;
+import com.cedarsoft.couchdb.core.DocId;
+import com.cedarsoft.couchdb.core.Row;
 import com.cedarsoft.serialization.jackson.InvalidTypeException;
 import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.serialization.jackson.JacksonSerializer;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
-import org.codehaus.jackson.JsonEncoding;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -135,7 +134,8 @@ public class RowSerializer {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
     JsonParser parser = jsonFactory.createJsonParser( in );
-    AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
+    JacksonParserWrapper parserWrapper = new JacksonParserWrapper( parser );
+    parserWrapper.nextToken( JsonToken.START_OBJECT );
 
     return deserialize( keySerializer, valueSerializer, documentSerializer, parser );
   }

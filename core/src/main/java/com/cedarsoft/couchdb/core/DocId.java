@@ -29,25 +29,78 @@
  * have any questions.
  */
 
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.core;
+
+
+import com.google.common.base.Charsets;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.UUID;
 
 /**
- * Base class for couchdb related exceptions
+ * Represents a document id (without a revision)
+ *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class CouchDbException extends Exception {
-  public CouchDbException() {
+public class DocId {
+  @Nonnull
+  private final String id;
+
+  public DocId( @Nonnull UUID uuid ) {
+    this( uuid.toString() );
   }
 
-  public CouchDbException( String message ) {
-    super( message );
+  /**
+   * Creates a new document id
+   *
+   * @param id the id as string
+   */
+  public DocId( @Nonnull String id ) {
+    try {
+      this.id = URLEncoder.encode( id, Charsets.UTF_8.name() );
+    } catch ( UnsupportedEncodingException e ) {
+      throw new RuntimeException( e );
+    }
   }
 
-  public CouchDbException( String message, Throwable cause ) {
-    super( message, cause );
+  /**
+   * Returns the string representation
+   *
+   * @return the string representation
+   */
+  @Nonnull
+  public String asString() {
+    return id;
   }
 
-  public CouchDbException( Throwable cause ) {
-    super( cause );
+  @Override
+  public boolean equals( @Nullable Object obj ) {
+    if ( this == obj ) {
+      return true;
+    }
+    if ( obj == null || getClass() != obj.getClass() ) {
+      return false;
+    }
+
+    DocId docId = ( DocId ) obj;
+
+    if ( !id.equals( docId.id ) ) {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    return id.hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return id;
   }
 }

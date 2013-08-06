@@ -28,9 +28,10 @@
  * or visit www.cedarsoft.com if you need additional information or
  * have any questions.
  */
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.core;
 
 import junit.framework.TestCase;
+import org.fest.assertions.Assertions;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -53,7 +54,7 @@ public class KeyTest extends TestCase {
       Key.endArray();
       fail( "Where is the Exception" );
     } catch ( IllegalArgumentException e ) {
-      assertThat( e ).hasMessage( "Need at least one element" );
+      Assertions.assertThat( e ).hasMessage( "Need at least one element" );
     }
 
     assertThat( Key.endArray( "a" ).getJson() ).isEqualTo( "[\"a\",{}]" );

@@ -31,37 +31,74 @@
 
 package com.cedarsoft.couchdb.io;
 
-import com.cedarsoft.couchdb.ActionResponse;
-import com.cedarsoft.couchdb.DocId;
-import com.cedarsoft.couchdb.Revision;
-import com.cedarsoft.couchdb.UniqueId;
-import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
+import com.cedarsoft.couchdb.core.ActionFailedException;
+import com.cedarsoft.couchdb.core.ActionResponse;
+import com.cedarsoft.couchdb.core.DocId;
+import com.cedarsoft.couchdb.core.Revision;
+import com.cedarsoft.couchdb.core.UniqueId;
+import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
 import com.cedarsoft.version.VersionException;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.sun.jersey.api.client.ClientResponse;
 import org.apache.commons.io.input.TeeInputStream;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
 
 import javax.annotation.Nonnull;
+import javax.annotation.WillClose;
+import javax.annotation.WillNotClose;
 import javax.ws.rs.core.MediaType;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class ActionResponseSerializer {
 
+  /**
+   * Creates a new action response based on the given client response
+   *
+   * @param response the client response
+   * @return the action response
+   *
+   * @throws ActionFailedException if there has been an error
+   */
+  @Nonnull
+  public static ActionResponse create( @WillClose @Nonnull ClientResponse response ) throws ActionFailedException {
+    try {
+      verifyNoError( response );
+      return new ActionResponseSerializer().deserialize( response );
+    } finally {
+      response.close();
+    }
+  }
+
+  /**
+   * Throws an exception if the response contains a value
+   *
+   * @param response the response
+   * @throws ActionFailedException
+   */
+  public static void verifyNoError( @WillNotClose @Nonnull ClientResponse response ) throws ActionFailedException {
+    if ( !ActionResponse.isNotSuccessful( response ) ) {
+      return;
+    }
+
+    if ( !response.hasEntity() ) {
+      throw new ActionFailedException( response.getStatus(), "unknown", "unknown", null );
+    }
+
+    try {
+      try ( InputStream inputStream = response.getEntityInputStream() ) {
+        throw new ActionFailedExceptionSerializer().deserialize( response.getStatus(), inputStream );
+      }
+    } catch ( IOException e ) {
+      throw new RuntimeException( e );
+    }
+  }
+
   public static final String PROPERTY_ID = "id";
-
   public static final String PROPERTY_REV = "rev";
-
-  public static final String PROPERTY_ERROR = "error";
-
-  public static final String PROPERTY_REASON = "reason";
-
   public static final String PROPERTY_OK = "ok";
-
 
   @Nonnull
   public ActionResponse deserialize( @Nonnull ClientResponse response ) throws VersionException {
@@ -88,23 +125,54 @@ public class ActionResponseSerializer {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
     JsonParser parser = jsonFactory.createJsonParser( in );
-    AbstractJacksonSerializer.nextToken( parser, JsonToken.START_OBJECT );
+    JacksonParserWrapper parserWrapper = new JacksonParserWrapper( parser );
+    parserWrapper.nextToken( JsonToken.START_OBJECT );
 
     UniqueId deserialized = deserialize( parser );
 
-    AbstractJacksonSerializer.ensureParserClosedObject( parser );
+    parserWrapper.ensureObjectClosed();
 
     return deserialized;
   }
 
   @Nonnull
   public UniqueId deserialize( @Nonnull JsonParser deserializeFrom ) throws VersionException, IOException {
-    AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_OK );
-    AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_ID );
-    String id = deserializeFrom.getText();
-    AbstractJacksonSerializer.nextFieldValue( deserializeFrom, PROPERTY_REV );
-    String rev = deserializeFrom.getText();
-    AbstractJacksonSerializer.closeObject( deserializeFrom );
+    JacksonParserWrapper parser = new JacksonParserWrapper( deserializeFrom );
+
+    String id = null;
+    String rev = null;
+
+    while ( parser.nextToken() == JsonToken.FIELD_NAME ) {
+      String currentName = parser.getCurrentName();
+
+      if ( currentName.equals( PROPERTY_OK ) ) {
+        parser.nextToken( JsonToken.VALUE_TRUE );
+        //we don't need that value
+        continue;
+      }
+
+      if ( currentName.equals( PROPERTY_ID ) ) {
+        parser.nextToken( JsonToken.VALUE_STRING );
+        id = deserializeFrom.getText();
+        continue;
+      }
+
+      if ( currentName.equals( PROPERTY_REV ) ) {
+        parser.nextToken( JsonToken.VALUE_STRING );
+        rev = deserializeFrom.getText();
+        continue;
+      }
+
+      throw new IllegalStateException( "Unexpected field reached <" + currentName + ">" );
+    }
+
+    parser.verifyDeserialized( id, PROPERTY_ID );
+    parser.verifyDeserialized( rev, PROPERTY_REV );
+    assert rev != null;
+    assert id != null;
+
+    parser.ensureObjectClosed();
+
     return new UniqueId( new DocId( id ), new Revision( rev ) );
 
     //    AbstractJacksonSerializer.nextToken( deserializeFrom, JsonToken.FIELD_NAME );

@@ -30,6 +30,9 @@
  */
 package com.cedarsoft.couchdb;
 
+import com.cedarsoft.couchdb.core.DocId;
+import com.cedarsoft.couchdb.core.Revision;
+import com.cedarsoft.couchdb.core.UniqueId;
 import org.junit.*;
 
 import static org.fest.assertions.Assertions.assertThat;

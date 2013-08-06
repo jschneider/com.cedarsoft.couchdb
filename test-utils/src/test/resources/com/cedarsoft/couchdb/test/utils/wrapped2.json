@@ -1,0 +1,10 @@
+{
+  "_id" : "daId",
+  "_rev" : "1-8908180fecd9b17657889f91973f89eb",
+  "@type" : "bar",
+  "@version" : "1.0.0",
+  "value" : 123,
+  "description" : "descr",
+  "_conflicted": "something"
+
+}

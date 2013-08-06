@@ -30,18 +30,25 @@
  */
 package com.cedarsoft.couchdb;
 
+import com.cedarsoft.couchdb.core.ActionFailedException;
+import com.cedarsoft.couchdb.core.DesignDocument;
+import com.cedarsoft.couchdb.core.Revision;
+import com.cedarsoft.couchdb.core.View;
+import com.cedarsoft.couchdb.io.ActionResponseSerializer;
 import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,6 +70,44 @@ public class DesignDocumentsUpdater {
    */
   public DesignDocumentsUpdater( @Nonnull CouchDatabase database ) {
     this.database = database;
+  }
+
+  /**
+   * Creates the json content for the design document
+   *
+   * @return a string containing the json content for this design document
+   *
+   * @throws IOException
+   */
+  public static String createJson( @Nonnull DesignDocument designDocument, @Nullable Revision revision ) throws IOException {
+    //noinspection TypeMayBeWeakened
+    StringWriter writer = new StringWriter();
+    JsonGenerator generator = new JsonFactory().createJsonGenerator( writer );
+    generator.writeStartObject();
+
+    generator.writeStringField( "_id", designDocument.getId() );
+    if ( revision != null ) {
+      generator.writeStringField( "_rev", revision.asString() );
+    }
+    generator.writeStringField( "language", "javascript" );
+
+    generator.writeObjectFieldStart( "views" );
+
+    for ( View view : designDocument.getViews() ) {
+      generator.writeObjectFieldStart( view.getName() );
+
+      generator.writeStringField( "map", view.getMappingFunction() );
+      @Nullable String reduceFunction = view.getReduceFunction();
+      if ( reduceFunction != null ) {
+        generator.writeStringField( "reduce", reduceFunction );
+      }
+      generator.writeEndObject();
+    }
+
+    generator.writeEndObject();
+    generator.writeEndObject();
+    generator.flush();
+    return writer.toString();
   }
 
   /**
@@ -90,9 +135,9 @@ public class DesignDocumentsUpdater {
       if ( LOG.isLoggable( Level.FINE ) ) {
         LOG.fine( "PUT: " + resource.toString() );
       }
-      ClientResponse response = resource.put( ClientResponse.class, designDocument.createJson( currentRevision ) );
+      ClientResponse response = resource.put( ClientResponse.class, createJson( designDocument, currentRevision ) );
       try {
-        ActionResponse.verifyNoError( response );
+        ActionResponseSerializer.verifyNoError( response );
       } finally {
         response.close();
       }
@@ -119,7 +164,7 @@ public class DesignDocumentsUpdater {
         return null;
       }
 
-      ActionResponse.verifyNoError( response );
+      ActionResponseSerializer.verifyNoError( response );
 
       if ( response.getClientResponseStatus() != ClientResponse.Status.OK ) {
         throw new IllegalStateException( "Invalid response: " + response.getStatus() + ": " + response.getEntity( String.class ) );

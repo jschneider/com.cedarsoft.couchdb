@@ -30,12 +30,11 @@
  */
 package com.cedarsoft.couchdb.test.utils;
 
-import com.cedarsoft.couchdb.DocId;
-import com.cedarsoft.couchdb.Revision;
+import com.cedarsoft.couchdb.core.DocId;
+import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.couchdb.io.CouchSerializerWrapper;
 import com.cedarsoft.test.utils.JsonUtils;
-import com.cedarsoft.version.VersionException;
-import org.codehaus.jackson.JsonParseException;
+import com.fasterxml.jackson.core.JsonParseException;
 import org.junit.*;
 
 import java.io.ByteArrayOutputStream;
@@ -62,11 +61,11 @@ public class DocWrappingSerializerTest {
     CouchSerializerWrapper<Bar> serializer = new CouchSerializerWrapper<Bar>( new Bar.Serializer() );
 
     Bar bar = new Bar( 123, "asdf" );
-    
+
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     try {
       serializer.serialize( bar, out );
-      fail("Where is the Exception");
+      fail( "Where is the Exception" );
     } catch ( UnsupportedOperationException e ) {
       assertThat( e ).hasMessage( "Use #serialize(Object, OutputStream, DocId, Revision) instead" );
     }
@@ -94,6 +93,17 @@ public class DocWrappingSerializerTest {
   }
 
   @Test
+  public void testMulti() throws Exception {
+    CouchSerializerWrapper<Bar> serializer = new CouchSerializerWrapper<Bar>( new Bar.Serializer() );
+    serializer.deserialize( res.openStream() );
+    serializer.deserialize( res.openStream() );
+    serializer.deserialize( res.openStream() );
+    serializer.deserialize( res.openStream() );
+    serializer.deserialize( res.openStream() );
+    serializer.deserialize( res.openStream() );
+  }
+
+  @Test
   public void testWrapped() throws Exception {
     CouchSerializerWrapper<Bar> serializer = new CouchSerializerWrapper<Bar>( new Bar.Serializer() );
     InputStream in = res.openStream();
@@ -101,5 +111,35 @@ public class DocWrappingSerializerTest {
 
     assertThat( bar.getValue() ).isEqualTo( 7 );
     assertThat( bar.getDescription() ).isEqualTo( "hey" );
+  }
+
+  @Test
+  public void testWrapped1() throws Exception {
+    runWrapped( 1 );
+  }
+
+  @Test
+  public void testWrapped2() throws Exception {
+    runWrapped( 2 );
+  }
+
+  @Test
+  public void testWrapped3() throws Exception {
+    runWrapped( 3 );
+  }
+
+  @Test
+  public void testWrapped4() throws Exception {
+    runWrapped( 4 );
+  }
+
+  private void runWrapped( int i ) throws IOException {
+    CouchSerializerWrapper<Bar> serializer = new CouchSerializerWrapper<>( new Bar.Serializer() );
+
+    try ( InputStream in = getClass().getResourceAsStream( "wrapped" + i + ".json" ) ) {
+      Bar bar = serializer.deserialize( in );
+      assertThat( bar.getValue() ).isEqualTo( 123 );
+      assertThat( bar.getDescription() ).isEqualTo( "descr" );
+    }
   }
 }

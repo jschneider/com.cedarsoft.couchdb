@@ -1,8 +1,7 @@
-package com.cedarsoft.couchdb;
+package com.cedarsoft.couchdb.core;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.ws.rs.core.MultivaluedMap;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collections;
