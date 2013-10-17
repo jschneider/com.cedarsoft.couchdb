@@ -9,6 +9,10 @@
 
   <artifactId>test-utils</artifactId>
 
+  <name>CouchDB Test-Utils</name>
+  <description>Test-Utils for CouchDB</description>
+
+
   <dependencies>
     <dependency>
       <groupId>com.cedarsoft</groupId>
