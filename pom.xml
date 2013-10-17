@@ -21,6 +21,11 @@
     <tag>HEAD</tag>
   </scm>
 
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/jschneider/com.cedarsoft.couchdb/issues</url>
+  </issueManagement>
+
   <modules>
     <module>core</module>
     <module>couchdb</module>
