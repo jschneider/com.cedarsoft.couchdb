@@ -157,7 +157,7 @@ public class CouchDbRule implements MethodRule {
     ClientResponse response = server.get( "" );
     try {
       String content = response.getEntity( String.class );
-      Assertions.assertThat( content.trim() ).isEqualTo( "{\"couchdb\":\"Welcome\",\"version\":\"1.2.0\"}" );
+      Assertions.assertThat( content.trim() ).contains( "{\"couchdb\":\"Welcome\"" );
     } finally {
       response.close();
     }
