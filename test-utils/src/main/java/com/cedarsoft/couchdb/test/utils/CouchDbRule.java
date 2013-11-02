@@ -180,12 +180,12 @@ public class CouchDbRule implements MethodRule {
   }
 
   @Nullable
-  protected String getUsername() {
+  public String getUsername() {
     return System.getProperty( KEY_USER );
   }
 
   @Nullable
-  protected String getPassword() {
+  public String getPassword() {
     return System.getProperty( KEY_PASS );
   }
 
