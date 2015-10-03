@@ -34,7 +34,6 @@ package com.cedarsoft.couchdb.io;
 import com.cedarsoft.couchdb.core.CouchDoc;
 import com.cedarsoft.couchdb.core.DocId;
 import com.cedarsoft.couchdb.core.Row;
-import com.cedarsoft.serialization.jackson.InvalidTypeException;
 import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.serialization.jackson.JacksonSerializer;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
@@ -125,12 +124,12 @@ public class RowSerializer {
   }
 
   @Nonnull
-  public <K, V> Row<K, V, Void> deserialize( @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull InputStream in ) throws IOException, InvalidTypeException {
+  public <K, V> Row<K, V, Void> deserialize( @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull InputStream in ) throws IOException {
     return deserialize( keySerializer, valueSerializer, null, in );
   }
 
   @Nonnull
-  public <K, V, D> Row<K, V, D> deserialize( @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable JacksonSerializer<? extends D> documentSerializer, @Nonnull InputStream in ) throws IOException, InvalidTypeException {
+  public <K, V, D> Row<K, V, D> deserialize( @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable JacksonSerializer<? extends D> documentSerializer, @Nonnull InputStream in ) throws IOException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
 
     JsonParser parser = jsonFactory.createJsonParser( in );
@@ -141,12 +140,12 @@ public class RowSerializer {
   }
 
   @Nonnull
-  public <K, V> Row<K, V, Void> deserialize( @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull JsonParser parser ) throws IOException, InvalidTypeException {
+  public <K, V> Row<K, V, Void> deserialize( @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull JsonParser parser ) throws IOException {
     return deserialize( keySerializer, valueSerializer, null, parser );
   }
 
   @Nonnull
-  public <K, V, D> Row<K, V, D> deserialize( @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable JacksonSerializer<? extends D> documentSerializer, @Nonnull JsonParser parser ) throws IOException, InvalidTypeException {
+  public <K, V, D> Row<K, V, D> deserialize( @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable JacksonSerializer<? extends D> documentSerializer, @Nonnull JsonParser parser ) throws IOException {
     JacksonParserWrapper wrapper = new JacksonParserWrapper( parser );
     wrapper.nextToken( JsonToken.FIELD_NAME );
     String fieldName = wrapper.getCurrentName();

@@ -40,7 +40,9 @@ import com.cedarsoft.serialization.jackson.ListSerializer;
 import com.cedarsoft.serialization.jackson.NullSerializer;
 import com.cedarsoft.serialization.jackson.StringSerializer;
 import com.cedarsoft.test.utils.JsonUtils;
-import org.fest.assertions.Assertions;
+import static org.assertj.core.api.Assertions.*;
+
+import org.assertj.core.api.Assertions;
 import org.junit.*;
 
 import java.io.ByteArrayInputStream;
@@ -67,7 +69,7 @@ public class RowSerializerTest {
     String reduced = "{\"key\":\"aabbcc\",\"value\":\"daValue\"}";
 
     Row<String, String, String> rows = new RowSerializer( new CouchDocSerializer() ).deserialize( new StringSerializer(), new StringSerializer(), new StringSerializer(), new ByteArrayInputStream( reduced.getBytes() ) );
-    Assertions.assertThat( rows ).isNotNull();
+    Assertions.assertThat(rows ).isNotNull();
 
     Assertions.assertThat( rows.getKey() ).isEqualTo( "aabbcc" );
     Assertions.assertThat( rows.getId() ).isNull();
