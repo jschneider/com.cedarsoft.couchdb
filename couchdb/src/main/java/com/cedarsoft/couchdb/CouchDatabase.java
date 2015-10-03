@@ -246,7 +246,6 @@ public class CouchDatabase extends AbstractCouchDatabase {
    * @param <V>             the type of the value
    * @return the response
    *
-   * @throws InvalidTypeException
    * @throws ActionFailedException
    * @throws IOException
    */
