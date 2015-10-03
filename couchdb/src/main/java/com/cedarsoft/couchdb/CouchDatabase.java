@@ -45,7 +45,6 @@ import com.cedarsoft.couchdb.io.ActionResponseSerializer;
 import com.cedarsoft.couchdb.io.CouchDocSerializer;
 import com.cedarsoft.couchdb.io.RowSerializer;
 import com.cedarsoft.couchdb.io.ViewResponseSerializer;
-import com.cedarsoft.serialization.jackson.InvalidTypeException;
 import com.cedarsoft.serialization.jackson.JacksonSerializer;
 import com.google.common.io.ByteStreams;
 import com.sun.jersey.api.client.Client;
@@ -235,7 +234,7 @@ public class CouchDatabase extends AbstractCouchDatabase {
    * <li>the value</li>
    * <li>optionally the document</li>
    * </ul>
-   * <p/>
+   * <p>
    * The serializers assigned as methods parameters are used to deserialize these parts.
    * This method does *not* support included docs.
    *
@@ -247,12 +246,11 @@ public class CouchDatabase extends AbstractCouchDatabase {
    * @param <V>             the type of the value
    * @return the response
    *
-   * @throws InvalidTypeException
    * @throws ActionFailedException
    * @throws IOException
    */
   @Nonnull
-  public <K, V> ViewResponse<K, V, Void> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable Options options ) throws InvalidTypeException, ActionFailedException, IOException {
+  public <K, V> ViewResponse<K, V, Void> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable Options options ) throws ActionFailedException, IOException {
     if ( options != null && options.isIncludeDocs() ) {
       throw new IllegalArgumentException( Options.INCLUDE_DOCS + " is not supported without a doc serializer" );
     }
@@ -270,7 +268,7 @@ public class CouchDatabase extends AbstractCouchDatabase {
    * <li>the value</li>
    * <li>optionally the document</li>
    * </ul>
-   * <p/>
+   * <p>
    * The serializers assigned as methods parameters are used to deserialize these parts.
    * This method supports included docs.
    *
@@ -284,12 +282,11 @@ public class CouchDatabase extends AbstractCouchDatabase {
    * @param <D>             the type of the document object
    * @return the response
    *
-   * @throws InvalidTypeException
    * @throws ActionFailedException
    * @throws IOException
    */
   @Nonnull
-  public <K, V, D> ViewResponse<K, V, D> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull JacksonSerializer<? extends D> docSerializer, @Nullable Options options ) throws InvalidTypeException, ActionFailedException, IOException {
+  public <K, V, D> ViewResponse<K, V, D> query( @Nonnull ViewDescriptor viewDescriptor, @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull JacksonSerializer<? extends D> docSerializer, @Nullable Options options ) throws ActionFailedException, IOException {
     Options localOptions;
     if ( options != null && !options.isGroup() ) {
       localOptions = new Options( options ).includeDocs( true ); //force include docs
@@ -404,11 +401,13 @@ public class CouchDatabase extends AbstractCouchDatabase {
     return response.getEntityInputStream();
   }
 
+  @Override
   @Nonnull
   public InputStream get( @Nonnull DocId docId, @Nonnull AttachmentId attachmentId ) throws ActionFailedException {
     return get( getDbRoot().path( docId.asString() ).path( attachmentId.asString() ) );
   }
 
+  @Override
   @Nonnull
   public InputStream query( @Nonnull ViewDescriptor viewDescriptor, @Nullable Options options ) throws ActionFailedException {
     WebResource viewPath = getDbRoot().path( PATH_SEGMENT_DESIGN ).path( viewDescriptor.getDesignDocumentId() ).path( PATH_SEGMENT_VIEW ).path( viewDescriptor.getViewId() );

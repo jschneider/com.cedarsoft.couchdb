@@ -46,7 +46,9 @@ import com.sun.jersey.client.apache4.ApacheHttpClient4;
 import com.sun.jersey.client.apache4.ApacheHttpClient4Handler;
 import org.apache.http.impl.conn.AbstractPooledConnAdapter;
 import org.apache.http.impl.conn.SingleClientConnManager;
-import org.fest.assertions.Assertions;
+import static org.assertj.core.api.Assertions.*;
+
+import org.assertj.core.api.Assertions;
 import org.fest.reflect.core.Reflection;
 import org.junit.rules.*;
 import org.junit.runners.model.*;
@@ -157,7 +159,7 @@ public class CouchDbRule implements MethodRule {
     ClientResponse response = server.get( "" );
     try {
       String content = response.getEntity( String.class );
-      Assertions.assertThat( content.trim() ).contains( "{\"couchdb\":\"Welcome\"" );
+      Assertions.assertThat(content.trim() ).contains("{\"couchdb\":\"Welcome\"" );
     } finally {
       response.close();
     }
@@ -180,12 +182,12 @@ public class CouchDbRule implements MethodRule {
   }
 
   @Nullable
-  protected String getUsername() {
+  public String getUsername() {
     return System.getProperty( KEY_USER );
   }
 
   @Nullable
-  protected String getPassword() {
+  public String getPassword() {
     return System.getProperty( KEY_PASS );
   }
 

@@ -32,6 +32,7 @@
 package com.cedarsoft.couchdb.test;
 
 import com.cedarsoft.serialization.Serializer;
+import com.cedarsoft.serialization.StreamSerializer;
 import com.cedarsoft.serialization.test.utils.AbstractJsonSerializerTest2;
 import com.cedarsoft.serialization.test.utils.Entry;
 import org.junit.experimental.theories.*;
@@ -44,7 +45,7 @@ import javax.annotation.Nonnull;
 public class FooSerializerTest extends AbstractJsonSerializerTest2<Foo> {
   @Nonnull
   @Override
-  protected Serializer<Foo> getSerializer() throws Exception {
+  protected StreamSerializer<Foo> getSerializer() throws Exception {
     return new Foo.Serializer();
   }
 
