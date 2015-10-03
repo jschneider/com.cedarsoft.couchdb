@@ -234,7 +234,7 @@ public class CouchDatabase extends AbstractCouchDatabase {
    * <li>the value</li>
    * <li>optionally the document</li>
    * </ul>
-   * <p/>
+   * <p>
    * The serializers assigned as methods parameters are used to deserialize these parts.
    * This method does *not* support included docs.
    *
@@ -246,7 +246,6 @@ public class CouchDatabase extends AbstractCouchDatabase {
    * @param <V>             the type of the value
    * @return the response
    *
-   * @throws InvalidTypeException
    * @throws ActionFailedException
    * @throws IOException
    */
@@ -269,7 +268,7 @@ public class CouchDatabase extends AbstractCouchDatabase {
    * <li>the value</li>
    * <li>optionally the document</li>
    * </ul>
-   * <p/>
+   * <p>
    * The serializers assigned as methods parameters are used to deserialize these parts.
    * This method supports included docs.
    *
@@ -402,11 +401,13 @@ public class CouchDatabase extends AbstractCouchDatabase {
     return response.getEntityInputStream();
   }
 
+  @Override
   @Nonnull
   public InputStream get( @Nonnull DocId docId, @Nonnull AttachmentId attachmentId ) throws ActionFailedException {
     return get( getDbRoot().path( docId.asString() ).path( attachmentId.asString() ) );
   }
 
+  @Override
   @Nonnull
   public InputStream query( @Nonnull ViewDescriptor viewDescriptor, @Nullable Options options ) throws ActionFailedException {
     WebResource viewPath = getDbRoot().path( PATH_SEGMENT_DESIGN ).path( viewDescriptor.getDesignDocumentId() ).path( PATH_SEGMENT_VIEW ).path( viewDescriptor.getViewId() );
