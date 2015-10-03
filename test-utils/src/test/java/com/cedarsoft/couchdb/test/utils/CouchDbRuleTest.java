@@ -36,8 +36,7 @@ import com.cedarsoft.couchdb.core.ActionFailedException;
 import org.junit.*;
 import org.junit.runners.model.*;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.Fail.fail;
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)

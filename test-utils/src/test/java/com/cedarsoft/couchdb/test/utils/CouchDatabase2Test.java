@@ -39,6 +39,7 @@ import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.couchdb.io.CouchDocSerializer;
 import com.cedarsoft.test.utils.JsonUtils;
 import com.google.common.io.ByteStreams;
+import org.assertj.core.api.Fail;
 import org.junit.*;
 import org.junit.rules.*;
 
@@ -46,7 +47,7 @@ import javax.annotation.Nonnull;
 import java.io.ByteArrayInputStream;
 import java.net.URISyntaxException;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.*;
 
 /**
@@ -139,7 +140,7 @@ public class CouchDatabase2Test extends CouchTest {
 
     try {
       db().delete(id, REV);
-      fail("Where is the Exception");
+      Fail.fail("Where is the Exception");
     } catch (ActionFailedException e) {
       assertEquals("not_found", e.getError());
       assertEquals("deleted", e.getReason());
@@ -209,7 +210,7 @@ public class CouchDatabase2Test extends CouchTest {
     //test non existent doc
     try {
       db().getRev(new DocId("does_not_exist"));
-      fail("Where is the Exception");
+      Fail.fail("Where is the Exception");
     } catch (ActionFailedException e) {
       assertEquals("unknown", e.getError());
       assertEquals("unknown", e.getReason());

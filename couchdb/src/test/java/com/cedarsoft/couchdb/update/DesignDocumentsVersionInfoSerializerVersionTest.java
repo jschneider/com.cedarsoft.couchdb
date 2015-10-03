@@ -2,6 +2,7 @@
 package com.cedarsoft.couchdb.update;
 
 import com.cedarsoft.serialization.Serializer;
+import com.cedarsoft.serialization.StreamSerializer;
 import com.cedarsoft.serialization.test.utils.AbstractJsonVersionTest2;
 import com.cedarsoft.serialization.test.utils.VersionEntry;
 import com.cedarsoft.version.Version;
@@ -9,7 +10,8 @@ import org.junit.experimental.theories.*;
 
 import javax.annotation.Nonnull;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class DesignDocumentsVersionInfoSerializerVersionTest extends AbstractJsonVersionTest2<DesignDocumentsVersionInfo> {
 
@@ -18,7 +20,7 @@ public class DesignDocumentsVersionInfoSerializerVersionTest extends AbstractJso
 
   @Nonnull
   @Override
-  protected Serializer<DesignDocumentsVersionInfo> getSerializer() throws Exception {
+  protected StreamSerializer <DesignDocumentsVersionInfo> getSerializer() throws Exception {
     return new DesignDocumentsVersionInfoSerializer();
   }
 

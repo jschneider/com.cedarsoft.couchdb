@@ -36,7 +36,6 @@ import com.cedarsoft.couchdb.core.CouchDoc;
 import com.cedarsoft.couchdb.core.DocId;
 import com.cedarsoft.couchdb.core.Revision;
 import com.cedarsoft.serialization.jackson.AbstractJacksonSerializer;
-import com.cedarsoft.serialization.jackson.InvalidTypeException;
 import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.serialization.jackson.JacksonSerializer;
 import com.cedarsoft.version.Version;
@@ -131,13 +130,13 @@ public class CouchDocSerializer {
       } finally {
         in.close();
       }
-    } catch ( InvalidTypeException | IOException e ) {
+    } catch ( IOException e ) {
       throw new RuntimeException( "Could not parse due to " + e.getMessage(), e );
     }
   }
 
   @Nonnull
-  public <T> CouchDoc<T> deserialize( @Nonnull JacksonSerializer<T> wrappedSerializer, @Nonnull JacksonParserWrapper parserWrapper ) throws InvalidTypeException, IOException {
+  public <T> CouchDoc<T> deserialize( @Nonnull JacksonSerializer<T> wrappedSerializer, @Nonnull JacksonParserWrapper parserWrapper ) throws IOException {
     parserWrapper.nextToken( JsonToken.START_OBJECT );
 
     parserWrapper.nextFieldValue( PROPERTY_ID );

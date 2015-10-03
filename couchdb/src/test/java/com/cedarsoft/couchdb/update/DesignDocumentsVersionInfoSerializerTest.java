@@ -2,6 +2,7 @@
 package com.cedarsoft.couchdb.update;
 
 import com.cedarsoft.serialization.Serializer;
+import com.cedarsoft.serialization.StreamSerializer;
 import com.cedarsoft.serialization.test.utils.AbstractJsonSerializerTest2;
 import com.cedarsoft.serialization.test.utils.Entry;
 import com.cedarsoft.version.Version;
@@ -17,7 +18,7 @@ public class DesignDocumentsVersionInfoSerializerTest extends AbstractJsonSerial
 
   @Nonnull
   @Override
-  protected Serializer<DesignDocumentsVersionInfo> getSerializer() throws Exception {
+  protected StreamSerializer<DesignDocumentsVersionInfo> getSerializer() throws Exception {
     return new DesignDocumentsVersionInfoSerializer();
   }
 

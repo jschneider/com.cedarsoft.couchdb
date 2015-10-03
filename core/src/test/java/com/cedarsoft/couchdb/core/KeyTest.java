@@ -31,9 +31,9 @@
 package com.cedarsoft.couchdb.core;
 
 import junit.framework.TestCase;
-import org.fest.assertions.Assertions;
+import org.assertj.core.api.Assertions;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
@@ -54,7 +54,7 @@ public class KeyTest extends TestCase {
       Key.endArray();
       fail( "Where is the Exception" );
     } catch ( IllegalArgumentException e ) {
-      Assertions.assertThat( e ).hasMessage( "Need at least one element" );
+      Assertions.assertThat(e ).hasMessage("Need at least one element" );
     }
 
     assertThat( Key.endArray( "a" ).getJson() ).isEqualTo( "[\"a\",{}]" );

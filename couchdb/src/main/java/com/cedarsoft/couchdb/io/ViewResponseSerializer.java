@@ -33,7 +33,6 @@ package com.cedarsoft.couchdb.io;
 
 import com.cedarsoft.couchdb.core.Row;
 import com.cedarsoft.couchdb.core.ViewResponse;
-import com.cedarsoft.serialization.jackson.InvalidTypeException;
 import com.cedarsoft.serialization.jackson.JacksonParserWrapper;
 import com.cedarsoft.serialization.jackson.JacksonSerializer;
 import com.cedarsoft.serialization.jackson.JacksonSupport;
@@ -91,11 +90,11 @@ public class ViewResponseSerializer {
   }
 
   @Nonnull
-  public <K, V> ViewResponse<K, V, Void> deserialize( @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull InputStream in ) throws IOException, InvalidTypeException {
+  public <K, V> ViewResponse<K, V, Void> deserialize( @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nonnull InputStream in ) throws IOException {
     return deserialize( keySerializer, valueSerializer, null, in );
   }
 
-  public <K, V, D> ViewResponse<K, V, D> deserialize( @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable JacksonSerializer<? extends D> documentSerializer, @Nonnull InputStream in ) throws IOException, InvalidTypeException {
+  public <K, V, D> ViewResponse<K, V, D> deserialize( @Nonnull JacksonSerializer<? super K> keySerializer, @Nonnull JacksonSerializer<? super V> valueSerializer, @Nullable JacksonSerializer<? extends D> documentSerializer, @Nonnull InputStream in ) throws IOException {
     JsonFactory jsonFactory = JacksonSupport.getJsonFactory();
     JsonParser parser = jsonFactory.createJsonParser( in );
 
