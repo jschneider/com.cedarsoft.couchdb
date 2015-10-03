@@ -52,9 +52,9 @@ import java.io.OutputStream;
 
 /**
  * This wrapper skips couchdb specific entries ("_id" and "_rev").
- * <p/>
+ * <p>
  * Wraps a default serializer.
- * <p/>
+ * <p>
  * ATTENTION: Serializing is only supported for test cases and requires additional informations. Use
  * {@link #serialize(Object, OutputStream, DocId, Revision)} for those cases!
  *

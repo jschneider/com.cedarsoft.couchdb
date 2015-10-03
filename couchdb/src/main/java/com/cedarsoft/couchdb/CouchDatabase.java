@@ -234,7 +234,7 @@ public class CouchDatabase extends AbstractCouchDatabase {
    * <li>the value</li>
    * <li>optionally the document</li>
    * </ul>
-   * <p/>
+   * <p>
    * The serializers assigned as methods parameters are used to deserialize these parts.
    * This method does *not* support included docs.
    *
@@ -269,7 +269,7 @@ public class CouchDatabase extends AbstractCouchDatabase {
    * <li>the value</li>
    * <li>optionally the document</li>
    * </ul>
-   * <p/>
+   * <p>
    * The serializers assigned as methods parameters are used to deserialize these parts.
    * This method supports included docs.
    *
