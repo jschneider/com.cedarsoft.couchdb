@@ -401,11 +401,13 @@ public class CouchDatabase extends AbstractCouchDatabase {
     return response.getEntityInputStream();
   }
 
+  @Override
   @Nonnull
   public InputStream get( @Nonnull DocId docId, @Nonnull AttachmentId attachmentId ) throws ActionFailedException {
     return get( getDbRoot().path( docId.asString() ).path( attachmentId.asString() ) );
   }
 
+  @Override
   @Nonnull
   public InputStream query( @Nonnull ViewDescriptor viewDescriptor, @Nullable Options options ) throws ActionFailedException {
     WebResource viewPath = getDbRoot().path( PATH_SEGMENT_DESIGN ).path( viewDescriptor.getDesignDocumentId() ).path( PATH_SEGMENT_VIEW ).path( viewDescriptor.getViewId() );
